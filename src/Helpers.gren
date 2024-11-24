@@ -1,0 +1,82 @@
+module Helpers exposing (..)
+
+import Array
+import Math
+
+
+stringSplit =
+    String.split
+
+
+arrayPrepend =
+    Array.prepend
+
+
+countOccurrences : Array.Array String -> String -> Int
+countOccurrences target str =
+    str
+        |> String.split ""
+        |> Array.filter (\char -> Array.member char target)
+        |> Array.length
+
+
+modBy : Int -> Int -> Int
+modBy =
+    Math.modBy
+
+
+round : Float -> Int
+round =
+    Math.round
+
+
+stringJoin : String -> Array.Array String -> String
+stringJoin =
+    String.join
+
+
+arrayFromList : a -> a
+arrayFromList =
+    identity
+
+
+arrayMember : element -> (Array.Array element -> Bool)
+arrayMember =
+    Array.member
+
+
+arrayRange : Int -> Int -> Array.Array Int
+arrayRange =
+    Array.range
+
+
+arrayPushLast : a -> Array.Array a -> Array.Array a
+arrayPushLast =
+    Array.pushLast
+
+
+arrayFlatten : Array.Array (Array.Array a) -> Array.Array a
+arrayFlatten =
+    Array.flatten
+
+
+arrayDropFirst : Int -> Array.Array a -> Array.Array a
+arrayDropFirst =
+    Array.dropFirst
+
+
+arrayIndexedMap : (Int -> a -> b) -> Array.Array a -> Array.Array b
+arrayIndexedMap =
+    Array.indexedMap
+
+
+arrayIndexedFoldl : (Int -> a -> b -> b) -> b -> Array.Array a -> b
+arrayIndexedFoldl =
+    Array.indexedFoldl
+
+
+stringToChar : String -> Char
+stringToChar string =
+    String.toArray string
+        |> Array.first
+        |> Maybe.withDefault ' '

@@ -1,0 +1,12 @@
+{
+    "serve": "./public/",
+    "port": 8003,
+    "targets": {
+        "pac-game": {
+            "inputs": [
+                "src/Main.elm"
+            ],
+            "output": "./tmp/elm-pacman.js"
+        }
+    }
+}

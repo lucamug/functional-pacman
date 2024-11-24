@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Basic Meta Tags -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="title" content="Functional Pac-Man">
+    <meta name="description" content="An interpretation of the Pac-Man game written in around 1k lines of purely functional code that runs in the browser and in the terminal. Written in Elm and Gren.">
+    <meta name="keywords" content="Elmlang, Grenlang, Videogame, Pac-Man, Functional Programming">
+    <meta name="author" content="lucamug">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://lucamug.github.io/pacman/">
+    <meta property="og:title" content="Functional Pac-Man">
+    <meta property="og:description" content="An interpretation of the Pac-Man game written in around 1k lines of purely functional code that runs in the browser and in the terminal. Written in Elm and Gren.">
+    <meta property="og:image" content="https://lucamug.github.io/pacman/screen01.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://lucamug.github.io/pacman/">
+    <meta property="twitter:title" content="Functional Pac-Man">
+    <meta property="twitter:description" content="An interpretation of the Pac-Man game written in around 1k lines of purely functional code that runs in the browser and in the terminal. Written in Elm and Gren.">
+    <meta property="twitter:image" content="https://lucamug.github.io/pacman/screen01.png">
+
+    <title>Functional Pac-Man</title>
+</head>
+<body>
+    <main></main>
+    <script src="elm-pacman.js"></script>
+    <script>
+        var app = Elm.Main.init({ node: document.querySelector('main'), flags: { hidden: document.hidden } })
+    </script>
+</body>
+</html>

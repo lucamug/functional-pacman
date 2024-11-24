@@ -1,0 +1,6 @@
+#!/bin/bash
+set -eu
+
+npx elm make ./src/Main.elm --output ./tmp/elm-pacman.js --optimize
+npx gren make ./src/Main.gren --output ./docs/gren-pacman --optimize
+node cmd/build-elm.js

@@ -1,0 +1,228 @@
+module Main exposing ( main )
+
+import Ansi
+import Game
+import Helpers
+import Init
+import Node
+import Stream
+import Task
+import Tui
+import UI
+import UI.Attribute
+import UI.Border
+
+
+main : Tui.Program Model Msg
+main =
+    Tui.defineProgram
+        { init = init
+        , update = update
+        , view = view
+        , subscriptions = subscriptions
+        , onInput = GotInput
+        }
+
+
+type Msg
+    = GotInput Tui.Input
+    | Game Game.Msg
+
+
+type alias Model =
+    { stdout : Stream.Stream
+    , gameModel : Game.Model
+    }
+
+
+subscriptions : Model -> Sub Msg
+subscriptions =
+    \model -> Sub.map Game (Game.subscriptions model.gameModel)
+
+
+init :
+    Tui.Environment
+    -> Init.Task
+        { model : Model
+        , command : Cmd Msg
+        }
+init env =
+    Game.init
+        |> (\game ->
+                Node.startProgram
+                    { model =
+                        { stdout = env.stdout
+                        , gameModel = game.model
+                        }
+                    , command =
+                        Cmd.batch
+                            [ Tui.hideCursor env.stdout
+                                |> Task.execute
+                            , Cmd.map Game game.command
+                            ]
+                    }
+            )
+
+
+update :
+    Msg
+    -> Model
+    -> { model : Model
+       , command : Cmd Msg
+       }
+update msg model =
+    case msg of
+        Game gameMsg ->
+            Game.update gameMsg model.gameModel
+                |> (\game ->
+                        { model = { model | gameModel = game.model }
+                        , command = Cmd.map Game game.command
+                        }
+                    )
+
+        GotInput input ->
+            case input of
+                Tui.Escape ->
+                    { model = model
+                    , command =
+                        Tui.exit model.stdout
+                            |> Task.execute
+                    }
+
+                Tui.KeyChar key ->
+                    sendKey model key
+
+                Tui.ArrowUp ->
+                    sendKey model "ArrowUp"
+
+                Tui.ArrowDown ->
+                    sendKey model "ArrowDown"
+
+                Tui.ArrowLeft ->
+                    sendKey model "ArrowLeft"
+
+                Tui.ArrowRight ->
+                    sendKey model "ArrowRight"
+
+                Tui.Space ->
+                    sendKey model " "
+
+                Tui.Return ->
+                    sendKey model "Enter"
+
+                _ ->
+                    { model = model
+                    , command = Cmd.none
+                    }
+
+
+sendKey model key =
+    Game.update (Game.OnKeyDown key) model.gameModel
+        |> (\game ->
+                { model = { model | gameModel = game.model }
+                , command = Cmd.map Game game.command
+                }
+            )
+
+
+charToTile : Int -> String -> Game.Tile -> String
+charToTile index char charType =
+    if index == 0 then
+        char
+            |> Ansi.wrapColor Ansi.Blue
+            |> Ansi.wrapFontWeight Ansi.Bold
+    else
+        case charType of
+            Game.TileLevelWhilePlaying ->
+                char
+                    |> Ansi.wrapColor Ansi.Blue
+                    |> Ansi.wrapFontWeight Ansi.Bold
+
+            Game.TileLevelWhileIdle ->
+                char
+                    |> Ansi.wrapColor Ansi.Yellow
+                    |> Ansi.wrapFontWeight Ansi.Faint
+
+            Game.TileLevelWhileShield ->
+                char
+                    |> Ansi.wrapColor Ansi.Red
+                    |> Ansi.wrapFontWeight Ansi.Faint
+
+            Game.TileDot ->
+                char
+                    |> Ansi.wrapColor Ansi.Yellow
+                    |> Ansi.wrapFontWeight Ansi.Faint
+
+            Game.TilePlayer ->
+                char
+                    |> Ansi.wrapColor Ansi.Yellow
+                    |> Ansi.wrapFontWeight Ansi.Bold
+
+            Game.TileNotVisible ->
+                " "
+
+            Game.TileModalVisible ->
+                char
+                    |> Ansi.wrapColor Ansi.White
+                    |> Ansi.wrapBgColor Ansi.Blue
+
+            Game.TileModalNotVisible ->
+                " "
+                    |> Ansi.wrapBgColor Ansi.Blue
+
+            Game.TileGhostHunting ->
+                char
+                    |> Ansi.wrapColor Ansi.Blue
+                    |> Ansi.wrapFontWeight Ansi.Bold
+
+            Game.TileGhostEscaping id ->
+                case id of
+                    0 ->
+                        char
+                            |> Ansi.wrapColor Ansi.Cyan
+                            |> Ansi.wrapFontWeight Ansi.Bold
+
+                    1 ->
+                        char
+                            |> Ansi.wrapColor Ansi.Yellow
+                            |> Ansi.wrapFontWeight Ansi.Bold
+
+                    2 ->
+                        char
+                            |> Ansi.wrapColor Ansi.Red
+                            |> Ansi.wrapFontWeight Ansi.Bold
+
+                    _ ->
+                        char
+                            |> Ansi.wrapColor Ansi.Magenta
+                            |> Ansi.wrapFontWeight Ansi.Bold
+
+            Game.TileNoOp ->
+                char
+
+
+view : Model -> UI.Element
+view model =
+    UI.row
+        []
+        ([ UI.column
+            []
+            ([ UI.text [] ""
+             ]
+                ++ (model.gameModel
+                        |> Game.view
+                                { charToTile = charToTile
+                                , tilesToRow = \index arrayChar -> UI.text [] ("  " ++ String.join "" arrayChar)
+                                }
+                    )
+                ++ [ UI.text [] ""
+                    ]
+            )
+         ]
+            ++ (if model.gameModel.debug then
+                    [ UI.column [] (Array.map (\row -> UI.text [] (Ansi.wrapColor Ansi.Green row)) (Game.debugText model.gameModel))
+                    ]
+                 else
+                    []
+                )
+        )

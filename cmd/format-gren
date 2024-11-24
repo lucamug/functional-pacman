@@ -1,0 +1,4 @@
+#!/bin/bash
+set -eu
+
+npx gren format src/Main.gren src/Helpers.gren --yes

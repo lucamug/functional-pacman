@@ -1,0 +1,4 @@
+#!/bin/bash
+set -eu
+
+npx gren make ./src/Main.gren --output ./tmp/gren-pacman && node ./tmp/gren-pacman
