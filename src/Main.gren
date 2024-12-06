@@ -125,80 +125,103 @@ sendKey model key =
             )
 
 
-charToTile : Int -> String -> Game.Tile -> String
-charToTile index char charType =
-    if index == 0 then
-        char
-            |> Ansi.wrapColor Ansi.Blue
-            |> Ansi.wrapFontWeight Ansi.Bold
+charToTile : Int -> Game.Tile -> String -> Game.Acc String -> Game.Acc String
+charToTile index tileType char acc =
+    let
+        class : String
+        class =
+            tileTypeToClass index tileType
+    in
+    if acc.previousTileType == class then
+        -- Char with same color
+        { acc | textTemp = acc.textTemp ++ char }
+    else if acc.previousTileType == "" then
+        -- First char in the row
+        { acc
+            | textTemp = char
+            , previousTileType = class
+        }
+    else
+        -- Color variation
+        { acc
+            | textTemp = char
+            , previousTileType = class
+            , tiles = Array.pushLast (acc.previousTileType ++ acc.textTemp) acc.tiles
+        }
+
+
+style : Ansi.Color -> Ansi.Color -> String
+style a b =
+    Ansi.setColor a ++ Ansi.setBgColor b
+
+
+colorDot : String
+colorDot =
+    style Ansi.Yellow Ansi.Black
+
+
+colorNotVisible : String
+colorNotVisible =
+    style Ansi.Black Ansi.Black
+
+
+colorEndOfLine : String
+colorEndOfLine =
+    style Ansi.White Ansi.White
+
+
+tileTypeToClass : Int -> Game.Tile -> String
+tileTypeToClass index charType =
+    if index == 0 && charType /= Game.TileEndOfLine then
+        style Ansi.Blue Ansi.Black
     else
         case charType of
             Game.TileLevelWhilePlaying ->
-                char
-                    |> Ansi.wrapColor Ansi.Blue
-                    |> Ansi.wrapFontWeight Ansi.Bold
+                style Ansi.Blue Ansi.Black
 
             Game.TileLevelWhileIdle ->
-                char
-                    |> Ansi.wrapColor Ansi.Yellow
-                    |> Ansi.wrapFontWeight Ansi.Faint
+                style Ansi.Magenta Ansi.Black
 
             Game.TileLevelWhileShield ->
-                char
-                    |> Ansi.wrapColor Ansi.Red
-                    |> Ansi.wrapFontWeight Ansi.Faint
+                style Ansi.Red Ansi.Black
 
             Game.TileDot ->
-                char
-                    |> Ansi.wrapColor Ansi.Yellow
-                    |> Ansi.wrapFontWeight Ansi.Faint
+                colorDot
 
             Game.TilePlayer ->
-                char
-                    |> Ansi.wrapColor Ansi.Yellow
-                    |> Ansi.wrapFontWeight Ansi.Bold
+                style Ansi.Yellow Ansi.Black
 
             Game.TileNotVisible ->
-                " "
+                colorNotVisible
+
+            Game.TileEndOfLine ->
+                colorNotVisible
 
             Game.TileModalVisible ->
-                char
-                    |> Ansi.wrapColor Ansi.White
-                    |> Ansi.wrapBgColor Ansi.Blue
+                style Ansi.White Ansi.Blue
 
             Game.TileModalNotVisible ->
-                " "
-                    |> Ansi.wrapBgColor Ansi.Blue
+                style Ansi.Blue Ansi.Blue
 
             Game.TileGhostHunting ->
-                char
-                    |> Ansi.wrapColor Ansi.Blue
-                    |> Ansi.wrapFontWeight Ansi.Bold
+                style Ansi.Blue Ansi.Black
 
             Game.TileGhostEscaping id ->
                 case id of
                     0 ->
-                        char
-                            |> Ansi.wrapColor Ansi.Cyan
-                            |> Ansi.wrapFontWeight Ansi.Bold
+                        style Ansi.Cyan Ansi.Black
 
                     1 ->
-                        char
-                            |> Ansi.wrapColor Ansi.Yellow
-                            |> Ansi.wrapFontWeight Ansi.Bold
+                        style Ansi.Yellow Ansi.Black
 
                     2 ->
-                        char
-                            |> Ansi.wrapColor Ansi.Red
-                            |> Ansi.wrapFontWeight Ansi.Bold
+                        style Ansi.Red Ansi.Black
 
                     _ ->
-                        char
-                            |> Ansi.wrapColor Ansi.Magenta
-                            |> Ansi.wrapFontWeight Ansi.Bold
+                        style Ansi.Magenta Ansi.Black
 
             Game.TileNoOp ->
-                char
+                colorDot
 
 
 view : Model -> UI.Element

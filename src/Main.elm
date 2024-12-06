@@ -100,52 +100,16 @@ view model =
                     , ".ghost3 {color: #faa}" -- Pink
                     , ".hunt   {color: #35c}" -- Blue
                     , ".modal  {color: white; background-color: #24b}" -- Pink
+                    , ".modal-not-visible {color: #24b; background-color: #24b}" -- Pink
+                    , ".invisible {color: rgba(0,0,0,0)}"
                     ]
             ]
          , Html.pre []
             (Array.toList
                 (model.gameModel
                     |> Game.view
-                        { charToTile =
-                            \index char charType ->
-                                if index == 0 then
-                                    Html.span [ Html.Attributes.class "level" ] [ Html.text char ]
-
-                                else
-                                    case charType of
-                                        Game.TileLevelWhilePlaying ->
-                                            Html.span [ Html.Attributes.class "level" ] [ Html.text char ]
-
-                                        Game.TileLevelWhileShield ->
-                                            Html.span [ Html.Attributes.class "shield" ] [ Html.text char ]
-
-                                        Game.TileLevelWhileIdle ->
-                                            Html.span [ Html.Attributes.class "dot" ] [ Html.text char ]
-
-                                        Game.TileDot ->
-                                            Html.span [ Html.Attributes.class "dot" ] [ Html.text char ]
-
-                                        Game.TilePlayer ->
-                                            Html.span [ Html.Attributes.class "player" ] [ Html.text char ]
-
-                                        Game.TileNotVisible ->
-                                            Html.text " "
-
-                                        Game.TileModalNotVisible ->
-                                            Html.span [ Html.Attributes.class "modal" ] [ Html.text " " ]
-
-                                        Game.TileModalVisible ->
-                                            Html.span [ Html.Attributes.class "modal" ] [ Html.text char ]
-
-                                        Game.TileGhostEscaping id ->
-                                            Html.span [ Html.Attributes.class ("ghost" ++ String.fromInt id) ] [ Html.text char ]
-
-                                        Game.TileGhostHunting ->
-                                            Html.span [ Html.Attributes.class "hunt" ] [ Html.text char ]
-
-                                        Game.TileNoOp ->
-                                            Html.span [ Html.Attributes.class "dot" ] [ Html.text char ]
-                        , tilesToRow = \_ tiles -> Html.div [] (Array.toList tiles)
+                        { charToTile = charToTile
+                        , tilesToRow = tilesToRow
                         }
                 )
             )
@@ -164,3 +128,90 @@ view model =
                     []
                )
         )
+
+
+tilesToRow : Int -> Array.Array (Html.Html msg) -> Html.Html msg
+tilesToRow index tiles =
+    if index == 0 then
+        Html.div []
+            [ Html.a
+                [ Html.Attributes.href "https://github.com/lucamug/pacman/"
+                , Html.Attributes.target "_blank"
+                , Html.Attributes.style "text-decoration" "none"
+                ]
+                (Array.toList tiles)
+            ]
+
+    else
+        Html.div [] (Array.toList tiles)
+
+
+charToTile : Int -> Game.Tile -> String -> Game.Acc (Html.Html msg) -> Game.Acc (Html.Html msg)
+charToTile index tileType char acc =
+    let
+        class : String
+        class =
+            tileTypeToClass index tileType
+    in
+    if acc.previousTileType == class then
+        -- Char with same color
+        { acc | textTemp = acc.textTemp ++ char }
+
+    else if acc.previousTileType == "" then
+        -- First char in the row
+        { acc | textTemp = char, previousTileType = class }
+
+    else
+        -- Color variation
+        { acc
+            | textTemp = char
+            , previousTileType = class
+            , tiles =
+                Array.push
+                    (Html.span [ Html.Attributes.class acc.previousTileType ] [ Html.text acc.textTemp ])
+                    acc.tiles
+        }
+
+
+tileTypeToClass : Int -> Game.Tile -> String
+tileTypeToClass index charType =
+    if index == 0 && charType /= Game.TileEndOfLine then
+        "level"
+
+    else
+        case charType of
+            Game.TileLevelWhilePlaying ->
+                "level"
+
+            Game.TileLevelWhileShield ->
+                "shield"
+
+            Game.TileLevelWhileIdle ->
+                "dot"
+
+            Game.TileDot ->
+                "dot"
+
+            Game.TileEndOfLine ->
+                "invisible"
+
+            Game.TilePlayer ->
+                "player"
+
+            Game.TileNotVisible ->
+                "invisible"
+
+            Game.TileModalNotVisible ->
+                "modal-not-visible"
+
+            Game.TileModalVisible ->
+                "modal"
+
+            Game.TileGhostEscaping id ->
+                "ghost" ++ String.fromInt id
+
+            Game.TileGhostHunting ->
+                "hunt"
+
+            Game.TileNoOp ->
+                "dot"

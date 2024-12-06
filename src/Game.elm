@@ -93,6 +93,7 @@ type Tile
     | TileLevelWhileIdle
     | TileLevelWhileShield
     | TileDot
+    | TileEndOfLine
     | TilePlayer
     | TileNotVisible
     | TileModalNotVisible
@@ -1101,8 +1102,15 @@ viewHeader score width =
     score ++ String.repeat (width - String.length score - titleLength) " " ++ title
 
 
+type alias Acc tile =
+    { textTemp : String
+    , previousTileType : String
+    , tiles : Array.Array tile
+    }
+
+
 view :
-    { charToTile : Int -> String -> Tile -> tile
+    { charToTile : Int -> Tile -> String -> Acc tile -> Acc tile
     , tilesToRow : Int -> Array.Array tile -> row
     }
     -> Model
@@ -1113,13 +1121,34 @@ view funcs model =
         |> addOverlay model.pause model.status (overlayMain model) model.level
         |> addOverlay model.pause model.status (overlayPause model) model.level
         |> Helpers.arrayPrepend (Helpers.arrayFromList [ viewHeader (scoreText model) model.level.width ])
+        |> Array.map (\row -> row ++ "\n")
         |> Array.indexedMap
             (\index row ->
                 row
                     |> String.split ""
                     |> Helpers.arrayFromList
-                    |> Array.map (\char -> funcs.charToTile index char (charToTileType model.playingMode (model.status == Playing && not model.pause) model.shield char))
-                    |> funcs.tilesToRow index
+                    |> Array.foldl
+                        (\char acc ->
+                            let
+                                tileType : Tile
+                                tileType =
+                                    charToTileType
+                                        model.playingMode
+                                        (model.status == Playing && not model.pause)
+                                        model.shield
+                                        char
+                            in
+                            funcs.charToTile
+                                index
+                                tileType
+                                char
+                                acc
+                        )
+                        { textTemp = ""
+                        , previousTileType = ""
+                        , tiles = Array.empty
+                        }
+                    |> (\resultFromFoldl -> funcs.tilesToRow index resultFromFoldl.tiles)
             )
 
 
@@ -1147,6 +1176,9 @@ charToTileType playingMode isPlaying isShielded char =
 
     else if char == "`" then
         TileModalNotVisible
+
+    else if char == "\n" then
+        TileEndOfLine
 
     else if String.contains char "-~⍫!?0123456789ABCDEFGHIJKLMNOPQRSTUVWZXY[]↘↗↑←↓→.:" then
         TileModalVisible
