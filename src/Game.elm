@@ -547,7 +547,7 @@ update_ msg model =
                             let
                                 levelWithPlayerAndGhosts : Board
                                 levelWithPlayerAndGhosts =
-                                    addPlayerAndGhostsToLevel model.status model.counter model.ghosts model.player model.level.board
+                                    addPlayerAndGhostsToLevel model.status model.ghosts model.player model.level.board
 
                                 requestToChangeDirectionOfPlayer : Direction
                                 requestToChangeDirectionOfPlayer =
@@ -565,8 +565,7 @@ update_ msg model =
                     newGhosts : { ghosts : Array.Array Character, isHit : Bool }
                     newGhosts =
                         calculateNewGhostsPositions
-                            { counter = model.counter
-                            , ghosts = model.ghosts
+                            { ghosts = model.ghosts
                             , playingMode = model.playingMode
                             , shield = model.shield
                             , status = model.status
@@ -659,8 +658,7 @@ teleportPlayer teleports character =
 
 
 calculateNewGhostsPositions :
-    { counter : Int
-    , ghosts : Array.Array Character
+    { ghosts : Array.Array Character
     , playingMode : PlayingMode
     , shield : Bool
     , status : GameStatus
@@ -679,7 +677,7 @@ calculateNewGhostsPositions model newPlayer posix =
                         -- that they cannot pass each other
                         tempLevelWithPlayerAndGhosts : Board
                         tempLevelWithPlayerAndGhosts =
-                            addPlayerAndGhostsToLevel model.status model.counter acc.ghosts newPlayer model.level.board
+                            addPlayerAndGhostsToLevel model.status acc.ghosts newPlayer model.level.board
 
                         ghostInNewPosition : Character
                         ghostInNewPosition =
@@ -934,9 +932,9 @@ boardSetHelper func char position board =
            )
 
 
-playerChar : Int -> Character -> String
-playerChar counter character =
-    if Helpers.modBy 4 counter > 1 then
+playerChar : Character -> String
+playerChar character =
+    if Helpers.modBy 2 (character.x + character.y) == 0 then
         playerShapes.full
 
     else
@@ -954,13 +952,13 @@ playerChar counter character =
                 playerShapes.right
 
 
-setCharacters : Int -> Board -> Array.Array Character -> Board
-setCharacters counter board characters =
+setCharacters : Board -> Array.Array Character -> Board
+setCharacters board characters =
     Array.foldl
         (\character level_ ->
             if character.flavor == Player then
                 boardSetDoubleWidth
-                    (playerChar counter character)
+                    (playerChar character)
                     { x = character.x
                     , y = character.y
                     }
@@ -978,8 +976,8 @@ setCharacters counter board characters =
         characters
 
 
-addPlayerAndGhostsToLevel : GameStatus -> Int -> Array.Array Character -> Character -> Board -> Board
-addPlayerAndGhostsToLevel status counter ghosts player board =
+addPlayerAndGhostsToLevel : GameStatus -> Array.Array Character -> Character -> Board -> Board
+addPlayerAndGhostsToLevel status ghosts player board =
     ghosts
         |> (\array ->
                 if status == Idle then
@@ -988,7 +986,7 @@ addPlayerAndGhostsToLevel status counter ghosts player board =
                 else
                     Helpers.arrayPushLast player array
            )
-        |> setCharacters counter board
+        |> setCharacters board
 
 
 subscriptions : Model -> Sub Msg
@@ -1139,7 +1137,7 @@ view :
     -> Array.Array row
 view funcs model =
     model.level.board
-        |> addPlayerAndGhostsToLevel model.status model.counter model.ghosts model.player
+        |> addPlayerAndGhostsToLevel model.status model.ghosts model.player
         |> addOverlay model.pause model.status (overlayMain model) model.level
         |> addOverlay model.pause model.status (overlayPause model) model.level
         |> Helpers.arrayPrepend (Helpers.arrayFromList [ viewHeader (scoreText model) model.level.width ])

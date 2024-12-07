@@ -3139,7 +3139,7 @@ var $blaix$gren_tui$UI$Col = function (a) {
 	return { $: 1, a: a };
 };
 var $blaix$gren_tui$UI$column$ = function(attrs, children) {
-	return $blaix$gren_tui$UI$Col({ p: attrs, aq: children });
+	return $blaix$gren_tui$UI$Col({ o: attrs, aq: children });
 };
 var $blaix$gren_tui$UI$column = F2($blaix$gren_tui$UI$column$);
 var $blaix$gren_tui$SingleLine$SingleLine = $gren_lang$core$Basics$identity;
@@ -3149,7 +3149,7 @@ var $blaix$gren_tui$SingleLine$fromString = function(string) {
 };
 var $blaix$gren_tui$UI$text$ = function(attrs, content) {
 	return $blaix$gren_tui$UI$column$([  ], A2($gren_lang$core$Array$map, function(l) {
-				return $blaix$gren_tui$UI$Text({ p: attrs, l: l });
+				return $blaix$gren_tui$UI$Text({ o: attrs, k: l });
 			}, $blaix$gren_tui$SingleLine$fromString(content)));
 };
 var $blaix$gren_tui$UI$text = F2($blaix$gren_tui$UI$text$);
@@ -4005,12 +4005,12 @@ var $blaix$gren_tui$UI$normalizeHeight$ = function(parentAttrs, allGrids) {
 	var maxRows = $gren_lang$core$Maybe$withDefault$(0, $gren_lang$core$Array$maximum(A2($gren_lang$core$Array$map, $gren_lang$core$Array$length, allGrids)));
 	return A2($gren_lang$core$Array$map, function(g) {
 			var diff = maxRows - $gren_lang$core$Array$length(g);
-			var extraRows = $gren_lang$core$Array$repeat$(diff, [ { p: parentAttrs, l: $blaix$gren_tui$SingleLine$empty } ]);
+			var extraRows = $gren_lang$core$Array$repeat$(diff, [ { o: parentAttrs, k: $blaix$gren_tui$SingleLine$empty } ]);
 			return _Utils_ap(g, extraRows);
 		}, allGrids);
 };
 var $blaix$gren_tui$UI$normalizeHeight = F2($blaix$gren_tui$UI$normalizeHeight$);
-var $blaix$gren_tui$UI$emptyCell = { p: [  ], l: $blaix$gren_tui$SingleLine$empty };
+var $blaix$gren_tui$UI$emptyCell = { o: [  ], k: $blaix$gren_tui$SingleLine$empty };
 var $blaix$gren_array2d$Array2d$map$ = function(fn, array2d) {
 	return A2($gren_lang$core$Array$map, function(row) {
 			return A2($gren_lang$core$Array$map, fn, row);
@@ -4237,7 +4237,7 @@ var $blaix$gren_ansi$Ansi$width = function(str) {
 };
 var $blaix$gren_tui$UI$gridWidth = function(grid) {
 	return $gren_lang$core$Maybe$withDefault$(0, $gren_lang$core$Array$maximum(A2($gren_lang$core$Array$map, A2($gren_lang$core$Array$foldl, $gren_lang$core$Basics$add, 0), $blaix$gren_array2d$Array2d$map$($blaix$gren_ansi$Ansi$width, $blaix$gren_array2d$Array2d$map$($blaix$gren_tui$SingleLine$toString, $blaix$gren_array2d$Array2d$map$(function ($) {
-								return $.l;
+								return $.k;
 							}, grid))))));
 };
 var $gren_lang$core$String$length = _String_length;
@@ -4286,14 +4286,14 @@ var $blaix$gren_tui$UI$normalizeWidth = function(grid) {
 	var targetWidth = $blaix$gren_tui$UI$gridWidth(grid);
 	return A2($gren_lang$core$Array$map, function(thisRow) {
 			var thisRowWidth = A3($gren_lang$core$Array$foldl, $gren_lang$core$Basics$add, 0, A2($gren_lang$core$Array$map, $blaix$gren_tui$SingleLine$width, A2($gren_lang$core$Array$map, function ($) {
-							return $.l;
+							return $.k;
 						}, thisRow)));
 			var popped = $gren_lang$core$Maybe$withDefault$({ bk: [  ], aN: $blaix$gren_tui$UI$emptyCell }, $gren_lang$core$Array$popLast(thisRow));
-			var lastCellContent = popped.aN.l;
+			var lastCellContent = popped.aN.k;
 			var diff = targetWidth - thisRowWidth;
 			var lastCellTargetWidth = $blaix$gren_tui$SingleLine$width(lastCellContent) + diff;
 			var newLastCellContent = $blaix$gren_tui$SingleLine$padRight$(lastCellTargetWidth, lastCellContent);
-			var paddedCell = _Utils_update(popped.aN, { l: newLastCellContent });
+			var paddedCell = _Utils_update(popped.aN, { k: newLastCellContent });
 			return $gren_lang$core$Array$pushLast$(paddedCell, popped.bk);
 		}, grid);
 };
@@ -4312,7 +4312,7 @@ var $blaix$gren_tui$UI$elementToGrid = function(element) {
 	switch (element.$) {
 		case 0:
 			var _v1 = element.a;
-			var attrs = _v1.p;
+			var attrs = _v1.o;
 			var children = _v1.aq;
 			return $blaix$gren_tui$UI$joinHorizontal$(attrs, A2($gren_lang$core$Array$map, $blaix$gren_tui$UI$elementToGrid, children));
 		case 1:
@@ -4320,9 +4320,9 @@ var $blaix$gren_tui$UI$elementToGrid = function(element) {
 			return $blaix$gren_tui$UI$joinVertical(A2($gren_lang$core$Array$map, $blaix$gren_tui$UI$elementToGrid, children));
 		default:
 			var _v2 = element.a;
-			var attrs = _v2.p;
-			var content = _v2.l;
-			return [ [ { p: attrs, l: content } ] ];
+			var attrs = _v2.o;
+			var content = _v2.k;
+			return [ [ { o: attrs, k: content } ] ];
 	}
 };
 var $blaix$gren_ansi$Ansi$NoColor = 0;
@@ -4428,7 +4428,7 @@ var $blaix$gren_tui$UI$Attribute$applyAll$ = function(attrs, str) {
 };
 var $blaix$gren_tui$UI$Attribute$applyAll = F2($blaix$gren_tui$UI$Attribute$applyAll$);
 var $blaix$gren_tui$UI$cellToString = function(cell) {
-	return $blaix$gren_tui$UI$Attribute$applyAll$(cell.p, $blaix$gren_tui$SingleLine$toString(cell.l));
+	return $blaix$gren_tui$UI$Attribute$applyAll$(cell.o, $blaix$gren_tui$SingleLine$toString(cell.k));
 };
 var $blaix$gren_tui$UI$gridToString = function(grid) {
 	return A2($gren_lang$core$String$join, '\n', A2($gren_lang$core$Array$map, $gren_lang$core$String$join(''), A2($gren_lang$core$Array$map, $gren_lang$core$Array$map($blaix$gren_tui$UI$cellToString), grid)));
@@ -4440,19 +4440,19 @@ var $blaix$gren_tui$UI$mergeAttributes$ = function(parentAttrs, element) {
 	switch (element.$) {
 		case 0:
 			var _v1 = element.a;
-			var attrs = _v1.p;
+			var attrs = _v1.o;
 			var children = _v1.aq;
-			return $blaix$gren_tui$UI$Row({ p: _Utils_ap(parentAttrs, attrs), aq: A2($gren_lang$core$Array$map, $blaix$gren_tui$UI$mergeAttributes(_Utils_ap(parentAttrs, attrs)), children) });
+			return $blaix$gren_tui$UI$Row({ o: _Utils_ap(parentAttrs, attrs), aq: A2($gren_lang$core$Array$map, $blaix$gren_tui$UI$mergeAttributes(_Utils_ap(parentAttrs, attrs)), children) });
 		case 1:
 			var _v2 = element.a;
-			var attrs = _v2.p;
+			var attrs = _v2.o;
 			var children = _v2.aq;
-			return $blaix$gren_tui$UI$Col({ p: _Utils_ap(parentAttrs, attrs), aq: A2($gren_lang$core$Array$map, $blaix$gren_tui$UI$mergeAttributes(_Utils_ap(parentAttrs, attrs)), children) });
+			return $blaix$gren_tui$UI$Col({ o: _Utils_ap(parentAttrs, attrs), aq: A2($gren_lang$core$Array$map, $blaix$gren_tui$UI$mergeAttributes(_Utils_ap(parentAttrs, attrs)), children) });
 		default:
 			var _v3 = element.a;
-			var attrs = _v3.p;
-			var content = _v3.l;
-			return $blaix$gren_tui$UI$Text({ p: _Utils_ap(parentAttrs, attrs), l: content });
+			var attrs = _v3.o;
+			var content = _v3.k;
+			return $blaix$gren_tui$UI$Text({ o: _Utils_ap(parentAttrs, attrs), k: content });
 	}
 };
 var $blaix$gren_tui$UI$mergeAttributes = F2($blaix$gren_tui$UI$mergeAttributes$);
@@ -4478,14 +4478,14 @@ var $blaix$gren_tui$UI$trimGridRow$ = function(maxWidth, thisRow) {
 			var _v1 = popped.a;
 			var initial = _v1.bk;
 			var last = _v1.aN;
-			if (_Utils_cmp(diff, $blaix$gren_tui$SingleLine$width(last.l)) > -1) {
+			if (_Utils_cmp(diff, $blaix$gren_tui$SingleLine$width(last.k)) > -1) {
 				var $temp$maxWidth = maxWidth,
 				$temp$thisRow = initial;
 				maxWidth = $temp$maxWidth;
 				thisRow = $temp$thisRow;
 				continue trimGridRow;
 			} else {
-				return $gren_lang$core$Array$pushLast$(_Utils_update(last, { l: $blaix$gren_tui$SingleLine$dropRight$(diff, last.l) }), initial);
+				return $gren_lang$core$Array$pushLast$(_Utils_update(last, { k: $blaix$gren_tui$SingleLine$dropRight$(diff, last.k) }), initial);
 			}
 		}
 	}
@@ -4653,7 +4653,7 @@ var $author$project$Game$initGame_$ = function(level, args) {
 	var ghosts = A2($author$project$Helpers$arrayIndexedMap, F2(function(index, _v0) {
 				return $author$project$Game$initGhost$(level.ai, index);
 			}), $gren_lang$core$Array$repeat$(args.E, 0));
-	return { i: 0, s: args.x, n: level.n, d: ghosts, aa: level.n, g: level, j: false, m: $author$project$Game$initPlayer(level.bx), k: $author$project$Game$Escaping, y: 0, a: args.a };
+	return { p: 0, s: args.x, m: level.m, d: ghosts, aa: level.m, g: level, i: false, l: $author$project$Game$initPlayer(level.bx), j: $author$project$Game$Escaping, y: 0, a: args.a };
 };
 var $author$project$Game$initGame_ = F2($author$project$Game$initGame_$);
 var $gren_lang$core$String$dropLeft$ = function(n, string) {
@@ -4793,7 +4793,7 @@ var $author$project$Game$boardToLevel = function(board) {
 	}();
 	var boardWidth = $gren_lang$core$Maybe$withDefault$(10, $gren_lang$core$Maybe$map$($gren_lang$core$String$length, A2($gren_lang$core$Array$get, 0, board)));
 	var boardDots = $author$project$Helpers$countOccurrences$($author$project$Helpers$arrayFromList([ $author$project$Game$tiles.L, $author$project$Game$tiles.Z ]), A2($author$project$Helpers$stringJoin, '', board));
-	return { C: $author$project$Game$removeMarkingTiles(board), n: boardDots, bg: $gren_lang$core$Array$length(board), bx: $author$project$Game$getPositionAndDirectionSpawnPlayer(board), ai: $author$project$Game$getPositionSpawnGhosts(board), bF: teleports, a4: boardWidth };
+	return { C: $author$project$Game$removeMarkingTiles(board), m: boardDots, bg: $gren_lang$core$Array$length(board), bx: $author$project$Game$getPositionAndDirectionSpawnPlayer(board), ai: $author$project$Game$getPositionSpawnGhosts(board), bF: teleports, a4: boardWidth };
 };
 var $author$project$Game$level0 = $author$project$Game$boardToLevel($author$project$Game$board0);
 var $author$project$Game$board1 = $author$project$Helpers$arrayFromList([ '──────────────────────────────────────────────────────────╮', '↔ → • • • • • • • • • • • • • • • • • • • • • • • • • • • │', '╭─────────────────────────────────────────────────────╮ • │', '│ • • • • • • • • • • • • • • • ● • • • • • • • • • • │ • │', '│ • ╭─────────────────────────────────────────────╮ • │ • │', '│ • │ • • • • • • • • • • • • • • • • • • • • • • │ • │ • │', '│ • │ • ╭─────────────────────────────────────╮ • │ • │ • │', '│ • │ • │ • • • • • • • • • • • ● • • • • • • │ • │ • │ • │', '│ • │ • │ • ╭─────────────────────────────╮ • │ • │ • │ • │', '│ • │ • │ • │ • • • • • • • • • • • • • • │ • │ • │ • │ • │', '│ • │ • │ • │ • ╭─────────────────────╮ • │ • │ • │ • │ • │', '│ • │ • │ • │ • │ • • • • • • • • • • │ • │ • │ • │ • │ • │', '│ • │ • │ • │ • │ • ╭─────────────╮ • │ • │ • │ • │ • │ • │', '│ • │ • │ • │ • │ • │ • • • • • • │ • │ • │ • │ • │ • │ • │', '│ • │ • │ • │ • │ • │ • ╭─────╮ • │ • │ • │ • │ • │ • │ • │', '│ • │ † │ • │ • │ • │ • │ • ↔ │ • │ • │ • │ • │ • │ • │ • │', '│ • │ • │ • │ • │ • │ • │ • ──╯ • │ • │ • │ • │ • │ • │ • │', '│ • │ • │ • │ • │ • │ • │ • • • • │ • │ • │ • │ • │ • │ • │', '│ • │ • │ • │ • │ • │ • ╰─────────╯ • │ • │ • │ • │ • │ • │', '│ • │ • │ • │ • │ • │ • • • • • • • • │ • │ • │ • │ • │ • │', '│ • │ • │ • │ • │ • ╰─────────────────╯ • │ • │ • │ • │ • │', '│ • │ • │ • │ • │ • • • • • • • • • • • • │ • │ • │ • │ • │', '│ • │ • │ • │ • ╰─────────────────────────╯ • │ • │ • │ • │', '│ • │ • │ • │ • • • • • • • • • • • • • • • • │ • │ • │ • │', '│ • │ • │ • ╰─────────────────────────────────╯ • │ • │ • │', '│ • │ • │ • • • • • • • • • • • • • • • • • • • • │ • │ • │', '│ • │ • ╰─────────────────────────────────────────╯ • │ • │', '│ • │ • • • • • • • • • • • • • • • • • • • • • • • • │ • │', '│ • ╰─────────────────────────────────────────────────╯ • │', '│ • • • • • • • • • • • • • • • • • • • • • • • • • • • • │', '╰─────────────────────────────────────────────────────────╯' ]);
@@ -4804,7 +4804,7 @@ var $author$project$Game$initModel$ = function(_v0, args, _v1) {
 	var levelId = _v0.x;
 	var isRunningInTerminal = _v1.b5;
 	var game = $author$project$Game$initGame_$($gren_lang$core$Maybe$withDefault$($author$project$Game$level0, A2($gren_lang$core$Array$get, levelId, $author$project$Game$levels)), { E: args.au, x: levelId, a: 0 });
-	return { i: game.i, s: game.s, aH: false, n: game.n, o: args.N, d: game.d, N: args.N, au: args.au, aa: game.aa, b5: isRunningInTerminal, ad: '', g: game.g, j: game.j, m: game.m, k: game.k, y: game.y, q: false, a: game.a };
+	return { p: game.p, s: game.s, aH: false, m: game.m, n: args.N, d: game.d, N: args.N, au: args.au, aa: game.aa, b5: isRunningInTerminal, ad: '', g: game.g, i: game.i, l: game.l, j: game.j, y: game.y, q: false, a: game.a };
 };
 var $author$project$Game$initModel = F3($author$project$Game$initModel$);
 var $author$project$Game$init = function(isRunningInTerminal) {
@@ -4825,7 +4825,7 @@ var $gren_lang$core$Math$round = _Math_round;
 var $author$project$Helpers$round = $gren_lang$core$Math$round;
 var $gren_lang$core$Basics$toFloat = _Basics_toFloat;
 var $author$project$Game$subscriptions = function(model) {
-	return (model.j || ((model.a === 2) || ((model.a === 3) || (model.a === 4)))) ? $gren_lang$core$Platform$Sub$none : $gren_lang$core$Time$every$($author$project$Helpers$round(1000 / model.o), $author$project$Game$Every);
+	return (model.i || ((model.a === 2) || ((model.a === 3) || (model.a === 4)))) ? $gren_lang$core$Platform$Sub$none : $gren_lang$core$Time$every$($author$project$Helpers$round(1000 / model.n), $author$project$Game$Every);
 };
 var $author$project$Main$subscriptions = function(model) {
 	return A2($gren_lang$core$Platform$Sub$map, $author$project$Main$Game, $author$project$Game$subscriptions(model.w));
@@ -4864,8 +4864,8 @@ var $gren_lang$core$Basics$mul = _Basics_mul;
 var $author$project$Game$boardSetDoubleWidth = $author$project$Game$boardSetHelper(function(i) {
 		return i * 2;
 	});
-var $author$project$Game$playerChar$ = function(counter, character) {
-	if (A2($author$project$Helpers$modBy, 4, counter) > 1) {
+var $author$project$Game$playerChar = function(character) {
+	if (A2($author$project$Helpers$modBy, 2, character.b + character.c) === 0) {
 		return $author$project$Game$playerShapes.aL;
 	} else {
 		var _v0 = character.h;
@@ -4881,19 +4881,18 @@ var $author$project$Game$playerChar$ = function(counter, character) {
 		}
 	}
 };
-var $author$project$Game$playerChar = F2($author$project$Game$playerChar$);
-var $author$project$Game$setCharacters$ = function(counter, board, characters) {
+var $author$project$Game$setCharacters$ = function(board, characters) {
 	return A3($gren_lang$core$Array$foldl, F2(function(character, level_) {
-				return (!character.aK) ? A3($author$project$Game$boardSetDoubleWidth, $author$project$Game$playerChar$(counter, character), { b: character.b, c: character.c }, level_) : A3($author$project$Game$boardSetDoubleWidth, character.aF, { b: character.b, c: character.c }, level_);
+				return (!character.aK) ? A3($author$project$Game$boardSetDoubleWidth, $author$project$Game$playerChar(character), { b: character.b, c: character.c }, level_) : A3($author$project$Game$boardSetDoubleWidth, character.aF, { b: character.b, c: character.c }, level_);
 			}), board, characters);
 };
-var $author$project$Game$setCharacters = F3($author$project$Game$setCharacters$);
-var $author$project$Game$addPlayerAndGhostsToLevel$ = function(status, counter, ghosts, player, board) {
-	return $author$project$Game$setCharacters$(counter, board, function(array) {
+var $author$project$Game$setCharacters = F2($author$project$Game$setCharacters$);
+var $author$project$Game$addPlayerAndGhostsToLevel$ = function(status, ghosts, player, board) {
+	return $author$project$Game$setCharacters$(board, function(array) {
 			return (!status) ? array : A2($author$project$Helpers$arrayPushLast, player, array);
 		}(ghosts));
 };
-var $author$project$Game$addPlayerAndGhostsToLevel = F5($author$project$Game$addPlayerAndGhostsToLevel$);
+var $author$project$Game$addPlayerAndGhostsToLevel = F4($author$project$Game$addPlayerAndGhostsToLevel$);
 var $author$project$Helpers$arrayMember = $gren_lang$core$Array$member;
 var $gren_lang$core$Array$range$ = function(from, to) {
 	return (_Utils_cmp(from, to) > 0) ? [  ] : (_Utils_eq(from, to) ? [ from ] : A3($gren_lang$core$Array$initialize, (to - from) + 1, from, $gren_lang$core$Basics$identity));
@@ -4984,12 +4983,12 @@ var $author$project$Game$calculateNewGhostsPositions$ = function(model, newPlaye
 				var _v0 = A2($gren_lang$core$Array$get, index, acc.d);
 				if (!_v0.$) {
 					var ghost = _v0.a;
-					var tempLevelWithPlayerAndGhosts = $author$project$Game$addPlayerAndGhostsToLevel$(model.a, model.i, acc.d, newPlayer, model.g.C);
+					var tempLevelWithPlayerAndGhosts = $author$project$Game$addPlayerAndGhostsToLevel$(model.a, acc.d, newPlayer, model.g.C);
 					var ghostInNewPosition = $author$project$Game$ghostsMoveLogic$(model.q, posix, tempLevelWithPlayerAndGhosts, ghost);
 					var isHit = function(_char) {
 						return A2($author$project$Helpers$arrayMember, _char, $author$project$Game$charsPlayer);
 					}($author$project$Game$levelGet$(ghostInNewPosition, tempLevelWithPlayerAndGhosts));
-					return { d: A3($gren_lang$core$Array$set, index, ((!_Utils_eq(model.k, $author$project$Game$Escaping)) && isHit) ? _Utils_update(ghostInNewPosition, { b: model.g.ai.b, c: model.g.ai.c }) : ghostInNewPosition, acc.d), ab: isHit ? true : acc.ab };
+					return { d: A3($gren_lang$core$Array$set, index, ((!_Utils_eq(model.j, $author$project$Game$Escaping)) && isHit) ? _Utils_update(ghostInNewPosition, { b: model.g.ai.b, c: model.g.ai.c }) : ghostInNewPosition, acc.d), ab: isHit ? true : acc.ab };
 				} else {
 					return acc;
 				}
@@ -5018,7 +5017,7 @@ var $author$project$Game$initGame$ = function(args, model) {
 	if (!_v0.$) {
 		var level = _v0.a;
 		var game = $author$project$Game$initGame_$(level, args);
-		return _Utils_update(model, { i: game.i, s: game.s, n: game.n, d: game.d, aa: game.aa, g: game.g, j: game.j, m: game.m, k: game.k, y: game.y, a: game.a });
+		return _Utils_update(model, { p: game.p, s: game.s, m: game.m, d: game.d, aa: game.aa, g: game.g, i: game.i, l: game.l, j: game.j, y: game.y, a: game.a });
 	} else {
 		return model;
 	}
@@ -5044,10 +5043,10 @@ var $author$project$Game$update_$ = function(msg, model) {
 	if (msg.$ === 1) {
 		var key = msg.a;
 		return function(m) {
-			return ((!m.a) || ((m.a === 3) || ((m.a === 4) || (m.a === 5)))) ? ((key === 'Enter') ? (_Utils_eq(model.o, model.N) ? $author$project$Game$initGame$({ E: 4, x: m.s, a: 1 }, _Utils_update(m, { o: 8, q: false })) : $author$project$Game$initGame$({ E: $gren_lang$core$Array$length(m.d), x: m.s, a: 1 }, m)) : ((key === 'f') ? $author$project$Game$initGame$({ E: $gren_lang$core$Array$length(m.d), x: m.s, a: 1 }, _Utils_update(m, { o: model.N, q: true })) : ((key === 'm') ? ((m.a === 5) ? _Utils_update(m, { a: 0 }) : _Utils_update(m, { a: 5 })) : m))) : m;
+			return ((!m.a) || ((m.a === 3) || ((m.a === 4) || (m.a === 5)))) ? ((key === 'Enter') ? (_Utils_eq(model.n, model.N) ? $author$project$Game$initGame$({ E: 4, x: m.s, a: 1 }, _Utils_update(m, { n: 8, q: false })) : $author$project$Game$initGame$({ E: $gren_lang$core$Array$length(m.d), x: m.s, a: 1 }, m)) : ((key === 'f') ? $author$project$Game$initGame$({ E: $gren_lang$core$Array$length(m.d), x: m.s, a: 1 }, _Utils_update(m, { n: model.N, q: true })) : ((key === 'm') ? ((m.a === 5) ? _Utils_update(m, { a: 0 }) : _Utils_update(m, { a: 5 })) : m))) : m;
 		}(function(m) {
-				if (m.j && (key !== 'Meta')) {
-					return _Utils_update(m, { j: false });
+				if (m.i && (key !== 'Meta')) {
+					return _Utils_update(m, { i: false });
 				} else {
 					if (key === 'b') {
 						return _Utils_update(m, { aH: !m.aH });
@@ -5061,7 +5060,7 @@ var $author$project$Game$update_$ = function(msg, model) {
 								}($gren_lang$core$Maybe$withDefault$(0, $gren_lang$core$String$toInt(key)));
 								return $author$project$Game$initGame$({ E: $gren_lang$core$Array$length(m.d), x: levelId, a: m.a }, m);
 							} else {
-								return _Utils_update(m, { o: ((key === 'y') && (m.o >= 2)) ? (m.o - 1) : (((key === 'u') && (m.o <= 59)) ? (m.o + 1) : m.o), d: (key === 'i') ? A3($gren_lang$core$Array$slice, 0, $gren_lang$core$Array$length(m.d) - 1, m.d) : ((key === 'o') ? A2($author$project$Helpers$arrayPushLast, $author$project$Game$initGhost$(m.g.ai, $gren_lang$core$Array$length(m.d)), m.d) : m.d), j: (key === ' ') ? (!m.j) : m.j, q: (key === 'l') ? (!m.q) : m.q, a: ((m.a === 1) && (key === 'q')) ? 2 : m.a });
+								return _Utils_update(m, { n: ((key === 'y') && (m.n >= 2)) ? (m.n - 1) : (((key === 'u') && (m.n <= 59)) ? (m.n + 1) : m.n), d: (key === 'i') ? A3($gren_lang$core$Array$slice, 0, $gren_lang$core$Array$length(m.d) - 1, m.d) : ((key === 'o') ? A2($author$project$Helpers$arrayPushLast, $author$project$Game$initGhost$(m.g.ai, $gren_lang$core$Array$length(m.d)), m.d) : m.d), i: (key === ' ') ? (!m.i) : m.i, q: (key === 'l') ? (!m.q) : m.q, a: ((m.a === 1) && (key === 'q')) ? 2 : m.a });
 							}
 						}
 					}
@@ -5071,43 +5070,43 @@ var $author$project$Game$update_$ = function(msg, model) {
 				}(model)));
 	} else {
 		var posix = msg.a;
-		if ((!model.a) && (A2($author$project$Helpers$modBy, 150, model.i + 1) === 0)) {
+		if ((!model.a) && (A2($author$project$Helpers$modBy, 150, model.p + 1) === 0)) {
 			return $author$project$Game$initGame$({ E: $gren_lang$core$Array$length(model.d), x: A2($author$project$Helpers$modBy, $gren_lang$core$Array$length($author$project$Game$levels), model.s + 1), a: model.a }, model);
 		} else {
 			var newPlayer = $author$project$Game$teleportPlayer$(model.g.bF, function () {
 					if (model.a === 1) {
-						var levelWithPlayerAndGhosts = $author$project$Game$addPlayerAndGhostsToLevel$(model.a, model.i, model.d, model.m, model.g.C);
-						var requestToChangeDirectionOfPlayer = $author$project$Game$handleChangeDirectionOfPlayer$(model.ad, model.m, levelWithPlayerAndGhosts);
+						var levelWithPlayerAndGhosts = $author$project$Game$addPlayerAndGhostsToLevel$(model.a, model.d, model.l, model.g.C);
+						var requestToChangeDirectionOfPlayer = $author$project$Game$handleChangeDirectionOfPlayer$(model.ad, model.l, levelWithPlayerAndGhosts);
 						return $author$project$Game$moveIfPossiblePlayer$(levelWithPlayerAndGhosts, function(p) {
 								return _Utils_update(p, { h: requestToChangeDirectionOfPlayer });
-							}(model.m));
+							}(model.l));
 					} else {
-						return model.m;
+						return model.l;
 					}
 				}());
 			var squareUnderPlayer = $author$project$Game$levelGet$(newPlayer, model.g.C);
-			var newGhosts = $author$project$Game$calculateNewGhostsPositions$({ i: model.i, d: model.d, g: model.g, k: model.k, q: model.q, a: model.a }, newPlayer, posix);
-			var newDots = $author$project$Game$isDot(squareUnderPlayer) ? (model.n - 1) : model.n;
+			var newGhosts = $author$project$Game$calculateNewGhostsPositions$({ d: model.d, g: model.g, j: model.j, q: model.q, a: model.a }, newPlayer, posix);
+			var newDots = $author$project$Game$isDot(squareUnderPlayer) ? (model.m - 1) : model.m;
 			var isWon = (model.a === 1) && (newDots === 0);
-			return _Utils_update(model, { i: model.i + 1, n: newDots, d: newGhosts.d, g: $author$project$Game$isDot(squareUnderPlayer) ? function(l) {
+			return _Utils_update(model, { p: model.p + 1, m: newDots, d: newGhosts.d, g: $author$project$Game$isDot(squareUnderPlayer) ? function(l) {
 					return _Utils_update(l, { C: A3($author$project$Game$boardSetDoubleWidth, $author$project$Game$tiles.H, newPlayer, l.C) });
-				}(model.g) : model.g, m: newPlayer, k: function () {
+				}(model.g) : model.g, l: newPlayer, j: function () {
 					if (_Utils_eq(squareUnderPlayer, $author$project$Game$tiles.L)) {
-						return $author$project$Game$HuntingGhosts({ cq: model.i });
+						return $author$project$Game$HuntingGhosts({ cq: model.p });
 					} else {
-						var _v1 = model.k;
+						var _v1 = model.j;
 						if (_v1.$ === 1) {
 							return $author$project$Game$Escaping;
 						} else {
 							var since = _v1.a.cq;
-							return ((model.i - since) > 100) ? $author$project$Game$Escaping : model.k;
+							return ((model.p - since) > 100) ? $author$project$Game$Escaping : model.j;
 						}
 					}
-				}(), y: (newGhosts.ab && ((model.a === 1) && (!_Utils_eq(model.k, $author$project$Game$Escaping)))) ? (model.y + 1) : model.y, a: function () {
+				}(), y: (newGhosts.ab && ((model.a === 1) && (!_Utils_eq(model.j, $author$project$Game$Escaping)))) ? (model.y + 1) : model.y, a: function () {
 					if (isWon) {
 						return 3;
 					} else {
-						var isLost = newGhosts.ab && ((model.a === 1) && _Utils_eq(model.k, $author$project$Game$Escaping));
+						var isLost = newGhosts.ab && ((model.a === 1) && _Utils_eq(model.j, $author$project$Game$Escaping));
 						return isLost ? 4 : model.a;
 					}
 				}() });
@@ -5267,10 +5266,10 @@ var $author$project$Game$debugText = function(model) {
 			return ' ' + $gren_lang$core$String$toUpper(s);
 		}, A2($author$project$Helpers$arrayPrepend, $author$project$Helpers$arrayFromList([ '', '', '' ]), A2($author$project$Helpers$arrayPrepend, $author$project$Game$keysMenu(model), A2($author$project$Helpers$arrayPrepend, $author$project$Helpers$arrayFromList([ '' ]), A2($gren_lang$core$Array$map, function(s) {
 							return '   ' + $gren_lang$core$String$toUpper(s);
-						}, $author$project$Helpers$arrayFromList([ 'Frames ' + $gren_lang$core$String$fromInt(model.i), 'Points ' + $gren_lang$core$String$fromInt(model.y), '  Dots ' + $gren_lang$core$String$fromInt(model.n), '   Key ' + key, 'Ghosts ' + $gren_lang$core$String$fromInt($gren_lang$core$Array$length(model.d)), '   FPS ' + $gren_lang$core$String$fromInt(model.o), ' Pause ' + $author$project$Game$boolToOnOff(model.j), 'Status ' + status, 'Shield ' + $author$project$Game$boolToOnOff(model.q), '  Mode ' + modeToString(model.k), 'Player ' + ($gren_lang$core$String$fromInt(model.m.b) + (',' + $gren_lang$core$String$fromInt(model.m.c))) ]))))));
+						}, $author$project$Helpers$arrayFromList([ 'Frames ' + $gren_lang$core$String$fromInt(model.p), 'Points ' + $gren_lang$core$String$fromInt(model.y), '  Dots ' + $gren_lang$core$String$fromInt(model.m), '   Key ' + key, 'Ghosts ' + $gren_lang$core$String$fromInt($gren_lang$core$Array$length(model.d)), '   FPS ' + $gren_lang$core$String$fromInt(model.n), ' Pause ' + $author$project$Game$boolToOnOff(model.i), 'Status ' + status, 'Shield ' + $author$project$Game$boolToOnOff(model.q), '  Mode ' + modeToString(model.j), 'Player ' + ($gren_lang$core$String$fromInt(model.l.b) + (',' + $gren_lang$core$String$fromInt(model.l.c))) ]))))));
 };
 var $blaix$gren_tui$UI$row$ = function(attrs, children) {
-	return $blaix$gren_tui$UI$Row({ p: attrs, aq: children });
+	return $blaix$gren_tui$UI$Row({ o: attrs, aq: children });
 };
 var $blaix$gren_tui$UI$row = F2($blaix$gren_tui$UI$row$);
 var $gren_lang$core$Basics$max$ = function(x, y) {
@@ -5392,9 +5391,9 @@ var $author$project$Game$charToTileType$ = function(playingMode, isPlaying, isSh
 var $author$project$Game$charToTileType = F4($author$project$Game$charToTileType$);
 var $author$project$Game$scoreCalculator = function(_v0) {
 	var initialDots = _v0.aa;
-	var counter = _v0.i;
+	var counter = _v0.p;
 	var points = _v0.y;
-	var dots = _v0.n;
+	var dots = _v0.m;
 	return ((initialDots - dots) + (points * 10)) - ((counter / 10) | 0);
 };
 var $author$project$Game$scoreText = function(model) {
@@ -5420,7 +5419,7 @@ var $author$project$Game$overlayMain = function(model) {
 	}
 };
 var $author$project$Game$overlayPause = function(model) {
-	return model.j ? $author$project$Helpers$arrayFromList([ 'PAUSED', '', '  ANY KEY TO RESUME  ' ]) : $author$project$Helpers$arrayFromList([  ]);
+	return model.i ? $author$project$Helpers$arrayFromList([ 'PAUSED', '', '  ANY KEY TO RESUME  ' ]) : $author$project$Helpers$arrayFromList([  ]);
 };
 var $author$project$Game$title = 'github.com/lucamug/functional-pacman ';
 var $author$project$Game$titleLength = $gren_lang$core$String$length($author$project$Game$title);
@@ -5433,12 +5432,12 @@ var $author$project$Game$view$ = function(funcs, model) {
 				return function(resultFromFoldl) {
 					return A2(funcs.cv, index, resultFromFoldl.bG);
 				}(A3($gren_lang$core$Array$foldl, F2(function(_char, acc) {
-								var tileType = $author$project$Game$charToTileType$(model.k, (model.a === 1) && (!model.j), model.q, _char);
+								var tileType = $author$project$Game$charToTileType$(model.j, (model.a === 1) && (!model.i), model.q, _char);
 								return A4(funcs.bU, index, tileType, _char, acc);
 							}), { cg: '', cu: '', bG: $gren_lang$core$Array$empty }, $author$project$Helpers$arrayFromList(A2($gren_lang$core$String$split, '', row))));
 			}), A2($gren_lang$core$Array$map, function(row) {
 				return row + '\n';
-			}, A2($author$project$Helpers$arrayPrepend, $author$project$Helpers$arrayFromList([ $author$project$Game$viewHeader$($author$project$Game$scoreText(model), model.g.a4) ]), $author$project$Game$addOverlay$(model.j, model.a, $author$project$Game$overlayPause(model), model.g, $author$project$Game$addOverlay$(model.j, model.a, $author$project$Game$overlayMain(model), model.g, $author$project$Game$addPlayerAndGhostsToLevel$(model.a, model.i, model.d, model.m, model.g.C))))));
+			}, A2($author$project$Helpers$arrayPrepend, $author$project$Helpers$arrayFromList([ $author$project$Game$viewHeader$($author$project$Game$scoreText(model), model.g.a4) ]), $author$project$Game$addOverlay$(model.i, model.a, $author$project$Game$overlayPause(model), model.g, $author$project$Game$addOverlay$(model.i, model.a, $author$project$Game$overlayMain(model), model.g, $author$project$Game$addPlayerAndGhostsToLevel$(model.a, model.d, model.l, model.g.C))))));
 };
 var $author$project$Game$view = F2($author$project$Game$view$);
 var $author$project$Main$view = function(model) {
