@@ -44,7 +44,8 @@ type alias Flags =
 
 init : Flags -> ( Model, Cmd Msg )
 init flags =
-    Game.init
+    { isRunningInTerminal = False }
+        |> Game.init
         |> (\game ->
                 ( { gameModel =
                         if flags.hidden then

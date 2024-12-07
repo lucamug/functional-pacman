@@ -47,7 +47,8 @@ init :
         , command : Cmd Msg
         }
 init env =
-    Game.init
+    { isRunningInTerminal = True }
+        |> Game.init
         |> (\game ->
                 Node.startProgram
                     { model =
@@ -150,46 +151,56 @@ charToTile index tileType char acc =
         }
 
 
-style : Ansi.Color -> Ansi.Color -> String
-style a b =
-    Ansi.setColor a ++ Ansi.setBgColor b
+style : Ansi.Color -> String
+style color =
+    styleWithBgColor color Ansi.Black
+
+
+styleWithBgColor : Ansi.Color -> Ansi.Color -> String
+styleWithBgColor color bgColor =
+    styleWithFontWeight color bgColor Ansi.NormalWeight
+
+
+styleWithFontWeight : Ansi.Color -> Ansi.Color -> Ansi.FontWeight -> String
+styleWithFontWeight color bgColor fontWeight =
+    Ansi.setColor color ++ Ansi.setBgColor bgColor ++ Ansi.setFontWeight fontWeight
 
 
 colorDot : String
 colorDot =
-    style Ansi.Yellow Ansi.Black
+    styleWithFontWeight Ansi.Yellow Ansi.Black Ansi.Faint
 
 
 colorNotVisible : String
 colorNotVisible =
-    style Ansi.Black Ansi.Black
+    style Ansi.Black
 
 
 colorEndOfLine : String
 colorEndOfLine =
-    style Ansi.White Ansi.White
+    style Ansi.White
 
 
 tileTypeToClass : Int -> Game.Tile -> String
 tileTypeToClass index charType =
     if index == 0 && charType /= Game.TileEndOfLine then
-        style Ansi.Blue Ansi.Black
+        style Ansi.Blue
     else
         case charType of
             Game.TileLevelWhilePlaying ->
-                style Ansi.Blue Ansi.Black
+                style Ansi.Blue
 
             Game.TileLevelWhileIdle ->
-                style Ansi.Magenta Ansi.Black
+                colorDot
 
             Game.TileLevelWhileShield ->
-                style Ansi.Red Ansi.Black
+                style Ansi.Red
 
             Game.TileDot ->
                 colorDot
 
             Game.TilePlayer ->
-                style Ansi.Yellow Ansi.Black
+                style Ansi.Yellow
 
             Game.TileNotVisible ->
                 colorNotVisible
@@ -198,27 +209,27 @@ tileTypeToClass index charType =
                 colorNotVisible
 
             Game.TileModalVisible ->
-                style Ansi.White Ansi.Blue
+                styleWithBgColor Ansi.White Ansi.Blue
 
             Game.TileModalNotVisible ->
-                style Ansi.Blue Ansi.Blue
+                styleWithBgColor Ansi.Blue Ansi.Blue
 
             Game.TileGhostHunting ->
-                style Ansi.Blue Ansi.Black
+                style Ansi.Blue
 
             Game.TileGhostEscaping id ->
                 case id of
                     0 ->
-                        style Ansi.Cyan Ansi.Black
+                        style Ansi.Cyan
 
                     1 ->
-                        style Ansi.Yellow Ansi.Black
+                        style Ansi.Yellow
 
                     2 ->
-                        style Ansi.Red Ansi.Black
+                        style Ansi.Red
 
                     _ ->
-                        style Ansi.Magenta Ansi.Black
+                        style Ansi.Magenta
 
             Game.TileNoOp ->
                 colorDot

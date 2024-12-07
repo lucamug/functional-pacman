@@ -11,6 +11,9 @@ type alias Model =
         , keyDown : String
         , debug : Bool
         , shield : Bool
+        , initGhostsQuantity : Int
+        , initFps : Int
+        , isRunningInTerminal : Bool
         }
 
 
@@ -141,32 +144,22 @@ initPlayer positionAndDirectionSpawnPlayer =
     }
 
 
-init : { model : Model, command : Cmd msg }
-init =
-    { model = initModel { levelId = 0 }
+init : { isRunningInTerminal : Bool } -> { model : Model, command : Cmd msg }
+init isRunningInTerminal =
+    { model = initModel { levelId = 0 } { initFps = 30, initGhostsQuantity = 20 } isRunningInTerminal
     , command = Cmd.none
     }
 
 
-initGhostsQuantity : Int
-initGhostsQuantity =
-    30
-
-
-initFps : Int
-initFps =
-    20
-
-
-initModel : { levelId : Int } -> Model
-initModel { levelId } =
+initModel : { levelId : Int } -> { initFps : Int, initGhostsQuantity : Int } -> { isRunningInTerminal : Bool } -> Model
+initModel { levelId } args { isRunningInTerminal } =
     let
         game : Game {}
         game =
             initGame_
                 (Maybe.withDefault level0 <| Array.get levelId levels)
                 { levelId = levelId
-                , ghostsQuantity = initGhostsQuantity
+                , ghostsQuantity = args.initGhostsQuantity
                 , status = Idle
                 }
     in
@@ -181,10 +174,13 @@ initModel { levelId } =
     , dots = game.dots
     , playingMode = game.playingMode
     , currentLevelId = game.currentLevelId
-    , fps = initFps
+    , fps = args.initFps
     , keyDown = ""
     , debug = False
     , shield = False
+    , initFps = args.initFps
+    , initGhostsQuantity = args.initGhostsQuantity
+    , isRunningInTerminal = isRunningInTerminal
     }
 
 
@@ -490,12 +486,15 @@ update_ msg model =
                 |> (\m ->
                         if m.status == Idle || m.status == Won || m.status == Lost || m.status == Menu then
                             if key == "Enter" then
-                                if model.fps == initFps && Array.length model.ghosts == initGhostsQuantity then
+                                if model.fps == model.initFps then
                                     -- The game is still in the initial configuration (DEMO MODE)
-                                    initGame { levelId = m.currentLevelId, ghostsQuantity = 4, status = Playing } { m | fps = 8 }
+                                    initGame { levelId = m.currentLevelId, ghostsQuantity = 4, status = Playing } { m | fps = 8, shield = False }
 
                                 else
                                     initGame { levelId = m.currentLevelId, ghostsQuantity = Array.length m.ghosts, status = Playing } m
+
+                            else if key == "f" then
+                                initGame { levelId = m.currentLevelId, ghostsQuantity = Array.length m.ghosts, status = Playing } { m | fps = model.initFps, shield = True }
 
                             else if key == "m" then
                                 if m.status == Menu then
@@ -512,7 +511,7 @@ update_ msg model =
                    )
 
         Every posix ->
-            if model.status == Idle && Helpers.modBy 100 (model.counter + 1) == 0 then
+            if model.status == Idle && Helpers.modBy 150 (model.counter + 1) == 0 then
                 initGame
                     { levelId = Helpers.modBy (Array.length levels) (model.currentLevelId + 1)
                     , ghostsQuantity = Array.length model.ghosts
@@ -1323,8 +1322,10 @@ debugText model =
     , "Player " ++ String.fromInt model.player.x ++ "," ++ String.fromInt model.player.y
     ]
         |> Helpers.arrayFromList
+        |> Array.map (\s -> "   " ++ String.toUpper s)
         |> Helpers.arrayPrepend (Helpers.arrayFromList [ "" ])
-        |> Helpers.arrayPrepend keysMenu
+        |> Helpers.arrayPrepend (keysMenu model)
+        |> Helpers.arrayPrepend (Helpers.arrayFromList [ "", "", "" ])
         |> Array.map (\s -> " " ++ String.toUpper s)
 
 
@@ -1348,9 +1349,10 @@ overlayMain model =
         msgEnterToPlay : Array.Array String
         msgEnterToPlay =
             Helpers.arrayFromList
-                [ "[ENTER] TO PLAY"
-                , ""
-                , "[M] FOR MENU"
+                [ "     PLAY [ENTER]"
+                , "FAST PLAY [F]    "
+                , "     QUIT [Q]    "
+                , "     MENU [M]    "
                 ]
     in
     case model.status of
@@ -1370,7 +1372,7 @@ overlayMain model =
             Helpers.arrayPrepend (Helpers.arrayFromList [ "YOU LOST!", "", String.replace " " "`" (scoreText model), "" ]) msgEnterToPlay
 
         Menu ->
-            keysMenu
+            keysMenu model
 
 
 overlayPause : { a | pause : Bool } -> Array.Array String
@@ -1387,22 +1389,29 @@ title =
     "github.com/lucamug/pacman "
 
 
-keysMenu : Array.Array String
-keysMenu =
+keysMenu : { a | isRunningInTerminal : Bool } -> Array.Array String
+keysMenu { isRunningInTerminal } =
     Helpers.arrayFromList
-        [ "  PLAY [ENTER]  "
-        , "  MOVE [W A S D]"
-        , "       [↑ ← ↓ →]"
-        , " PAUSE [SPACE]  "
-        , "  MENU [M]      "
-        , "  QUIT [Q]      "
-        , "  EXIT [ESC]    "
-        , "   FPS [Y]↘ [U]↗"
-        , "GHOSTS [I]↘ [O]↗"
-        , " DEBUG [B]      "
-        , "SHIELD [L]      "
-        , "LEVELS [1]~[" ++ String.fromInt (Array.length levels) ++ "]  "
-        ]
+        ([ "     PLAY [ENTER]  "
+         , "FAST PLAY [F]      "
+         , "     MOVE [W A S D]"
+         , "          [↑ ← ↓ →]"
+         , "    PAUSE [SPACE]  "
+         , "     MENU [M]      "
+         , "     QUIT [Q]      "
+         , "      FPS [Y]↘ [U]↗"
+         , "   GHOSTS [I]↘ [O]↗"
+         , "    DEBUG [B]      "
+         , "   SHIELD [L]      "
+         , "   LEVELS [1]~[" ++ String.fromInt (Array.length levels) ++ "]  "
+         ]
+            ++ (if isRunningInTerminal then
+                    [ "     EXIT [ESC]    " ]
+
+                else
+                    []
+               )
+        )
 
 
 playerShapes : { down : String, full : String, left : String, right : String, up : String }
