@@ -1,4 +1,17 @@
-module Helpers exposing (..)
+module Helpers exposing
+    ( arrayFromList
+    , arrayIndexedFoldl
+    , arrayIndexedMap
+    , arrayMember
+    , arrayPrepend
+    , arrayPushLast
+    , arrayRange
+    , countOccurrences
+    , modBy
+    , round
+    , stringJoin
+    , stringSplit
+    )
 
 import Array
 
@@ -59,6 +72,7 @@ arrayPushLast =
 arrayIndexedMap : (Int -> a -> b) -> Array.Array a -> Array.Array b
 arrayIndexedMap f array =
     let
+        mapHelper : Int -> Array.Array b -> Array.Array b
         mapHelper index acc =
             case Array.get index array of
                 Nothing ->

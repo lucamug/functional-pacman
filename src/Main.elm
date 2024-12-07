@@ -1,4 +1,4 @@
-module Main exposing (main)
+module Main exposing (Flags, Model, Msg, main)
 
 import Array
 import Browser
@@ -89,7 +89,7 @@ view model =
         ([ Html.node "style"
             []
             [ Html.text <|
-                String.join ""
+                String.concat
                     [ "body    {background-color: black; color: white; font-size: 16px}"
                     , ".level  {color: #24b}" -- Dark Blue
                     , ".shield {color: #900}" -- Red

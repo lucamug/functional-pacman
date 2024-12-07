@@ -1,4 +1,23 @@
-module Game exposing (..)
+module Game exposing
+    ( Acc
+    , Board
+    , Character
+    , Direction(..)
+    , Flavor(..)
+    , Game
+    , GameStatus(..)
+    , Level
+    , Model
+    , Msg(..)
+    , PlayingMode(..)
+    , Position
+    , Tile(..)
+    , debugText
+    , init
+    , subscriptions
+    , update
+    , view
+    )
 
 import Array
 import Helpers
@@ -435,6 +454,7 @@ update_ msg model =
 
                         else if "1" <= key && key <= "9" then
                             let
+                                levelId : Int
                                 levelId =
                                     key
                                         |> String.toInt
@@ -521,17 +541,18 @@ update_ msg model =
 
             else
                 let
-                    levelWithPlayerAndGhosts : Board
-                    levelWithPlayerAndGhosts =
-                        addPlayerAndGhostsToLevel model.status model.counter model.ghosts model.player model.level.board
-
-                    requestToChangeDirectionOfPlayer : Direction
-                    requestToChangeDirectionOfPlayer =
-                        handleChangeDirectionOfPlayer model.keyDown model.player levelWithPlayerAndGhosts
-
                     newPlayer : Character
                     newPlayer =
                         (if model.status == Playing then
+                            let
+                                levelWithPlayerAndGhosts : Board
+                                levelWithPlayerAndGhosts =
+                                    addPlayerAndGhostsToLevel model.status model.counter model.ghosts model.player model.level.board
+
+                                requestToChangeDirectionOfPlayer : Direction
+                                requestToChangeDirectionOfPlayer =
+                                    handleChangeDirectionOfPlayer model.keyDown model.player levelWithPlayerAndGhosts
+                            in
                             moveIfPossiblePlayer
                                 levelWithPlayerAndGhosts
                                 ((\p -> { p | direction = requestToChangeDirectionOfPlayer }) model.player)
@@ -569,10 +590,6 @@ update_ msg model =
                     isWon : Bool
                     isWon =
                         model.status == Playing && newDots == 0
-
-                    isLost : Bool
-                    isLost =
-                        newGhosts.isHit && model.status == Playing && model.playingMode == Escaping
                 in
                 { model
                     | player = newPlayer
@@ -610,11 +627,17 @@ update_ msg model =
                         if isWon then
                             Won
 
-                        else if isLost then
-                            Lost
-
                         else
-                            model.status
+                            let
+                                isLost : Bool
+                                isLost =
+                                    newGhosts.isHit && model.status == Playing && model.playingMode == Escaping
+                            in
+                            if isLost then
+                                Lost
+
+                            else
+                                model.status
                 }
 
 

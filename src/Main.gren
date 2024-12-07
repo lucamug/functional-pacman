@@ -47,7 +47,8 @@ init :
         , command : Cmd Msg
         }
 init env =
-    { isRunningInTerminal = True }
+    { isRunningInTerminal = True
+    }
         |> Game.init
         |> (\game ->
                 Node.startProgram

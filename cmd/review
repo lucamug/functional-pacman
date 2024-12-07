@@ -1,0 +1,9 @@
+#!/bin/bash
+set -eu
+
+
+npx elm-review --template jfmengels/elm-review-common/example --fix
+npx elm-review --template jfmengels/elm-review-unused/example --fix
+npx elm-review --template jfmengels/elm-review-simplify/example --fix
+
+

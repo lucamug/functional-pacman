@@ -273,13 +273,13 @@ var _Node_log = F2(function (text, args) {
 var _Node_init = _Scheduler_binding(function (callback) {
   callback(
     _Scheduler_succeed({
-      a4: _FilePath_fromString(module.filename),
-      bI: process.arch,
-      a5: process.argv,
-      bt: process.platform,
-      ax: process.stderr,
-      al: process.stdin,
-      ay: process.stdout,
+      a6: _FilePath_fromString(module.filename),
+      bL: process.arch,
+      a7: process.argv,
+      bv: process.platform,
+      az: process.stderr,
+      am: process.stdin,
+      aA: process.stdout,
     })
   );
 });
@@ -342,10 +342,10 @@ var _FilePath_parse = function (pathMod, str) {
     result.name === "." && result.ext.length === 0 ? "" : result.name;
 
   return {
-    J: dirStr === "" ? [] : dirStr.split(pathMod.sep),
-    r: result.ext.length > 0 ? result.ext.substring(1) : "",
-    s: filename,
-    ci: result.root,
+    K: dirStr === "" ? [] : dirStr.split(pathMod.sep),
+    t: result.ext.length > 0 ? result.ext.substring(1) : "",
+    u: filename,
+    cn: result.root,
   };
 };
 
@@ -354,8 +354,8 @@ var _FilePath_toPosix = function (filePath) {
     return ".";
   }
 
-  if (filePath.ci !== "" && filePath.ci !== "/") {
-    filePath = { ...filePath, ci: "/" };
+  if (filePath.cn !== "" && filePath.cn !== "/") {
+    filePath = { ...filePath, cn: "/" };
   }
 
   return _FilePath_format(path.posix, filePath);
@@ -379,27 +379,27 @@ var _FilePath_toString = function (filePath) {
 
 var _FilePath_isEmpty = function (filePath) {
   return (
-    filePath.ci === "" &&
-    filePath.J.length === 0 &&
-    filePath.s === "" &&
-    filePath.r === ""
+    filePath.cn === "" &&
+    filePath.K.length === 0 &&
+    filePath.u === "" &&
+    filePath.t === ""
   );
 };
 
 var _FilePath_format = function (pathMod, filePath) {
   const filename =
-    filePath.r.length > 0
-      ? filePath.s + "." + filePath.r
-      : filePath.s;
+    filePath.t.length > 0
+      ? filePath.u + "." + filePath.t
+      : filePath.u;
 
   let pathArray = null;
   if (filename === "") {
-    pathArray = filePath.J;
+    pathArray = filePath.K;
   } else {
-    pathArray = filePath.J.concat(filename);
+    pathArray = filePath.K.concat(filename);
   }
 
-  return filePath.ci + pathArray.join(pathMod.sep);
+  return filePath.cn + pathArray.join(pathMod.sep);
 };
 
 
@@ -409,9 +409,9 @@ var _Platform_worker = F4(function (impl, flagDecoder, debugMetadata, args) {
   return _Platform_initialize(
     flagDecoder,
     args,
-    impl.b1,
+    impl.b4,
+    impl.cz,
     impl.ct,
-    impl.co,
     function () {
       return function () {};
     },
@@ -437,17 +437,17 @@ function _Platform_initialize(
     _Debug_crash(2 /**_UNUSED/, _Json_errorToString(result.a) /**/);
   var managers = {};
   var initPair = init(result.a);
-  var model = initPair.bn;
+  var model = initPair.bp;
   var stepper = stepperBuilder(sendToApp, model);
   var ports = _Platform_setupEffects(managers, sendToApp);
 
   function sendToApp(msg, viewMetadata) {
     var pair = A2(update, msg, model);
-    stepper((model = pair.bn), viewMetadata);
-    _Platform_enqueueEffects(managers, pair.a8, subscriptions(model));
+    stepper((model = pair.bp), viewMetadata);
+    _Platform_enqueueEffects(managers, pair.ba, subscriptions(model));
   }
 
-  _Platform_enqueueEffects(managers, initPair.a8, subscriptions(model));
+  _Platform_enqueueEffects(managers, initPair.ba, subscriptions(model));
 
   return ports ? { ports: ports } : {};
 }
@@ -984,7 +984,7 @@ function _Debug_toAnsiString(ansi, value) {
     typeof _Array_Builder !== "undefined" &&
     value instanceof _Array_Builder
   ) {
-    return _Debug_toAnsiString(ansi, value.V.slice(0, value.az));
+    return _Debug_toAnsiString(ansi, value.W.slice(0, value.aB));
   }
 
   if (typeof value === "object") {
@@ -1148,11 +1148,11 @@ function _Debug_crash_UNUSED(identifier, fact1, fact2, fact3, fact4) {
 }
 
 function _Debug_regionToString(region) {
-  if (region.aW.ae === region.bb.ae) {
-    return "on line " + region.aW.ae;
+  if (region.aY.af === region.bd.af) {
+    return "on line " + region.aY.af;
   }
   return (
-    "on lines " + region.aW.ae + " through " + region.bb.ae
+    "on lines " + region.aY.af + " through " + region.bd.af
   );
 }
 var $gren_lang$core$Dict$foldl$ = function(func, acc, dict) {
@@ -1356,9 +1356,9 @@ var _Array_sortWith = F2(function (fn, array) {
 
 class _Array_Builder {
   constructor(target, finalized, array) {
-    this.az = target;
-    this.Z = finalized;
-    this.V = array;
+    this.aB = target;
+    this._ = finalized;
+    this.W = array;
   }
 }
 
@@ -1367,13 +1367,13 @@ var _Array_emptyBuilder = function (capacity) {
 };
 
 var _Array_pushToBuilder = F2(function (value, builder) {
-  var array = builder.V;
-  var target = builder.az;
+  var array = builder.W;
+  var target = builder.aB;
 
-  if (builder.Z) {
+  if (builder._) {
     array = array.slice(0, target);
   } else {
-    builder.Z = true;
+    builder._ = true;
   }
 
   if (target < array.length) {
@@ -1400,13 +1400,13 @@ var _Array_toBuilder = function (array) {
 };
 
 var _Array_fromBuilder = function (builder) {
-  var result = builder.V;
+  var result = builder.W;
 
-  if (builder.Z) {
-    result = result.slice(0, builder.az);
+  if (builder._) {
+    result = result.slice(0, builder.aB);
   } else {
-    builder.Z = true;
-    result.length = builder.az;
+    builder._ = true;
+    result.length = builder.aB;
   }
 
   return result;
@@ -1837,7 +1837,7 @@ function _Json_runHelp(decoder, value) {
           if (!$gren_lang$core$Result$isOk(result)) {
             return $gren_lang$core$Result$Err(A2($gren_lang$core$Json$Decode$Field, key, result.a));
           }
-          keyValuePairs.push({ ab: key, f: result.a });
+          keyValuePairs.push({ ac: key, f: result.a });
         }
       }
       return $gren_lang$core$Result$Ok(keyValuePairs);
@@ -2388,8 +2388,8 @@ var $gren_lang$core$Json$Decode$errorToStringHelp$ = function(error, context) {
 						return false;
 					} else {
 						var _v2 = _v1.a;
-						var _char = _v2.bZ;
-						var rest = _v2.ch;
+						var _char = _v2.b0;
+						var rest = _v2.cm;
 						return $gren_lang$core$Char$isAlpha(_char) && A2($gren_lang$core$String$all, $gren_lang$core$Char$isAlphaNum, rest);
 					}
 				}();
@@ -2638,7 +2638,7 @@ var $gren_lang$node$Node$platformFromString = function(platform) {
 	}
 };
 var $gren_lang$node$Node$initializeEnvironment = $gren_lang$core$Task$map$(function(raw) {
-		return { a4: raw.a4, a5: raw.a5, a9: $gren_lang$node$Node$archFromString(raw.bI), bt: $gren_lang$node$Node$platformFromString(raw.bt), ax: $gren_lang$node$Internal$Stream$Stream$(1, raw.ax), al: $gren_lang$node$Internal$Stream$Stream$(2, raw.al), ay: $gren_lang$node$Internal$Stream$Stream$(0, raw.ay) };
+		return { a6: raw.a6, a7: raw.a7, bb: $gren_lang$node$Node$archFromString(raw.bL), bv: $gren_lang$node$Node$platformFromString(raw.bv), az: $gren_lang$node$Internal$Stream$Stream$(1, raw.az), am: $gren_lang$node$Internal$Stream$Stream$(2, raw.am), aA: $gren_lang$node$Internal$Stream$Stream$(0, raw.aA) };
 	}, _Node_init);
 var $gren_lang$core$Task$Perform = function (a) {
 	return { $: 0, a: a };
@@ -2706,9 +2706,9 @@ var $gren_lang$node$Node$unwrap = function(_v0) {
 	return task;
 };
 var $gren_lang$node$Node$init$ = function(initTask, _v0) {
-	return { a8: $gren_lang$core$Task$perform$($gren_lang$node$Node$InitDone, A2($gren_lang$core$Task$andThen, function(env) {
+	return { ba: $gren_lang$core$Task$perform$($gren_lang$node$Node$InitDone, A2($gren_lang$core$Task$andThen, function(env) {
 				return $gren_lang$node$Node$unwrap(initTask(env));
-			}, $gren_lang$node$Node$initializeEnvironment)), bn: $gren_lang$node$Node$Uninitialized };
+			}, $gren_lang$node$Node$initializeEnvironment)), bp: $gren_lang$node$Node$Uninitialized };
 };
 var $gren_lang$node$Node$init = F2($gren_lang$node$Node$init$);
 var $gren_lang$node$Node$MsgReceived = function (a) {
@@ -2736,25 +2736,25 @@ var $gren_lang$node$Node$update$ = function(appUpdate, msg, model) {
 	if (!model.$) {
 		if (!msg.$) {
 			var initResult = msg.a;
-			return { a8: A2($gren_lang$core$Platform$Cmd$map, $gren_lang$node$Node$MsgReceived, initResult.a8), bn: $gren_lang$node$Node$Initialized(initResult.bn) };
+			return { ba: A2($gren_lang$core$Platform$Cmd$map, $gren_lang$node$Node$MsgReceived, initResult.ba), bp: $gren_lang$node$Node$Initialized(initResult.bp) };
 		} else {
-			return { a8: $gren_lang$core$Platform$Cmd$none, bn: model };
+			return { ba: $gren_lang$core$Platform$Cmd$none, bp: model };
 		}
 	} else {
 		var appModel = model.a;
 		if (!msg.$) {
-			return { a8: $gren_lang$core$Platform$Cmd$none, bn: model };
+			return { ba: $gren_lang$core$Platform$Cmd$none, bp: model };
 		} else {
 			var appMsg = msg.a;
 			var updateResult = A2(appUpdate, appMsg, appModel);
-			return { a8: A2($gren_lang$core$Platform$Cmd$map, $gren_lang$node$Node$MsgReceived, updateResult.a8), bn: $gren_lang$node$Node$Initialized(updateResult.bn) };
+			return { ba: A2($gren_lang$core$Platform$Cmd$map, $gren_lang$node$Node$MsgReceived, updateResult.ba), bp: $gren_lang$node$Node$Initialized(updateResult.bp) };
 		}
 	}
 };
 var $gren_lang$node$Node$update = F3($gren_lang$node$Node$update$);
 var $gren_lang$core$Platform$worker = _Platform_worker;
 var $gren_lang$node$Node$defineProgram = function(config) {
-	return $gren_lang$core$Platform$worker({ b1: $gren_lang$node$Node$init(config.b1), co: $gren_lang$node$Node$subscriptions(config.co), ct: $gren_lang$node$Node$update(config.ct) });
+	return $gren_lang$core$Platform$worker({ b4: $gren_lang$node$Node$init(config.b4), ct: $gren_lang$node$Node$subscriptions(config.ct), cz: $gren_lang$node$Node$update(config.cz) });
 };
 var $gren_lang$core$Basics$identity = function(x) {
 	return x;
@@ -2793,12 +2793,12 @@ var process = require("node:process");
 var _Terminal_init = _Scheduler_binding(function (callback) {
   callback(
     _Scheduler_succeed({
-      b2: process.stdout.isTTY,
-      X: process.stdout.getColorDepth
+      b6: process.stdout.isTTY,
+      Y: process.stdout.getColorDepth
         ? process.stdout.getColorDepth()
         : 0,
-      I: process.stdout.columns,
-      O: process.stdout.rows,
+      J: process.stdout.columns,
+      P: process.stdout.rows,
     })
   );
 });
@@ -2808,8 +2808,8 @@ var _Terminal_attachListener = function (sendToApp) {
     var listener = function (data) {
       _Scheduler_rawSpawn(
         sendToApp({
-          I: process.stdout.columns,
-          O: process.stdout.rows,
+          J: process.stdout.columns,
+          P: process.stdout.rows,
         })
       );
     };
@@ -2838,7 +2838,7 @@ var _Terminal_setProcessTitle = function (title) {
 };
 var $gren_lang$node$Terminal$Permission = 0;
 var $gren_lang$node$Terminal$initialize = $gren_lang$core$Task$map$(function(raw) {
-		return raw.b2 ? $gren_lang$core$Maybe$Just({ X: raw.X, I: raw.I, bs: 0, O: raw.O }) : $gren_lang$core$Maybe$Nothing;
+		return raw.b6 ? $gren_lang$core$Maybe$Just({ Y: raw.Y, J: raw.J, bu: 0, P: raw.P }) : $gren_lang$core$Maybe$Nothing;
 	}, _Terminal_init);
 
 
@@ -3139,7 +3139,7 @@ var $blaix$gren_tui$UI$Col = function (a) {
 	return { $: 1, a: a };
 };
 var $blaix$gren_tui$UI$column$ = function(attrs, children) {
-	return $blaix$gren_tui$UI$Col({ o: attrs, ap: children });
+	return $blaix$gren_tui$UI$Col({ p: attrs, aq: children });
 };
 var $blaix$gren_tui$UI$column = F2($blaix$gren_tui$UI$column$);
 var $blaix$gren_tui$SingleLine$SingleLine = $gren_lang$core$Basics$identity;
@@ -3149,7 +3149,7 @@ var $blaix$gren_tui$SingleLine$fromString = function(string) {
 };
 var $blaix$gren_tui$UI$text$ = function(attrs, content) {
 	return $blaix$gren_tui$UI$column$([  ], A2($gren_lang$core$Array$map, function(l) {
-				return $blaix$gren_tui$UI$Text({ o: attrs, l: l });
+				return $blaix$gren_tui$UI$Text({ p: attrs, l: l });
 			}, $blaix$gren_tui$SingleLine$fromString(content)));
 };
 var $blaix$gren_tui$UI$text = F2($blaix$gren_tui$UI$text$);
@@ -3158,22 +3158,22 @@ var $blaix$gren_tui$Tui$init$ = function(appInit, env) {
 			var termConfigForApp = function () {
 				if (!termConfig.$) {
 					var tConfig = termConfig.a;
-					return { X: tConfig.X, I: tConfig.I, O: tConfig.O };
+					return { Y: tConfig.Y, J: tConfig.J, P: tConfig.P };
 				} else {
-					return { X: 0, I: 0, O: 0 };
+					return { Y: 0, J: 0, P: 0 };
 				}
 			}();
-			var tuiEnv = { a4: env.a4, a5: env.a5, X: termConfigForApp.X, I: termConfigForApp.I, a9: env.a9, bt: env.bt, O: termConfigForApp.O, ax: env.ax, al: env.al, ay: env.ay };
+			var tuiEnv = { a6: env.a6, a7: env.a7, Y: termConfigForApp.Y, J: termConfigForApp.J, bb: env.bb, bv: env.bv, P: termConfigForApp.P, az: env.az, am: env.am, aA: env.aA };
 			return $gren_lang$node$Init$await$(appInit(tuiEnv), function(app) {
-					var model = { aC: $gren_lang$core$Maybe$Just(app.a8), T: app.bn, U: false, t: 0, ag: $blaix$gren_tui$UI$text$([  ], ''), ax: env.ax, al: env.al, ay: env.ay, am: 0, a_: $gren_lang$core$Maybe$Nothing, aA: 0 };
+					var model = { aE: $gren_lang$core$Maybe$Just(app.ba), U: app.bp, V: false, v: 0, ah: $blaix$gren_tui$UI$text$([  ], ''), az: env.az, am: env.am, aA: env.aA, an: 0, a0: $gren_lang$core$Maybe$Nothing, aC: 0 };
 					return $gren_lang$node$Node$startProgram(function () {
 							if (!termConfig.$) {
 								var config = termConfig.a;
-								return { a8: $gren_lang$core$Task$execute(A2($gren_lang$core$Task$andThen, function(_v1) {
-											return $gren_lang$node$Stream$sendString$(env.ay, $blaix$gren_ansi$Ansi$getCursorReport);
-										}, $gren_lang$node$Terminal$setStdInRawMode$(config.bs, true))), bn: _Utils_update(model, { am: config.I, a_: $gren_lang$core$Maybe$Just(config.bs), aA: config.O }) };
+								return { ba: $gren_lang$core$Task$execute(A2($gren_lang$core$Task$andThen, function(_v1) {
+											return $gren_lang$node$Stream$sendString$(env.aA, $blaix$gren_ansi$Ansi$getCursorReport);
+										}, $gren_lang$node$Terminal$setStdInRawMode$(config.bu, true))), bp: _Utils_update(model, { an: config.J, a0: $gren_lang$core$Maybe$Just(config.bu), aC: config.P }) };
 							} else {
-								return { a8: $gren_lang$core$Task$execute($gren_lang$node$Node$exitWithCode(1)), bn: model };
+								return { ba: $gren_lang$core$Task$execute($gren_lang$node$Node$exitWithCode(1)), bp: model };
 							}
 						}());
 				});
@@ -3196,7 +3196,7 @@ var $gren_lang$core$Time$Every$ = function (a, b) {
 	return { $: 0, a: a, b: b };
 };
 var $gren_lang$core$Time$Every = F2($gren_lang$core$Time$Every$);
-var $gren_lang$core$Time$init = $gren_lang$core$Task$succeed({ bx: $gren_lang$core$Dict$empty, aX: $gren_lang$core$Dict$empty });
+var $gren_lang$core$Time$init = $gren_lang$core$Task$succeed({ bz: $gren_lang$core$Dict$empty, aZ: $gren_lang$core$Dict$empty });
 var $gren_lang$core$Dict$get$ = function(targetKey, dict) {
 	get:
 	while (true) {
@@ -3596,7 +3596,7 @@ var $gren_lang$core$Dict$values = function(dict) {
 			}), [  ], dict);
 };
 var $gren_lang$core$Time$onEffects$ = function(router, subs, _v0) {
-	var processes = _v0.bx;
+	var processes = _v0.bz;
 	var newTaggers = A3($gren_lang$core$Array$foldl, $gren_lang$core$Time$addMySub, $gren_lang$core$Dict$empty, subs);
 	var spawnArray = $gren_lang$core$Dict$keys($gren_lang$core$Dict$diff$(newTaggers, processes));
 	var killTask = A3($gren_lang$core$Array$foldl, function(id) {
@@ -3608,7 +3608,7 @@ var $gren_lang$core$Time$onEffects$ = function(router, subs, _v0) {
 				return $gren_lang$core$Dict$member$(key, newTaggers);
 			}), processes);
 	return A2($gren_lang$core$Task$andThen, function(newProcesses) {
-			return $gren_lang$core$Task$succeed({ bx: newProcesses, aX: newTaggers });
+			return $gren_lang$core$Task$succeed({ bz: newProcesses, aZ: newTaggers });
 		}, A2($gren_lang$core$Task$andThen, function(_v1) {
 				return $gren_lang$core$Time$spawnHelp$(router, spawnArray, existingDict);
 			}, killTask));
@@ -3618,7 +3618,7 @@ var $gren_lang$core$Time$Posix = $gren_lang$core$Basics$identity;
 var $gren_lang$core$Time$millisToPosix = $gren_lang$core$Basics$identity;
 var $gren_lang$core$Time$now = _Time_now($gren_lang$core$Time$millisToPosix);
 var $gren_lang$core$Time$onSelfMsg$ = function(router, interval, state) {
-	var _v0 = $gren_lang$core$Dict$get$(interval, state.aX);
+	var _v0 = $gren_lang$core$Dict$get$(interval, state.aZ);
 	if (_v0.$ === 1) {
 		return $gren_lang$core$Task$succeed(state);
 	} else {
@@ -3652,7 +3652,7 @@ var $gren_lang$node$Stream$Listen$ = function (a, b) {
 	return { $: 0, a: a, b: b };
 };
 var $gren_lang$node$Stream$Listen = F2($gren_lang$node$Stream$Listen$);
-var $gren_lang$node$Stream$init = $gren_lang$core$Task$succeed({ bx: $gren_lang$core$Dict$empty, aX: $gren_lang$core$Dict$empty });
+var $gren_lang$node$Stream$init = $gren_lang$core$Task$succeed({ bz: $gren_lang$core$Dict$empty, aZ: $gren_lang$core$Dict$empty });
 var $gren_lang$node$Stream$FromStream$ = function (a, b) {
 	return { $: 0, a: a, b: b };
 };
@@ -3691,27 +3691,27 @@ var $gren_lang$node$Stream$subToListener$ = function(sub, taggers) {
 	var _v1 = $gren_lang$core$Dict$get$(sid, taggers);
 	if (!_v1.$) {
 		var data = _v1.a;
-		return $gren_lang$core$Dict$set$(sid, _Utils_update(data, { aX: $gren_lang$core$Array$pushLast$(tagger, data.aX) }), taggers);
+		return $gren_lang$core$Dict$set$(sid, _Utils_update(data, { aZ: $gren_lang$core$Array$pushLast$(tagger, data.aZ) }), taggers);
 	} else {
-		return $gren_lang$core$Dict$set$(sid, { bB: stream, aX: [ tagger ] }, taggers);
+		return $gren_lang$core$Dict$set$(sid, { bD: stream, aZ: [ tagger ] }, taggers);
 	}
 };
 var $gren_lang$node$Stream$subToListener = F2($gren_lang$node$Stream$subToListener$);
 var $gren_lang$node$Stream$onEffects$ = function(router, subs, state) {
 	var newTaggers = A3($gren_lang$core$Array$foldl, $gren_lang$node$Stream$subToListener, $gren_lang$core$Dict$empty, subs);
 	var toSpawn = A2($gren_lang$core$Array$map, function ($) {
-			return $.bB;
-		}, $gren_lang$core$Dict$values($gren_lang$core$Dict$diff$(newTaggers, state.aX)));
+			return $.bD;
+		}, $gren_lang$core$Dict$values($gren_lang$core$Dict$diff$(newTaggers, state.aZ)));
 	var killTasks = A3($gren_lang$core$Array$foldl, F2(function(id, tasks) {
 				return A2($gren_lang$core$Task$andThen, function(_v2) {
 						return $gren_lang$core$Process$kill(id);
 					}, tasks);
-			}), $gren_lang$core$Task$succeed({  }), $gren_lang$core$Dict$values($gren_lang$core$Dict$diff$(state.bx, newTaggers)));
+			}), $gren_lang$core$Task$succeed({  }), $gren_lang$core$Dict$values($gren_lang$core$Dict$diff$(state.bz, newTaggers)));
 	var existingProcesses = $gren_lang$core$Dict$filter$(F2(function(sid, _v1) {
 				return $gren_lang$core$Dict$member$(sid, newTaggers);
-			}), state.bx);
+			}), state.bz);
 	return $gren_lang$core$Task$map$(function(newProcesses) {
-			return { bx: newProcesses, aX: newTaggers };
+			return { bz: newProcesses, aZ: newTaggers };
 		}, A2($gren_lang$core$Task$andThen, function(_v0) {
 				return $gren_lang$node$Stream$spawnHelp$(router, toSpawn, existingProcesses);
 			}, killTasks));
@@ -3748,8 +3748,8 @@ var $gren_lang$node$Stream$onSelfMsg$ = function(router, event, state) {
 				}), $gren_lang$core$Task$succeed({  }), A2($gren_lang$core$Array$map, function(tagger) {
 					return tagger(data);
 				}, $gren_lang$core$Maybe$withDefault$([  ], $gren_lang$core$Maybe$map$(function ($) {
-							return $.aX;
-						}, $gren_lang$core$Dict$get$(sid, state.aX))))));
+							return $.aZ;
+						}, $gren_lang$core$Dict$get$(sid, state.aZ))))));
 };
 var $gren_lang$node$Stream$onSelfMsg = F3($gren_lang$node$Stream$onSelfMsg$);
 var $gren_lang$node$Stream$subMap$ = function(mapFn, sub) {
@@ -3765,7 +3765,7 @@ var $gren_lang$node$Stream$listen$ = function(stream, msgMap) {
 };
 var $gren_lang$node$Stream$listen = F2($gren_lang$node$Stream$listen$);
 var $gren_lang$node$Terminal$OnResize = $gren_lang$core$Basics$identity;
-var $gren_lang$node$Terminal$init = $gren_lang$core$Task$succeed({ au: $gren_lang$core$Maybe$Nothing, aX: [  ] });
+var $gren_lang$node$Terminal$init = $gren_lang$core$Task$succeed({ aw: $gren_lang$core$Maybe$Nothing, aZ: [  ] });
 var $gren_lang$node$Terminal$SelfOnResize = $gren_lang$core$Basics$identity;
 var $gren_lang$core$Basics$gt = _Utils_gt;
 var $gren_lang$node$Terminal$onEffects$ = function(router, subs, state) {
@@ -3776,7 +3776,7 @@ var $gren_lang$node$Terminal$onEffects$ = function(router, subs, state) {
 	var newTaggers = A3($gren_lang$core$Array$foldl, extractTagger, [  ], subs);
 	var subscriptionTask = function () {
 		if ($gren_lang$core$Array$length(newTaggers) > 0) {
-			var _v0 = state.au;
+			var _v0 = state.aw;
 			if (!_v0.$) {
 				var pid = _v0.a;
 				return $gren_lang$core$Task$succeed($gren_lang$core$Maybe$Just(pid));
@@ -3786,7 +3786,7 @@ var $gren_lang$node$Terminal$onEffects$ = function(router, subs, state) {
 							})));
 			}
 		} else {
-			var _v1 = state.au;
+			var _v1 = state.aw;
 			if (!_v1.$) {
 				var pid = _v1.a;
 				return $gren_lang$core$Task$map$(function(_v2) {
@@ -3798,7 +3798,7 @@ var $gren_lang$node$Terminal$onEffects$ = function(router, subs, state) {
 		}
 	}();
 	return A2($gren_lang$core$Task$andThen, function(maybeProcessId) {
-			return $gren_lang$core$Task$succeed({ au: maybeProcessId, aX: newTaggers });
+			return $gren_lang$core$Task$succeed({ aw: maybeProcessId, aZ: newTaggers });
 		}, subscriptionTask);
 };
 var $gren_lang$node$Terminal$onEffects = F3($gren_lang$node$Terminal$onEffects$);
@@ -3812,7 +3812,7 @@ var $gren_lang$node$Terminal$onSelfMsg$ = function(router, event, state) {
 						}, tasks);
 				}), $gren_lang$core$Task$succeed({  }), A2($gren_lang$core$Array$map, function(tagger) {
 					return tagger(newSize);
-				}, state.aX)));
+				}, state.aZ)));
 };
 var $gren_lang$node$Terminal$onSelfMsg = F3($gren_lang$node$Terminal$onSelfMsg$);
 var $gren_lang$node$Terminal$subMap$ = function(mapFn, sub) {
@@ -3827,8 +3827,8 @@ var $gren_lang$node$Terminal$onResize$ = function(_v0, toMsg) {
 };
 var $gren_lang$node$Terminal$onResize = F2($gren_lang$node$Terminal$onResize$);
 var $blaix$gren_tui$Tui$subscriptions$ = function(appSubs, model) {
-	return $gren_lang$core$Platform$Sub$batch([ $gren_lang$node$Stream$listen$(model.al, $blaix$gren_tui$Tui$GotStdin), A2($gren_lang$core$Platform$Sub$map, $blaix$gren_tui$Tui$AppMsg, appSubs(model.T)), model.U ? $gren_lang$core$Time$every$(1000 / $blaix$gren_tui$Tui$framesPerSecond, $blaix$gren_tui$Tui$Tick) : $gren_lang$core$Platform$Sub$none, function () {
-			var _v0 = model.a_;
+	return $gren_lang$core$Platform$Sub$batch([ $gren_lang$node$Stream$listen$(model.am, $blaix$gren_tui$Tui$GotStdin), A2($gren_lang$core$Platform$Sub$map, $blaix$gren_tui$Tui$AppMsg, appSubs(model.U)), model.V ? $gren_lang$core$Time$every$(1000 / $blaix$gren_tui$Tui$framesPerSecond, $blaix$gren_tui$Tui$Tick) : $gren_lang$core$Platform$Sub$none, function () {
+			var _v0 = model.a0;
 			if (!_v0.$) {
 				var termPermission = _v0.a;
 				return $gren_lang$node$Terminal$onResize$(termPermission, $blaix$gren_tui$Tui$TerminalResized);
@@ -3851,9 +3851,9 @@ var $gren_lang$core$Array$any$ = function(fn, array) {
 };
 var $gren_lang$core$Array$any = F2($gren_lang$core$Array$any$);
 var $blaix$gren_tui$Tui$appUpdate$ = function(appUpdate_, appMsg, model) {
-	var appUpdateResult = A2(appUpdate_, appMsg, model.T);
-	var newModel = _Utils_update(model, { T: appUpdateResult.bn });
-	return { a8: A2($gren_lang$core$Platform$Cmd$map, $blaix$gren_tui$Tui$AppMsg, appUpdateResult.a8), bn: newModel };
+	var appUpdateResult = A2(appUpdate_, appMsg, model.U);
+	var newModel = _Utils_update(model, { U: appUpdateResult.bp });
+	return { ba: A2($gren_lang$core$Platform$Cmd$map, $blaix$gren_tui$Tui$AppMsg, appUpdateResult.ba), bp: newModel };
 };
 var $blaix$gren_tui$Tui$appUpdate = F3($blaix$gren_tui$Tui$appUpdate$);
 var $blaix$gren_tui$Tui$CtrlC = { $: 10 };
@@ -3928,10 +3928,10 @@ var $blaix$gren_tui$Tui$checkCursorReport = function(string) {
 	if (((parts.length === 4) && (parts[0] === '\u001B')) && (parts[3] === '')) {
 		var row = parts[1];
 		var col = parts[2];
-		var parsed = { bS: $gren_lang$core$String$toInt(col), cj: $gren_lang$core$String$toInt(row) };
-		if ((!parsed.cj.$) && (!parsed.bS.$)) {
-			var r = parsed.cj.a;
-			var c = parsed.bS.a;
+		var parsed = { bV: $gren_lang$core$String$toInt(col), co: $gren_lang$core$String$toInt(row) };
+		if ((!parsed.co.$) && (!parsed.bV.$)) {
+			var r = parsed.co.a;
+			var c = parsed.bV.a;
 			return $gren_lang$core$Maybe$Just($blaix$gren_tui$Tui$CursorReport$(r, c));
 		} else {
 			return $gren_lang$core$Maybe$Nothing;
@@ -4005,12 +4005,12 @@ var $blaix$gren_tui$UI$normalizeHeight$ = function(parentAttrs, allGrids) {
 	var maxRows = $gren_lang$core$Maybe$withDefault$(0, $gren_lang$core$Array$maximum(A2($gren_lang$core$Array$map, $gren_lang$core$Array$length, allGrids)));
 	return A2($gren_lang$core$Array$map, function(g) {
 			var diff = maxRows - $gren_lang$core$Array$length(g);
-			var extraRows = $gren_lang$core$Array$repeat$(diff, [ { o: parentAttrs, l: $blaix$gren_tui$SingleLine$empty } ]);
+			var extraRows = $gren_lang$core$Array$repeat$(diff, [ { p: parentAttrs, l: $blaix$gren_tui$SingleLine$empty } ]);
 			return _Utils_ap(g, extraRows);
 		}, allGrids);
 };
 var $blaix$gren_tui$UI$normalizeHeight = F2($blaix$gren_tui$UI$normalizeHeight$);
-var $blaix$gren_tui$UI$emptyCell = { o: [  ], l: $blaix$gren_tui$SingleLine$empty };
+var $blaix$gren_tui$UI$emptyCell = { p: [  ], l: $blaix$gren_tui$SingleLine$empty };
 var $blaix$gren_array2d$Array2d$map$ = function(fn, array2d) {
 	return A2($gren_lang$core$Array$map, function(row) {
 			return A2($gren_lang$core$Array$map, fn, row);
@@ -4103,10 +4103,10 @@ var _Regex_fromStringWith = F2(function (options, string) {
   }
 
   var flags = "g";
-  if (options.b7) {
+  if (options.cb) {
     flags += "m";
   }
-  if (options.bQ) {
+  if (options.bT) {
     flags += "i";
   }
 
@@ -4139,10 +4139,10 @@ var _Regex_findAtMost = F3(function (n, re, str) {
       subs[--i] = submatch ? $gren_lang$core$Maybe$Just(submatch) : $gren_lang$core$Maybe$Nothing;
     }
     out.push({
-      bl: result[0],
-      bh: result.index,
-      br: number,
-      bC: subs,
+      bn: result[0],
+      bj: result.index,
+      bt: number,
+      bE: subs,
     });
     prevLastIndex = re.lastIndex;
   }
@@ -4163,10 +4163,10 @@ var _Regex_replaceAtMost = F4(function (n, re, replacer, string) {
       submatches[--i] = submatch ? $gren_lang$core$Maybe$Just(submatch) : $gren_lang$core$Maybe$Nothing;
     }
     return replacer({
-      bl: match,
-      bh: arguments[arguments.length - 2],
-      br: count,
-      bC: submatches,
+      bn: match,
+      bj: arguments[arguments.length - 2],
+      bt: count,
+      bE: submatches,
     });
   }
   return string.replace(re, jsReplacer);
@@ -4179,7 +4179,7 @@ var _Regex_splitAtMost = F3(function (n, re, str) {
 var _Regex_infinity = Number.MAX_SAFE_INTEGER;
 var $gren_lang$core$String$Regex$fromStringWith = _Regex_fromStringWith;
 var $gren_lang$core$String$Regex$fromString = function(string) {
-	return A2($gren_lang$core$String$Regex$fromStringWith, { bQ: false, b7: false }, string);
+	return A2($gren_lang$core$String$Regex$fromStringWith, { bT: false, cb: false }, string);
 };
 var $gren_lang$core$String$Regex$never = _Regex_never;
 var $blaix$gren_ansi$Ansi$emojiRegex = $gren_lang$core$Maybe$withDefault$($gren_lang$core$String$Regex$never, $gren_lang$core$String$Regex$fromString('[#*0-9]\\uFE0F?\\u20E3|[\\xA9\\xAE\\u203C\\u2049\\u2122\\u2139\\u2194-\\u2199\\u21A9\\u21AA\\u231A\\u231B\\u2328\\u23CF\\u23ED-\\u23EF\\u23F1\\u23F2\\u23F8-\\u23FA\\u24C2\\u25AA\\u25AB\\u25B6\\u25C0\\u25FB\\u25FC\\u25FE\\u2600-\\u2604\\u260E\\u2611\\u2614\\u2615\\u2618\\u2620\\u2622\\u2623\\u2626\\u262A\\u262E\\u262F\\u2638-\\u263A\\u2640\\u2642\\u2648-\\u2653\\u265F\\u2660\\u2663\\u2665\\u2666\\u2668\\u267B\\u267E\\u267F\\u2692\\u2694-\\u2697\\u2699\\u269B\\u269C\\u26A0\\u26A7\\u26AA\\u26B0\\u26B1\\u26BD\\u26BE\\u26C4\\u26C8\\u26CF\\u26D1\\u26D3\\u26E9\\u26F0-\\u26F5\\u26F7\\u26F8\\u26FA\\u2702\\u2708\\u2709\\u270F\\u2712\\u2714\\u2716\\u271D\\u2721\\u2733\\u2734\\u2744\\u2747\\u2757\\u2763\\u27A1\\u2934\\u2935\\u2B05-\\u2B07\\u2B1B\\u2B1C\\u2B55\\u3030\\u303D\\u3297\\u3299]\\uFE0F?|[\\u261D\\u270C\\u270D](?:\\uFE0F|\\uD83C[\\uDFFB-\\uDFFF])?|[\\u270A\\u270B](?:\\uD83C[\\uDFFB-\\uDFFF])?|[\\u23E9-\\u23EC\\u23F0\\u23F3\\u25FD\\u2693\\u26A1\\u26AB\\u26C5\\u26CE\\u26D4\\u26EA\\u26FD\\u2705\\u2728\\u274C\\u274E\\u2753-\\u2755\\u2795-\\u2797\\u27B0\\u27BF\\u2B50]|\\u26F9(?:\\uFE0F|\\uD83C[\\uDFFB-\\uDFFF])?(?:\\u200D[\\u2640\\u2642]\\uFE0F?)?|\\u2764\\uFE0F?(?:\\u200D(?:\\uD83D\\uDD25|\\uD83E\\uDE79))?|\\uD83C(?:[\\uDC04\\uDD70\\uDD71\\uDD7E\\uDD7F\\uDE02\\uDE37\\uDF21\\uDF24-\\uDF2C\\uDF36\\uDF7D\\uDF96\\uDF97\\uDF99-\\uDF9B\\uDF9E\\uDF9F\\uDFCD\\uDFCE\\uDFD4-\\uDFDF\\uDFF5\\uDFF7]\\uFE0F?|[\\uDF85\\uDFC2\\uDFC7](?:\\uD83C[\\uDFFB-\\uDFFF])?|[\\uDFC3\\uDFC4\\uDFCA](?:\\uD83C[\\uDFFB-\\uDFFF])?(?:\\u200D[\\u2640\\u2642]\\uFE0F?)?|[\\uDFCB\\uDFCC](?:\\uFE0F|\\uD83C[\\uDFFB-\\uDFFF])?(?:\\u200D[\\u2640\\u2642]\\uFE0F?)?|[\\uDCCF\\uDD8E\\uDD91-\\uDD9A\\uDE01\\uDE1A\\uDE2F\\uDE32-\\uDE36\\uDE38-\\uDE3A\\uDE50\\uDE51\\uDF00-\\uDF20\\uDF2D-\\uDF35\\uDF37-\\uDF7C\\uDF7E-\\uDF84\\uDF86-\\uDF93\\uDFA0-\\uDFC1\\uDFC5\\uDFC6\\uDFC8\\uDFC9\\uDFCF-\\uDFD3\\uDFE0-\\uDFF0\\uDFF8-\\uDFFF]|\\uDDE6\\uD83C[\\uDDE8-\\uDDEC\\uDDEE\\uDDF1\\uDDF2\\uDDF4\\uDDF6-\\uDDFA\\uDDFC\\uDDFD\\uDDFF]|\\uDDE7\\uD83C[\\uDDE6\\uDDE7\\uDDE9-\\uDDEF\\uDDF1-\\uDDF4\\uDDF6-\\uDDF9\\uDDFB\\uDDFC\\uDDFE\\uDDFF]|\\uDDE8\\uD83C[\\uDDE6\\uDDE8\\uDDE9\\uDDEB-\\uDDEE\\uDDF0-\\uDDF5\\uDDF7\\uDDFA-\\uDDFF]|\\uDDE9\\uD83C[\\uDDEA\\uDDEC\\uDDEF\\uDDF0\\uDDF2\\uDDF4\\uDDFF]|\\uDDEA\\uD83C[\\uDDE6\\uDDE8\\uDDEA\\uDDEC\\uDDED\\uDDF7-\\uDDFA]|\\uDDEB\\uD83C[\\uDDEE-\\uDDF0\\uDDF2\\uDDF4\\uDDF7]|\\uDDEC\\uD83C[\\uDDE6\\uDDE7\\uDDE9-\\uDDEE\\uDDF1-\\uDDF3\\uDDF5-\\uDDFA\\uDDFC\\uDDFE]|\\uDDED\\uD83C[\\uDDF0\\uDDF2\\uDDF3\\uDDF7\\uDDF9\\uDDFA]|\\uDDEE\\uD83C[\\uDDE8-\\uDDEA\\uDDF1-\\uDDF4\\uDDF6-\\uDDF9]|\\uDDEF\\uD83C[\\uDDEA\\uDDF2\\uDDF4\\uDDF5]|\\uDDF0\\uD83C[\\uDDEA\\uDDEC-\\uDDEE\\uDDF2\\uDDF3\\uDDF5\\uDDF7\\uDDFC\\uDDFE\\uDDFF]|\\uDDF1\\uD83C[\\uDDE6-\\uDDE8\\uDDEE\\uDDF0\\uDDF7-\\uDDFB\\uDDFE]|\\uDDF2\\uD83C[\\uDDE6\\uDDE8-\\uDDED\\uDDF0-\\uDDFF]|\\uDDF3\\uD83C[\\uDDE6\\uDDE8\\uDDEA-\\uDDEC\\uDDEE\\uDDF1\\uDDF4\\uDDF5\\uDDF7\\uDDFA\\uDDFF]|\\uDDF4\\uD83C\\uDDF2|\\uDDF5\\uD83C[\\uDDE6\\uDDEA-\\uDDED\\uDDF0-\\uDDF3\\uDDF7-\\uDDF9\\uDDFC\\uDDFE]|\\uDDF6\\uD83C\\uDDE6|\\uDDF7\\uD83C[\\uDDEA\\uDDF4\\uDDF8\\uDDFA\\uDDFC]|\\uDDF8\\uD83C[\\uDDE6-\\uDDEA\\uDDEC-\\uDDF4\\uDDF7-\\uDDF9\\uDDFB\\uDDFD-\\uDDFF]|\\uDDF9\\uD83C[\\uDDE6\\uDDE8\\uDDE9\\uDDEB-\\uDDED\\uDDEF-\\uDDF4\\uDDF7\\uDDF9\\uDDFB\\uDDFC\\uDDFF]|\\uDDFA\\uD83C[\\uDDE6\\uDDEC\\uDDF2\\uDDF3\\uDDF8\\uDDFE\\uDDFF]|\\uDDFB\\uD83C[\\uDDE6\\uDDE8\\uDDEA\\uDDEC\\uDDEE\\uDDF3\\uDDFA]|\\uDDFC\\uD83C[\\uDDEB\\uDDF8]|\\uDDFD\\uD83C\\uDDF0|\\uDDFE\\uD83C[\\uDDEA\\uDDF9]|\\uDDFF\\uD83C[\\uDDE6\\uDDF2\\uDDFC]|\\uDFF3\\uFE0F?(?:\\u200D(?:\\u26A7\\uFE0F?|\\uD83C\\uDF08))?|\\uDFF4(?:\\u200D\\u2620\\uFE0F?|\\uDB40\\uDC67\\uDB40\\uDC62\\uDB40(?:\\uDC65\\uDB40\\uDC6E\\uDB40\\uDC67|\\uDC73\\uDB40\\uDC63\\uDB40\\uDC74|\\uDC77\\uDB40\\uDC6C\\uDB40\\uDC73)\\uDB40\\uDC7F)?)|\\uD83D(?:[\\uDC08\\uDC26](?:\\u200D\\u2B1B)?|[\\uDC3F\\uDCFD\\uDD49\\uDD4A\\uDD6F\\uDD70\\uDD73\\uDD76-\\uDD79\\uDD87\\uDD8A-\\uDD8D\\uDDA5\\uDDA8\\uDDB1\\uDDB2\\uDDBC\\uDDC2-\\uDDC4\\uDDD1-\\uDDD3\\uDDDC-\\uDDDE\\uDDE1\\uDDE3\\uDDE8\\uDDEF\\uDDF3\\uDDFA\\uDECB\\uDECD-\\uDECF\\uDEE0-\\uDEE5\\uDEE9\\uDEF0\\uDEF3]\\uFE0F?|[\\uDC42\\uDC43\\uDC46-\\uDC50\\uDC66\\uDC67\\uDC6B-\\uDC6D\\uDC72\\uDC74-\\uDC76\\uDC78\\uDC7C\\uDC83\\uDC85\\uDC8F\\uDC91\\uDCAA\\uDD7A\\uDD95\\uDD96\\uDE4C\\uDE4F\\uDEC0\\uDECC](?:\\uD83C[\\uDFFB-\\uDFFF])?|[\\uDC6E\\uDC70\\uDC71\\uDC73\\uDC77\\uDC81\\uDC82\\uDC86\\uDC87\\uDE45-\\uDE47\\uDE4B\\uDE4D\\uDE4E\\uDEA3\\uDEB4-\\uDEB6](?:\\uD83C[\\uDFFB-\\uDFFF])?(?:\\u200D[\\u2640\\u2642]\\uFE0F?)?|[\\uDD74\\uDD90](?:\\uFE0F|\\uD83C[\\uDFFB-\\uDFFF])?|[\\uDC00-\\uDC07\\uDC09-\\uDC14\\uDC16-\\uDC25\\uDC27-\\uDC3A\\uDC3C-\\uDC3E\\uDC40\\uDC44\\uDC45\\uDC51-\\uDC65\\uDC6A\\uDC79-\\uDC7B\\uDC7D-\\uDC80\\uDC84\\uDC88-\\uDC8E\\uDC90\\uDC92-\\uDCA9\\uDCAB-\\uDCFC\\uDCFF-\\uDD3D\\uDD4B-\\uDD4E\\uDD50-\\uDD67\\uDDA4\\uDDFB-\\uDE2D\\uDE2F-\\uDE34\\uDE37-\\uDE44\\uDE48-\\uDE4A\\uDE80-\\uDEA2\\uDEA4-\\uDEB3\\uDEB7-\\uDEBF\\uDEC1-\\uDEC5\\uDED0-\\uDED2\\uDED5-\\uDED7\\uDEDC-\\uDEDF\\uDEEB\\uDEEC\\uDEF4-\\uDEFC\\uDFE0-\\uDFEB\\uDFF0]|\\uDC15(?:\\u200D\\uD83E\\uDDBA)?|\\uDC3B(?:\\u200D\\u2744\\uFE0F?)?|\\uDC41\\uFE0F?(?:\\u200D\\uD83D\\uDDE8\\uFE0F?)?|\\uDC68(?:\\u200D(?:[\\u2695\\u2696\\u2708]\\uFE0F?|\\u2764\\uFE0F?\\u200D\\uD83D(?:\\uDC8B\\u200D\\uD83D)?\\uDC68|\\uD83C[\\uDF3E\\uDF73\\uDF7C\\uDF93\\uDFA4\\uDFA8\\uDFEB\\uDFED]|\\uD83D(?:[\\uDC68\\uDC69]\\u200D\\uD83D(?:\\uDC66(?:\\u200D\\uD83D\\uDC66)?|\\uDC67(?:\\u200D\\uD83D[\\uDC66\\uDC67])?)|[\\uDCBB\\uDCBC\\uDD27\\uDD2C\\uDE80\\uDE92]|\\uDC66(?:\\u200D\\uD83D\\uDC66)?|\\uDC67(?:\\u200D\\uD83D[\\uDC66\\uDC67])?)|\\uD83E[\\uDDAF-\\uDDB3\\uDDBC\\uDDBD])|\\uD83C(?:\\uDFFB(?:\\u200D(?:[\\u2695\\u2696\\u2708]\\uFE0F?|\\u2764\\uFE0F?\\u200D\\uD83D(?:\\uDC8B\\u200D\\uD83D)?\\uDC68\\uD83C[\\uDFFB-\\uDFFF]|\\uD83C[\\uDF3E\\uDF73\\uDF7C\\uDF93\\uDFA4\\uDFA8\\uDFEB\\uDFED]|\\uD83D[\\uDCBB\\uDCBC\\uDD27\\uDD2C\\uDE80\\uDE92]|\\uD83E(?:[\\uDDAF-\\uDDB3\\uDDBC\\uDDBD]|\\uDD1D\\u200D\\uD83D\\uDC68\\uD83C[\\uDFFC-\\uDFFF])))?|\\uDFFC(?:\\u200D(?:[\\u2695\\u2696\\u2708]\\uFE0F?|\\u2764\\uFE0F?\\u200D\\uD83D(?:\\uDC8B\\u200D\\uD83D)?\\uDC68\\uD83C[\\uDFFB-\\uDFFF]|\\uD83C[\\uDF3E\\uDF73\\uDF7C\\uDF93\\uDFA4\\uDFA8\\uDFEB\\uDFED]|\\uD83D[\\uDCBB\\uDCBC\\uDD27\\uDD2C\\uDE80\\uDE92]|\\uD83E(?:[\\uDDAF-\\uDDB3\\uDDBC\\uDDBD]|\\uDD1D\\u200D\\uD83D\\uDC68\\uD83C[\\uDFFB\\uDFFD-\\uDFFF])))?|\\uDFFD(?:\\u200D(?:[\\u2695\\u2696\\u2708]\\uFE0F?|\\u2764\\uFE0F?\\u200D\\uD83D(?:\\uDC8B\\u200D\\uD83D)?\\uDC68\\uD83C[\\uDFFB-\\uDFFF]|\\uD83C[\\uDF3E\\uDF73\\uDF7C\\uDF93\\uDFA4\\uDFA8\\uDFEB\\uDFED]|\\uD83D[\\uDCBB\\uDCBC\\uDD27\\uDD2C\\uDE80\\uDE92]|\\uD83E(?:[\\uDDAF-\\uDDB3\\uDDBC\\uDDBD]|\\uDD1D\\u200D\\uD83D\\uDC68\\uD83C[\\uDFFB\\uDFFC\\uDFFE\\uDFFF])))?|\\uDFFE(?:\\u200D(?:[\\u2695\\u2696\\u2708]\\uFE0F?|\\u2764\\uFE0F?\\u200D\\uD83D(?:\\uDC8B\\u200D\\uD83D)?\\uDC68\\uD83C[\\uDFFB-\\uDFFF]|\\uD83C[\\uDF3E\\uDF73\\uDF7C\\uDF93\\uDFA4\\uDFA8\\uDFEB\\uDFED]|\\uD83D[\\uDCBB\\uDCBC\\uDD27\\uDD2C\\uDE80\\uDE92]|\\uD83E(?:[\\uDDAF-\\uDDB3\\uDDBC\\uDDBD]|\\uDD1D\\u200D\\uD83D\\uDC68\\uD83C[\\uDFFB-\\uDFFD\\uDFFF])))?|\\uDFFF(?:\\u200D(?:[\\u2695\\u2696\\u2708]\\uFE0F?|\\u2764\\uFE0F?\\u200D\\uD83D(?:\\uDC8B\\u200D\\uD83D)?\\uDC68\\uD83C[\\uDFFB-\\uDFFF]|\\uD83C[\\uDF3E\\uDF73\\uDF7C\\uDF93\\uDFA4\\uDFA8\\uDFEB\\uDFED]|\\uD83D[\\uDCBB\\uDCBC\\uDD27\\uDD2C\\uDE80\\uDE92]|\\uD83E(?:[\\uDDAF-\\uDDB3\\uDDBC\\uDDBD]|\\uDD1D\\u200D\\uD83D\\uDC68\\uD83C[\\uDFFB-\\uDFFE])))?))?|\\uDC69(?:\\u200D(?:[\\u2695\\u2696\\u2708]\\uFE0F?|\\u2764\\uFE0F?\\u200D\\uD83D(?:\\uDC8B\\u200D\\uD83D)?[\\uDC68\\uDC69]|\\uD83C[\\uDF3E\\uDF73\\uDF7C\\uDF93\\uDFA4\\uDFA8\\uDFEB\\uDFED]|\\uD83D(?:[\\uDCBB\\uDCBC\\uDD27\\uDD2C\\uDE80\\uDE92]|\\uDC66(?:\\u200D\\uD83D\\uDC66)?|\\uDC67(?:\\u200D\\uD83D[\\uDC66\\uDC67])?|\\uDC69\\u200D\\uD83D(?:\\uDC66(?:\\u200D\\uD83D\\uDC66)?|\\uDC67(?:\\u200D\\uD83D[\\uDC66\\uDC67])?))|\\uD83E[\\uDDAF-\\uDDB3\\uDDBC\\uDDBD])|\\uD83C(?:\\uDFFB(?:\\u200D(?:[\\u2695\\u2696\\u2708]\\uFE0F?|\\u2764\\uFE0F?\\u200D\\uD83D(?:[\\uDC68\\uDC69]|\\uDC8B\\u200D\\uD83D[\\uDC68\\uDC69])\\uD83C[\\uDFFB-\\uDFFF]|\\uD83C[\\uDF3E\\uDF73\\uDF7C\\uDF93\\uDFA4\\uDFA8\\uDFEB\\uDFED]|\\uD83D[\\uDCBB\\uDCBC\\uDD27\\uDD2C\\uDE80\\uDE92]|\\uD83E(?:[\\uDDAF-\\uDDB3\\uDDBC\\uDDBD]|\\uDD1D\\u200D\\uD83D[\\uDC68\\uDC69]\\uD83C[\\uDFFC-\\uDFFF])))?|\\uDFFC(?:\\u200D(?:[\\u2695\\u2696\\u2708]\\uFE0F?|\\u2764\\uFE0F?\\u200D\\uD83D(?:[\\uDC68\\uDC69]|\\uDC8B\\u200D\\uD83D[\\uDC68\\uDC69])\\uD83C[\\uDFFB-\\uDFFF]|\\uD83C[\\uDF3E\\uDF73\\uDF7C\\uDF93\\uDFA4\\uDFA8\\uDFEB\\uDFED]|\\uD83D[\\uDCBB\\uDCBC\\uDD27\\uDD2C\\uDE80\\uDE92]|\\uD83E(?:[\\uDDAF-\\uDDB3\\uDDBC\\uDDBD]|\\uDD1D\\u200D\\uD83D[\\uDC68\\uDC69]\\uD83C[\\uDFFB\\uDFFD-\\uDFFF])))?|\\uDFFD(?:\\u200D(?:[\\u2695\\u2696\\u2708]\\uFE0F?|\\u2764\\uFE0F?\\u200D\\uD83D(?:[\\uDC68\\uDC69]|\\uDC8B\\u200D\\uD83D[\\uDC68\\uDC69])\\uD83C[\\uDFFB-\\uDFFF]|\\uD83C[\\uDF3E\\uDF73\\uDF7C\\uDF93\\uDFA4\\uDFA8\\uDFEB\\uDFED]|\\uD83D[\\uDCBB\\uDCBC\\uDD27\\uDD2C\\uDE80\\uDE92]|\\uD83E(?:[\\uDDAF-\\uDDB3\\uDDBC\\uDDBD]|\\uDD1D\\u200D\\uD83D[\\uDC68\\uDC69]\\uD83C[\\uDFFB\\uDFFC\\uDFFE\\uDFFF])))?|\\uDFFE(?:\\u200D(?:[\\u2695\\u2696\\u2708]\\uFE0F?|\\u2764\\uFE0F?\\u200D\\uD83D(?:[\\uDC68\\uDC69]|\\uDC8B\\u200D\\uD83D[\\uDC68\\uDC69])\\uD83C[\\uDFFB-\\uDFFF]|\\uD83C[\\uDF3E\\uDF73\\uDF7C\\uDF93\\uDFA4\\uDFA8\\uDFEB\\uDFED]|\\uD83D[\\uDCBB\\uDCBC\\uDD27\\uDD2C\\uDE80\\uDE92]|\\uD83E(?:[\\uDDAF-\\uDDB3\\uDDBC\\uDDBD]|\\uDD1D\\u200D\\uD83D[\\uDC68\\uDC69]\\uD83C[\\uDFFB-\\uDFFD\\uDFFF])))?|\\uDFFF(?:\\u200D(?:[\\u2695\\u2696\\u2708]\\uFE0F?|\\u2764\\uFE0F?\\u200D\\uD83D(?:[\\uDC68\\uDC69]|\\uDC8B\\u200D\\uD83D[\\uDC68\\uDC69])\\uD83C[\\uDFFB-\\uDFFF]|\\uD83C[\\uDF3E\\uDF73\\uDF7C\\uDF93\\uDFA4\\uDFA8\\uDFEB\\uDFED]|\\uD83D[\\uDCBB\\uDCBC\\uDD27\\uDD2C\\uDE80\\uDE92]|\\uD83E(?:[\\uDDAF-\\uDDB3\\uDDBC\\uDDBD]|\\uDD1D\\u200D\\uD83D[\\uDC68\\uDC69]\\uD83C[\\uDFFB-\\uDFFE])))?))?|\\uDC6F(?:\\u200D[\\u2640\\u2642]\\uFE0F?)?|\\uDD75(?:\\uFE0F|\\uD83C[\\uDFFB-\\uDFFF])?(?:\\u200D[\\u2640\\u2642]\\uFE0F?)?|\\uDE2E(?:\\u200D\\uD83D\\uDCA8)?|\\uDE35(?:\\u200D\\uD83D\\uDCAB)?|\\uDE36(?:\\u200D\\uD83C\\uDF2B\\uFE0F?)?)|\\uD83E(?:[\\uDD0C\\uDD0F\\uDD18-\\uDD1F\\uDD30-\\uDD34\\uDD36\\uDD77\\uDDB5\\uDDB6\\uDDBB\\uDDD2\\uDDD3\\uDDD5\\uDEC3-\\uDEC5\\uDEF0\\uDEF2-\\uDEF8](?:\\uD83C[\\uDFFB-\\uDFFF])?|[\\uDD26\\uDD35\\uDD37-\\uDD39\\uDD3D\\uDD3E\\uDDB8\\uDDB9\\uDDCD-\\uDDCF\\uDDD4\\uDDD6-\\uDDDD](?:\\uD83C[\\uDFFB-\\uDFFF])?(?:\\u200D[\\u2640\\u2642]\\uFE0F?)?|[\\uDDDE\\uDDDF](?:\\u200D[\\u2640\\u2642]\\uFE0F?)?|[\\uDD0D\\uDD0E\\uDD10-\\uDD17\\uDD20-\\uDD25\\uDD27-\\uDD2F\\uDD3A\\uDD3F-\\uDD45\\uDD47-\\uDD76\\uDD78-\\uDDB4\\uDDB7\\uDDBA\\uDDBC-\\uDDCC\\uDDD0\\uDDE0-\\uDDFF\\uDE70-\\uDE7C\\uDE80-\\uDE88\\uDE90-\\uDEBD\\uDEBF-\\uDEC2\\uDECE-\\uDEDB\\uDEE0-\\uDEE8]|\\uDD3C(?:\\u200D[\\u2640\\u2642]\\uFE0F?|\\uD83C[\\uDFFB-\\uDFFF])?|\\uDDD1(?:\\u200D(?:[\\u2695\\u2696\\u2708]\\uFE0F?|\\uD83C[\\uDF3E\\uDF73\\uDF7C\\uDF84\\uDF93\\uDFA4\\uDFA8\\uDFEB\\uDFED]|\\uD83D[\\uDCBB\\uDCBC\\uDD27\\uDD2C\\uDE80\\uDE92]|\\uD83E(?:[\\uDDAF-\\uDDB3\\uDDBC\\uDDBD]|\\uDD1D\\u200D\\uD83E\\uDDD1))|\\uD83C(?:\\uDFFB(?:\\u200D(?:[\\u2695\\u2696\\u2708]\\uFE0F?|\\u2764\\uFE0F?\\u200D(?:\\uD83D\\uDC8B\\u200D)?\\uD83E\\uDDD1\\uD83C[\\uDFFC-\\uDFFF]|\\uD83C[\\uDF3E\\uDF73\\uDF7C\\uDF84\\uDF93\\uDFA4\\uDFA8\\uDFEB\\uDFED]|\\uD83D[\\uDCBB\\uDCBC\\uDD27\\uDD2C\\uDE80\\uDE92]|\\uD83E(?:[\\uDDAF-\\uDDB3\\uDDBC\\uDDBD]|\\uDD1D\\u200D\\uD83E\\uDDD1\\uD83C[\\uDFFB-\\uDFFF])))?|\\uDFFC(?:\\u200D(?:[\\u2695\\u2696\\u2708]\\uFE0F?|\\u2764\\uFE0F?\\u200D(?:\\uD83D\\uDC8B\\u200D)?\\uD83E\\uDDD1\\uD83C[\\uDFFB\\uDFFD-\\uDFFF]|\\uD83C[\\uDF3E\\uDF73\\uDF7C\\uDF84\\uDF93\\uDFA4\\uDFA8\\uDFEB\\uDFED]|\\uD83D[\\uDCBB\\uDCBC\\uDD27\\uDD2C\\uDE80\\uDE92]|\\uD83E(?:[\\uDDAF-\\uDDB3\\uDDBC\\uDDBD]|\\uDD1D\\u200D\\uD83E\\uDDD1\\uD83C[\\uDFFB-\\uDFFF])))?|\\uDFFD(?:\\u200D(?:[\\u2695\\u2696\\u2708]\\uFE0F?|\\u2764\\uFE0F?\\u200D(?:\\uD83D\\uDC8B\\u200D)?\\uD83E\\uDDD1\\uD83C[\\uDFFB\\uDFFC\\uDFFE\\uDFFF]|\\uD83C[\\uDF3E\\uDF73\\uDF7C\\uDF84\\uDF93\\uDFA4\\uDFA8\\uDFEB\\uDFED]|\\uD83D[\\uDCBB\\uDCBC\\uDD27\\uDD2C\\uDE80\\uDE92]|\\uD83E(?:[\\uDDAF-\\uDDB3\\uDDBC\\uDDBD]|\\uDD1D\\u200D\\uD83E\\uDDD1\\uD83C[\\uDFFB-\\uDFFF])))?|\\uDFFE(?:\\u200D(?:[\\u2695\\u2696\\u2708]\\uFE0F?|\\u2764\\uFE0F?\\u200D(?:\\uD83D\\uDC8B\\u200D)?\\uD83E\\uDDD1\\uD83C[\\uDFFB-\\uDFFD\\uDFFF]|\\uD83C[\\uDF3E\\uDF73\\uDF7C\\uDF84\\uDF93\\uDFA4\\uDFA8\\uDFEB\\uDFED]|\\uD83D[\\uDCBB\\uDCBC\\uDD27\\uDD2C\\uDE80\\uDE92]|\\uD83E(?:[\\uDDAF-\\uDDB3\\uDDBC\\uDDBD]|\\uDD1D\\u200D\\uD83E\\uDDD1\\uD83C[\\uDFFB-\\uDFFF])))?|\\uDFFF(?:\\u200D(?:[\\u2695\\u2696\\u2708]\\uFE0F?|\\u2764\\uFE0F?\\u200D(?:\\uD83D\\uDC8B\\u200D)?\\uD83E\\uDDD1\\uD83C[\\uDFFB-\\uDFFE]|\\uD83C[\\uDF3E\\uDF73\\uDF7C\\uDF84\\uDF93\\uDFA4\\uDFA8\\uDFEB\\uDFED]|\\uD83D[\\uDCBB\\uDCBC\\uDD27\\uDD2C\\uDE80\\uDE92]|\\uD83E(?:[\\uDDAF-\\uDDB3\\uDDBC\\uDDBD]|\\uDD1D\\u200D\\uD83E\\uDDD1\\uD83C[\\uDFFB-\\uDFFF])))?))?|\\uDEF1(?:\\uD83C(?:\\uDFFB(?:\\u200D\\uD83E\\uDEF2\\uD83C[\\uDFFC-\\uDFFF])?|\\uDFFC(?:\\u200D\\uD83E\\uDEF2\\uD83C[\\uDFFB\\uDFFD-\\uDFFF])?|\\uDFFD(?:\\u200D\\uD83E\\uDEF2\\uD83C[\\uDFFB\\uDFFC\\uDFFE\\uDFFF])?|\\uDFFE(?:\\u200D\\uD83E\\uDEF2\\uD83C[\\uDFFB-\\uDFFD\\uDFFF])?|\\uDFFF(?:\\u200D\\uD83E\\uDEF2\\uD83C[\\uDFFB-\\uDFFE])?))?)'));
@@ -4273,7 +4273,7 @@ var $gren_lang$core$Array$popLast = function(array) {
 	var _v0 = $gren_lang$core$Array$last(array);
 	if (!_v0.$) {
 		var value = _v0.a;
-		return $gren_lang$core$Maybe$Just({ bi: $gren_lang$core$Array$dropLast$(1, array), aL: value });
+		return $gren_lang$core$Maybe$Just({ bk: $gren_lang$core$Array$dropLast$(1, array), aN: value });
 	} else {
 		return $gren_lang$core$Maybe$Nothing;
 	}
@@ -4288,13 +4288,13 @@ var $blaix$gren_tui$UI$normalizeWidth = function(grid) {
 			var thisRowWidth = A3($gren_lang$core$Array$foldl, $gren_lang$core$Basics$add, 0, A2($gren_lang$core$Array$map, $blaix$gren_tui$SingleLine$width, A2($gren_lang$core$Array$map, function ($) {
 							return $.l;
 						}, thisRow)));
-			var popped = $gren_lang$core$Maybe$withDefault$({ bi: [  ], aL: $blaix$gren_tui$UI$emptyCell }, $gren_lang$core$Array$popLast(thisRow));
-			var lastCellContent = popped.aL.l;
+			var popped = $gren_lang$core$Maybe$withDefault$({ bk: [  ], aN: $blaix$gren_tui$UI$emptyCell }, $gren_lang$core$Array$popLast(thisRow));
+			var lastCellContent = popped.aN.l;
 			var diff = targetWidth - thisRowWidth;
 			var lastCellTargetWidth = $blaix$gren_tui$SingleLine$width(lastCellContent) + diff;
 			var newLastCellContent = $blaix$gren_tui$SingleLine$padRight$(lastCellTargetWidth, lastCellContent);
-			var paddedCell = _Utils_update(popped.aL, { l: newLastCellContent });
-			return $gren_lang$core$Array$pushLast$(paddedCell, popped.bi);
+			var paddedCell = _Utils_update(popped.aN, { l: newLastCellContent });
+			return $gren_lang$core$Array$pushLast$(paddedCell, popped.bk);
 		}, grid);
 };
 var $blaix$gren_tui$UI$joinHorizontal$ = function(parentAttrs, grids) {
@@ -4312,17 +4312,17 @@ var $blaix$gren_tui$UI$elementToGrid = function(element) {
 	switch (element.$) {
 		case 0:
 			var _v1 = element.a;
-			var attrs = _v1.o;
-			var children = _v1.ap;
+			var attrs = _v1.p;
+			var children = _v1.aq;
 			return $blaix$gren_tui$UI$joinHorizontal$(attrs, A2($gren_lang$core$Array$map, $blaix$gren_tui$UI$elementToGrid, children));
 		case 1:
-			var children = element.a.ap;
+			var children = element.a.aq;
 			return $blaix$gren_tui$UI$joinVertical(A2($gren_lang$core$Array$map, $blaix$gren_tui$UI$elementToGrid, children));
 		default:
 			var _v2 = element.a;
-			var attrs = _v2.o;
+			var attrs = _v2.p;
 			var content = _v2.l;
-			return [ [ { o: attrs, l: content } ] ];
+			return [ [ { p: attrs, l: content } ] ];
 	}
 };
 var $blaix$gren_ansi$Ansi$NoColor = 0;
@@ -4428,7 +4428,7 @@ var $blaix$gren_tui$UI$Attribute$applyAll$ = function(attrs, str) {
 };
 var $blaix$gren_tui$UI$Attribute$applyAll = F2($blaix$gren_tui$UI$Attribute$applyAll$);
 var $blaix$gren_tui$UI$cellToString = function(cell) {
-	return $blaix$gren_tui$UI$Attribute$applyAll$(cell.o, $blaix$gren_tui$SingleLine$toString(cell.l));
+	return $blaix$gren_tui$UI$Attribute$applyAll$(cell.p, $blaix$gren_tui$SingleLine$toString(cell.l));
 };
 var $blaix$gren_tui$UI$gridToString = function(grid) {
 	return A2($gren_lang$core$String$join, '\n', A2($gren_lang$core$Array$map, $gren_lang$core$String$join(''), A2($gren_lang$core$Array$map, $gren_lang$core$Array$map($blaix$gren_tui$UI$cellToString), grid)));
@@ -4440,19 +4440,19 @@ var $blaix$gren_tui$UI$mergeAttributes$ = function(parentAttrs, element) {
 	switch (element.$) {
 		case 0:
 			var _v1 = element.a;
-			var attrs = _v1.o;
-			var children = _v1.ap;
-			return $blaix$gren_tui$UI$Row({ o: _Utils_ap(parentAttrs, attrs), ap: A2($gren_lang$core$Array$map, $blaix$gren_tui$UI$mergeAttributes(_Utils_ap(parentAttrs, attrs)), children) });
+			var attrs = _v1.p;
+			var children = _v1.aq;
+			return $blaix$gren_tui$UI$Row({ p: _Utils_ap(parentAttrs, attrs), aq: A2($gren_lang$core$Array$map, $blaix$gren_tui$UI$mergeAttributes(_Utils_ap(parentAttrs, attrs)), children) });
 		case 1:
 			var _v2 = element.a;
-			var attrs = _v2.o;
-			var children = _v2.ap;
-			return $blaix$gren_tui$UI$Col({ o: _Utils_ap(parentAttrs, attrs), ap: A2($gren_lang$core$Array$map, $blaix$gren_tui$UI$mergeAttributes(_Utils_ap(parentAttrs, attrs)), children) });
+			var attrs = _v2.p;
+			var children = _v2.aq;
+			return $blaix$gren_tui$UI$Col({ p: _Utils_ap(parentAttrs, attrs), aq: A2($gren_lang$core$Array$map, $blaix$gren_tui$UI$mergeAttributes(_Utils_ap(parentAttrs, attrs)), children) });
 		default:
 			var _v3 = element.a;
-			var attrs = _v3.o;
+			var attrs = _v3.p;
 			var content = _v3.l;
-			return $blaix$gren_tui$UI$Text({ o: _Utils_ap(parentAttrs, attrs), l: content });
+			return $blaix$gren_tui$UI$Text({ p: _Utils_ap(parentAttrs, attrs), l: content });
 	}
 };
 var $blaix$gren_tui$UI$mergeAttributes = F2($blaix$gren_tui$UI$mergeAttributes$);
@@ -4476,8 +4476,8 @@ var $blaix$gren_tui$UI$trimGridRow$ = function(maxWidth, thisRow) {
 			return thisRow;
 		} else {
 			var _v1 = popped.a;
-			var initial = _v1.bi;
-			var last = _v1.aL;
+			var initial = _v1.bk;
+			var last = _v1.aN;
 			if (_Utils_cmp(diff, $blaix$gren_tui$SingleLine$width(last.l)) > -1) {
 				var $temp$maxWidth = maxWidth,
 				$temp$thisRow = initial;
@@ -4502,8 +4502,8 @@ var $blaix$gren_tui$UI$toString$ = function(maxWidth, element) {
 var $blaix$gren_tui$UI$toString = F2($blaix$gren_tui$UI$toString$);
 var $blaix$gren_ansi$Ansi$Down = 1;
 var $blaix$gren_tui$Tui$adjustFirstRow$ = function(model, numLines) {
-	var scrolledRows = ((model.t + numLines) - 1) - model.aA;
-	var firstRowAdjusted = (scrolledRows > 0) ? (model.t - scrolledRows) : model.t;
+	var scrolledRows = ((model.v + numLines) - 1) - model.aC;
+	var firstRowAdjusted = (scrolledRows > 0) ? (model.v - scrolledRows) : model.v;
 	return (firstRowAdjusted < 1) ? 1 : firstRowAdjusted;
 };
 var $blaix$gren_tui$Tui$adjustFirstRow = F2($blaix$gren_tui$Tui$adjustFirstRow$);
@@ -4517,19 +4517,19 @@ var $blaix$gren_ansi$Ansi$moveTo$ = function(row, col) {
 };
 var $blaix$gren_ansi$Ansi$moveTo = F2($blaix$gren_ansi$Ansi$moveTo$);
 var $blaix$gren_tui$Tui$render$ = function(model, viewString) {
-	return $gren_lang$node$Stream$sendString$(model.ay, $gren_lang$core$String$append$($blaix$gren_ansi$Ansi$clearScreen(1), A2($gren_lang$core$String$prepend, $blaix$gren_ansi$Ansi$moveTo$(model.t, 0), viewString)));
+	return $gren_lang$node$Stream$sendString$(model.aA, $gren_lang$core$String$append$($blaix$gren_ansi$Ansi$clearScreen(1), A2($gren_lang$core$String$prepend, $blaix$gren_ansi$Ansi$moveTo$(model.v, 0), viewString)));
 };
 var $blaix$gren_tui$Tui$render = F2($blaix$gren_tui$Tui$render$);
 var $blaix$gren_tui$Tui$view$ = function(appView, model) {
-	var element = appView(model.T);
-	if (_Utils_eq(element, model.ag)) {
-		return { a8: $gren_lang$core$Platform$Cmd$none, bn: model };
+	var element = appView(model.U);
+	if (_Utils_eq(element, model.ah)) {
+		return { ba: $gren_lang$core$Platform$Cmd$none, bp: model };
 	} else {
-		var lines = $gren_lang$core$String$lines($blaix$gren_tui$UI$toString$(model.am, element));
+		var lines = $gren_lang$core$String$lines($blaix$gren_tui$UI$toString$(model.an, element));
 		var numLines = $gren_lang$core$Array$length(lines);
 		var newFirstRow = $blaix$gren_tui$Tui$adjustFirstRow$(model, numLines);
 		var viewString = A2($gren_lang$core$String$join, '\n', A2($gren_lang$core$Array$map, $gren_lang$core$String$append($blaix$gren_ansi$Ansi$clearLine(1)), lines));
-		return { a8: $gren_lang$core$Task$execute($blaix$gren_tui$Tui$render$(model, viewString)), bn: _Utils_update(model, { t: newFirstRow, ag: element }) };
+		return { ba: $gren_lang$core$Task$execute($blaix$gren_tui$Tui$render$(model, viewString)), bp: _Utils_update(model, { v: newFirstRow, ah: element }) };
 	}
 };
 var $blaix$gren_tui$Tui$view = F2($blaix$gren_tui$Tui$view$);
@@ -4538,37 +4538,37 @@ var $blaix$gren_tui$Tui$update$ = function(appConfig, msg, model) {
 		case 0:
 			var bytes = msg.a;
 			var input = $blaix$gren_tui$Tui$bytesToInput(bytes);
-			var doAppUpdate = $blaix$gren_tui$Tui$appUpdate$(appConfig.ct, appConfig.b8(input), model);
+			var doAppUpdate = $blaix$gren_tui$Tui$appUpdate$(appConfig.cz, appConfig.cc(input), model);
 			switch (input.$) {
 				case 10:
-					return { a8: $gren_lang$core$Task$execute($blaix$gren_tui$Tui$exit(model.ay)), bn: model };
+					return { ba: $gren_lang$core$Task$execute($blaix$gren_tui$Tui$exit(model.aA)), bp: model };
 				case 9:
 					var row = input.a;
 					var col = input.b;
-					return model.U ? doAppUpdate : { a8: $gren_lang$core$Task$execute($gren_lang$node$Stream$sendString$(model.ay, $blaix$gren_ansi$Ansi$clearLine(0))), bn: _Utils_update(model, { U: true, t: row }) };
+					return model.V ? doAppUpdate : { ba: $gren_lang$core$Task$execute($gren_lang$node$Stream$sendString$(model.aA, $blaix$gren_ansi$Ansi$clearLine(0))), bp: _Utils_update(model, { V: true, v: row }) };
 				default:
 					return doAppUpdate;
 			}
 		case 1:
 			var _v2 = msg.a;
-			var rows = _v2.O;
-			var columns = _v2.I;
-			var oldViewString = $blaix$gren_tui$UI$toString$(model.am, model.ag);
+			var rows = _v2.P;
+			var columns = _v2.J;
+			var oldViewString = $blaix$gren_tui$UI$toString$(model.an, model.ah);
 			var wrappedLines = $gren_lang$core$Array$any$(function(w) {
 					return _Utils_cmp(w, columns) > 0;
 				}, A2($gren_lang$core$Array$map, $blaix$gren_ansi$Ansi$width, $gren_lang$core$String$lines(oldViewString)));
-			var newFirstRow = wrappedLines ? 1 : model.t;
-			var cmd = wrappedLines ? $gren_lang$core$Task$execute($gren_lang$node$Stream$sendString$(model.ay, $blaix$gren_ansi$Ansi$clearScreen(2))) : $gren_lang$core$Platform$Cmd$none;
-			return { a8: cmd, bn: _Utils_update(model, { t: newFirstRow, ag: $blaix$gren_tui$UI$text$([  ], ''), am: columns, aA: rows }) };
+			var newFirstRow = wrappedLines ? 1 : model.v;
+			var cmd = wrappedLines ? $gren_lang$core$Task$execute($gren_lang$node$Stream$sendString$(model.aA, $blaix$gren_ansi$Ansi$clearScreen(2))) : $gren_lang$core$Platform$Cmd$none;
+			return { ba: cmd, bp: _Utils_update(model, { v: newFirstRow, ah: $blaix$gren_tui$UI$text$([  ], ''), an: columns, aC: rows }) };
 		case 2:
 			var appMsg = msg.a;
-			return $blaix$gren_tui$Tui$appUpdate$(appConfig.ct, appMsg, model);
+			return $blaix$gren_tui$Tui$appUpdate$(appConfig.cz, appMsg, model);
 		default:
-			var viewResult = $blaix$gren_tui$Tui$view$(appConfig.cA, model);
-			var _v3 = { bH: model.aC, cf: model.U };
-			if (_v3.cf && (!_v3.bH.$)) {
-				var cmd = _v3.bH.a;
-				return { a8: $gren_lang$core$Platform$Cmd$batch([ viewResult.a8, A2($gren_lang$core$Platform$Cmd$map, $blaix$gren_tui$Tui$AppMsg, cmd) ]), bn: _Utils_update(viewResult.bn, { aC: $gren_lang$core$Maybe$Nothing }) };
+			var viewResult = $blaix$gren_tui$Tui$view$(appConfig.cG, model);
+			var _v3 = { bK: model.aE, ck: model.V };
+			if (_v3.ck && (!_v3.bK.$)) {
+				var cmd = _v3.bK.a;
+				return { ba: $gren_lang$core$Platform$Cmd$batch([ viewResult.ba, A2($gren_lang$core$Platform$Cmd$map, $blaix$gren_tui$Tui$AppMsg, cmd) ]), bp: _Utils_update(viewResult.bp, { aE: $gren_lang$core$Maybe$Nothing }) };
 			} else {
 				return viewResult;
 			}
@@ -4576,7 +4576,7 @@ var $blaix$gren_tui$Tui$update$ = function(appConfig, msg, model) {
 };
 var $blaix$gren_tui$Tui$update = F3($blaix$gren_tui$Tui$update$);
 var $blaix$gren_tui$Tui$defineProgram = function(appConfig) {
-	return $gren_lang$node$Node$defineProgram({ b1: $blaix$gren_tui$Tui$init(appConfig.b1), co: $blaix$gren_tui$Tui$subscriptions(appConfig.co), ct: $blaix$gren_tui$Tui$update(appConfig) });
+	return $gren_lang$node$Node$defineProgram({ b4: $blaix$gren_tui$Tui$init(appConfig.b4), ct: $blaix$gren_tui$Tui$subscriptions(appConfig.ct), cz: $blaix$gren_tui$Tui$update(appConfig) });
 };
 var $author$project$Main$Game = function (a) {
 	return { $: 1, a: a };
@@ -4586,7 +4586,6 @@ var $blaix$gren_tui$Tui$hideCursor = function(stdout) {
 	return $gren_lang$node$Stream$sendString$(stdout, $blaix$gren_ansi$Ansi$hideCursor);
 };
 var $author$project$Game$Idle = 0;
-var $author$project$Game$initFps = 20;
 var $author$project$Game$Escaping = { $: 1 };
 var $author$project$Helpers$arrayIndexedMap = $gren_lang$core$Array$indexedMap;
 var $author$project$Game$Ghost = 1;
@@ -4642,22 +4641,21 @@ var _Math_log10 = Math.log10;
 var $gren_lang$core$Math$modBy = _Math_modBy;
 var $author$project$Helpers$modBy = $gren_lang$core$Math$modBy;
 var $author$project$Game$initGhost$ = function(positionSpawnGhosts, index) {
-	return { aD: $gren_lang$core$Maybe$withDefault$('', A2($gren_lang$core$Array$get, A2($author$project$Helpers$modBy, $author$project$Game$ghostsTypes, index), $author$project$Game$charGhosts)), h: 2, aI: 1, b: positionSpawnGhosts.b, c: positionSpawnGhosts.c };
+	return { aF: $gren_lang$core$Maybe$withDefault$('', A2($gren_lang$core$Array$get, A2($author$project$Helpers$modBy, $author$project$Game$ghostsTypes, index), $author$project$Game$charGhosts)), h: 2, aK: 1, b: positionSpawnGhosts.b, c: positionSpawnGhosts.c };
 };
 var $author$project$Game$initGhost = F2($author$project$Game$initGhost$);
 var $author$project$Game$Player = 0;
-var $author$project$Game$playerShapes = { aG: '∩', aJ: '☻', aM: '⊃', aw: 'c', a1: 'u' };
+var $author$project$Game$playerShapes = { aI: '∩', aL: '☻', aO: '⊃', ay: 'c', a3: 'u' };
 var $author$project$Game$initPlayer = function(positionAndDirectionSpawnPlayer) {
-	return { aD: $author$project$Game$playerShapes.aw, h: positionAndDirectionSpawnPlayer.h, aI: 0, b: positionAndDirectionSpawnPlayer.b, c: positionAndDirectionSpawnPlayer.c };
+	return { aF: $author$project$Game$playerShapes.ay, h: positionAndDirectionSpawnPlayer.h, aK: 0, b: positionAndDirectionSpawnPlayer.b, c: positionAndDirectionSpawnPlayer.c };
 };
 var $author$project$Game$initGame_$ = function(level, args) {
 	var ghosts = A2($author$project$Helpers$arrayIndexedMap, F2(function(index, _v0) {
-				return $author$project$Game$initGhost$(level.ah, index);
-			}), $gren_lang$core$Array$repeat$(args.M, 0));
-	return { i: 0, x: args.y, n: level.n, d: ghosts, _: level.n, g: level, j: false, m: $author$project$Game$initPlayer(level.bv), k: $author$project$Game$Escaping, v: 0, a: args.a };
+				return $author$project$Game$initGhost$(level.ai, index);
+			}), $gren_lang$core$Array$repeat$(args.E, 0));
+	return { i: 0, s: args.x, n: level.n, d: ghosts, aa: level.n, g: level, j: false, m: $author$project$Game$initPlayer(level.bx), k: $author$project$Game$Escaping, y: 0, a: args.a };
 };
 var $author$project$Game$initGame_ = F2($author$project$Game$initGame_$);
-var $author$project$Game$initGhostsQuantity = 30;
 var $gren_lang$core$String$dropLeft$ = function(n, string) {
 	return (n < 1) ? string : A3($gren_lang$core$String$slice, n, $gren_lang$core$String$length(string), string);
 };
@@ -4718,24 +4716,24 @@ var $author$project$Game$findCharInBoard = F2($author$project$Game$findCharInBoa
 var $author$project$Game$Down = 1;
 var $author$project$Game$Right = 3;
 var $author$project$Game$Up = 0;
-var $author$project$Game$tiles = { G: '+', K: '●', Y: '•', aP: '=', aQ: '*', aR: '†', aS: '↓', aT: '←', aU: '→', aV: '↑', aY: '↔', aZ: '↕' };
+var $author$project$Game$tiles = { H: '+', L: '●', Z: '•', aR: '=', aS: '*', aT: '†', aU: '↓', aV: '←', aW: '→', aX: '↑', a_: '↔', a$: '↕' };
 var $author$project$Game$getPositionAndDirectionSpawnPlayer = function(board) {
-	var _v0 = A2($gren_lang$core$Array$get, 0, $author$project$Game$findCharInBoard$($author$project$Game$tiles.aT, board));
+	var _v0 = A2($gren_lang$core$Array$get, 0, $author$project$Game$findCharInBoard$($author$project$Game$tiles.aV, board));
 	if (!_v0.$) {
 		var p = _v0.a;
 		return { h: 2, b: p.b, c: p.c };
 	} else {
-		var _v1 = A2($gren_lang$core$Array$get, 0, $author$project$Game$findCharInBoard$($author$project$Game$tiles.aV, board));
+		var _v1 = A2($gren_lang$core$Array$get, 0, $author$project$Game$findCharInBoard$($author$project$Game$tiles.aX, board));
 		if (!_v1.$) {
 			var p = _v1.a;
 			return { h: 0, b: p.b, c: p.c };
 		} else {
-			var _v2 = A2($gren_lang$core$Array$get, 0, $author$project$Game$findCharInBoard$($author$project$Game$tiles.aU, board));
+			var _v2 = A2($gren_lang$core$Array$get, 0, $author$project$Game$findCharInBoard$($author$project$Game$tiles.aW, board));
 			if (!_v2.$) {
 				var p = _v2.a;
 				return { h: 3, b: p.b, c: p.c };
 			} else {
-				var _v3 = A2($gren_lang$core$Array$get, 0, $author$project$Game$findCharInBoard$($author$project$Game$tiles.aS, board));
+				var _v3 = A2($gren_lang$core$Array$get, 0, $author$project$Game$findCharInBoard$($author$project$Game$tiles.aU, board));
 				if (!_v3.$) {
 					var p = _v3.a;
 					return { h: 1, b: p.b, c: p.c };
@@ -4747,7 +4745,7 @@ var $author$project$Game$getPositionAndDirectionSpawnPlayer = function(board) {
 	}
 };
 var $author$project$Game$getPositionSpawnGhosts = function(board) {
-	var _v0 = A2($gren_lang$core$Array$get, 0, $author$project$Game$findCharInBoard$($author$project$Game$tiles.aR, board));
+	var _v0 = A2($gren_lang$core$Array$get, 0, $author$project$Game$findCharInBoard$($author$project$Game$tiles.aT, board));
 	if (!_v0.$) {
 		var p = _v0.a;
 		return { b: p.b, c: p.c };
@@ -4761,8 +4759,8 @@ var $author$project$Game$replace$ = function(a, b, board) {
 var $author$project$Game$replace = F3($author$project$Game$replace$);
 var $author$project$Game$removeMarkingTiles = function(board) {
 	return A3($gren_lang$core$Array$foldl, F2(function(_char, acc) {
-				return $author$project$Game$replace$(_char, $author$project$Game$tiles.G, acc);
-			}), board, $author$project$Helpers$arrayFromList([ $author$project$Game$tiles.aT, $author$project$Game$tiles.aV, $author$project$Game$tiles.aU, $author$project$Game$tiles.aS, $author$project$Game$tiles.aR, $author$project$Game$tiles.aZ, $author$project$Game$tiles.aY ]));
+				return $author$project$Game$replace$(_char, $author$project$Game$tiles.H, acc);
+			}), board, $author$project$Helpers$arrayFromList([ $author$project$Game$tiles.aV, $author$project$Game$tiles.aX, $author$project$Game$tiles.aW, $author$project$Game$tiles.aU, $author$project$Game$tiles.aT, $author$project$Game$tiles.a$, $author$project$Game$tiles.a_ ]));
 };
 var $author$project$Helpers$stringJoin = $gren_lang$core$String$join;
 var $author$project$Game$boardToLevel = function(board) {
@@ -4775,7 +4773,7 @@ var $author$project$Game$boardToLevel = function(board) {
 				var _v2 = A2($gren_lang$core$Array$get, 1, teleports_);
 				if (!_v2.$) {
 					var b = _v2.a;
-					return $gren_lang$core$Maybe$Just({ S: a, W: b });
+					return $gren_lang$core$Maybe$Just({ T: a, X: b });
 				} else {
 					return $gren_lang$core$Maybe$Nothing;
 				}
@@ -4791,27 +4789,31 @@ var $author$project$Game$boardToLevel = function(board) {
 					} else {
 						return acc;
 					}
-				}), $gren_lang$core$Array$empty, $author$project$Helpers$arrayFromList([ $author$project$Game$tiles.aY, $author$project$Game$tiles.aZ ]));
+				}), $gren_lang$core$Array$empty, $author$project$Helpers$arrayFromList([ $author$project$Game$tiles.a_, $author$project$Game$tiles.a$ ]));
 	}();
 	var boardWidth = $gren_lang$core$Maybe$withDefault$(10, $gren_lang$core$Maybe$map$($gren_lang$core$String$length, A2($gren_lang$core$Array$get, 0, board)));
-	var boardDots = $author$project$Helpers$countOccurrences$($author$project$Helpers$arrayFromList([ $author$project$Game$tiles.K, $author$project$Game$tiles.Y ]), A2($author$project$Helpers$stringJoin, '', board));
-	return { C: $author$project$Game$removeMarkingTiles(board), n: boardDots, be: $gren_lang$core$Array$length(board), bv: $author$project$Game$getPositionAndDirectionSpawnPlayer(board), ah: $author$project$Game$getPositionSpawnGhosts(board), bD: teleports, a2: boardWidth };
+	var boardDots = $author$project$Helpers$countOccurrences$($author$project$Helpers$arrayFromList([ $author$project$Game$tiles.L, $author$project$Game$tiles.Z ]), A2($author$project$Helpers$stringJoin, '', board));
+	return { C: $author$project$Game$removeMarkingTiles(board), n: boardDots, bg: $gren_lang$core$Array$length(board), bx: $author$project$Game$getPositionAndDirectionSpawnPlayer(board), ai: $author$project$Game$getPositionSpawnGhosts(board), bF: teleports, a4: boardWidth };
 };
 var $author$project$Game$level0 = $author$project$Game$boardToLevel($author$project$Game$board0);
 var $author$project$Game$board1 = $author$project$Helpers$arrayFromList([ '──────────────────────────────────────────────────────────╮', '↔ → • • • • • • • • • • • • • • • • • • • • • • • • • • • │', '╭─────────────────────────────────────────────────────╮ • │', '│ • • • • • • • • • • • • • • • ● • • • • • • • • • • │ • │', '│ • ╭─────────────────────────────────────────────╮ • │ • │', '│ • │ • • • • • • • • • • • • • • • • • • • • • • │ • │ • │', '│ • │ • ╭─────────────────────────────────────╮ • │ • │ • │', '│ • │ • │ • • • • • • • • • • • ● • • • • • • │ • │ • │ • │', '│ • │ • │ • ╭─────────────────────────────╮ • │ • │ • │ • │', '│ • │ • │ • │ • • • • • • • • • • • • • • │ • │ • │ • │ • │', '│ • │ • │ • │ • ╭─────────────────────╮ • │ • │ • │ • │ • │', '│ • │ • │ • │ • │ • • • • • • • • • • │ • │ • │ • │ • │ • │', '│ • │ • │ • │ • │ • ╭─────────────╮ • │ • │ • │ • │ • │ • │', '│ • │ • │ • │ • │ • │ • • • • • • │ • │ • │ • │ • │ • │ • │', '│ • │ • │ • │ • │ • │ • ╭─────╮ • │ • │ • │ • │ • │ • │ • │', '│ • │ † │ • │ • │ • │ • │ • ↔ │ • │ • │ • │ • │ • │ • │ • │', '│ • │ • │ • │ • │ • │ • │ • ──╯ • │ • │ • │ • │ • │ • │ • │', '│ • │ • │ • │ • │ • │ • │ • • • • │ • │ • │ • │ • │ • │ • │', '│ • │ • │ • │ • │ • │ • ╰─────────╯ • │ • │ • │ • │ • │ • │', '│ • │ • │ • │ • │ • │ • • • • • • • • │ • │ • │ • │ • │ • │', '│ • │ • │ • │ • │ • ╰─────────────────╯ • │ • │ • │ • │ • │', '│ • │ • │ • │ • │ • • • • • • • • • • • • │ • │ • │ • │ • │', '│ • │ • │ • │ • ╰─────────────────────────╯ • │ • │ • │ • │', '│ • │ • │ • │ • • • • • • • • • • • • • • • • │ • │ • │ • │', '│ • │ • │ • ╰─────────────────────────────────╯ • │ • │ • │', '│ • │ • │ • • • • • • • • • • • • • • • • • • • • │ • │ • │', '│ • │ • ╰─────────────────────────────────────────╯ • │ • │', '│ • │ • • • • • • • • • • • • • • • • • • • • • • • • │ • │', '│ • ╰─────────────────────────────────────────────────╯ • │', '│ • • • • • • • • • • • • • • • • • • • • • • • • • • • • │', '╰─────────────────────────────────────────────────────────╯' ]);
 var $author$project$Game$board2 = $author$project$Helpers$arrayFromList([ '╭───────────────────────────────╮ ↕ ╭─────────╮', '│                               │ • │         │', '╰───────────────────────────────╯ • │         │', '↔ • • • • • • • • • • • • • • • • • │         │', '╭─────────╮ • ╭─────╮ • ╭───────╮ • │         │', '│         │ ● │     │ • │       │ • │         │', '│         │ • ╰─────╯ • ╰───────╯ • │         │', '│         │ • • • • • • • • • • • ↑ │         │', '│         │ • ╭─────╮ • ╭─╮ • ╭─────╯         │', '│         │ • │     │ • │ │ • │               │', '│         │ • ╰─────╯ • │ │ • ╰───────────────╯', '│         │ • • • • • • │ │ • • • • • • • • • ↔', '│         │ • ╭─────╮ = │ ╰───────────────────╮', '│         │ • │     │ = ╰───╮                 │', '│         │ • │     │ = = † │                 │', '│         │ • │     ╰───────╯                 │', '╰─────────╯ ↕ ╰───────────────────────────────╯' ]);
 var $author$project$Game$board3 = $author$project$Helpers$arrayFromList([ '╭─────────────────────────────────────────────────────────────────╮', '│ • • • • • • • • • ● • • • • • • • • • • • • • • • • • • • • • • │', '│ • ╭─────────────╮ • ╭───────────────────────────────────────╮ • │', '│ • │ ╭───────────╯ • ╰─────────────────────────────────────╮ │ • │', '│ • │ │╭╮╭╮╭╮╭╮╭╮╭╮ • ╭╮╭╮╭╮╭╮╭╮╭╮╭╮╭╮╭╮╭╮╭╮╭╮╭╮╭╮╭╮╭╮╭╮╭╮╭╮│ │ • │', '│ • │ ╰╯╰╯╰╯╰╯╰╯╰╯│ • │╰╯╰╯╰╯╰╯╰╯╰╯╰╯╰╯╰╯╰╯╰╯╰╯╰╯╰╯╰╯╰╯╰╯╰╯╰╯ │ • │', '│ • │ ╭─────────╮ │ • ╰───────────────────────────────────────╯ • │', '│ • ╰─╯ ╭───────╯ │ • • • • • • • • • • • • • • • • • • • • • • • │', '│ • = † │╭╮╭╮╭╮╭╮╭╯ • ╭╮╭╮╭╮╭╮╭╮╭╮╭╮╭╮╭╮╭╮╭╮╭╮╭╮╭╮╭╮╭╮╭╮╭╮╭╮╭─╮ ↓ │', '│ • = = ╰╯╰╯╰╯╰╯╰╯  • │╰╯╰╯╰╯╰╯╰╯╰╯╰╯╰╯╰╯╰╯╰╯╰╯╰╯╰╯╰╯╰╯╰╯╰╯╰╯ │ • │', '│ • ╭─────────────╮ • ╰───────────────────────────────────────╯ • │', '│ • │ ╭───────────╯ • • • • • • • • • • • • • • • • • • • • • • • │', '│ • │ │╭╮╭╮╭╮╭╮╭╮╭╮ • ╭╮╭╮╭╮╭╮╭╮╭╮╭╮╭╮╭╮╭╮╭╮╭╮╭╮╭╮╭╮╭╮╭╮╭╮╭╮╭─╮ • │', '│ • │ ╰╯╰╯╰╯╰╯╰╯╰╯│ • │╰╯╰╯╰╯╰╯╰╯╰╯╰╯╰╯╰╯╰╯╰╯╰╯╰╯╰╯╰╯╰╯╰╯╰╯╰╯ │ • │', '│ • │ ╭╮╭╮╭╮╭╮╭╮╭╮│ • │╭╮╭╮╭╮╭╮╭╮╭╮╭╮╭╮╭╮╭╮╭╮╭╮╭╮╭╮╭╮╭╮╭╮╭╮╭╮ │ • │', '│ • ╰─╯╰╯╰╯╰╯╰╯╰╯╰╯ • ╰╯╰╯╰╯╰╯╰╯╰╯╰╯╰╯╰╯╰╯╰╯╰╯╰╯╰╯╰╯╰╯╰╯╰╯╰╯╰─╯ • │', '│ • • • • • • • • • • • • • • • • • • • • • • • • • • • • • ● • • │', '╰─────────────────────────────────────────────────────────────────╯' ]);
 var $author$project$Game$levels = $author$project$Helpers$arrayFromList([ $author$project$Game$level0, $author$project$Game$boardToLevel($author$project$Game$board1), $author$project$Game$boardToLevel($author$project$Game$board2), $author$project$Game$boardToLevel($author$project$Game$board3) ]);
-var $author$project$Game$initModel = function(_v0) {
-	var levelId = _v0.y;
-	var game = $author$project$Game$initGame_$($gren_lang$core$Maybe$withDefault$($author$project$Game$level0, A2($gren_lang$core$Array$get, levelId, $author$project$Game$levels)), { M: $author$project$Game$initGhostsQuantity, y: levelId, a: 0 });
-	return { i: game.i, x: game.x, aF: false, n: game.n, p: $author$project$Game$initFps, d: game.d, _: game._, ac: '', g: game.g, j: game.j, m: game.m, k: game.k, v: game.v, w: false, a: game.a };
+var $author$project$Game$initModel$ = function(_v0, args, _v1) {
+	var levelId = _v0.x;
+	var isRunningInTerminal = _v1.b5;
+	var game = $author$project$Game$initGame_$($gren_lang$core$Maybe$withDefault$($author$project$Game$level0, A2($gren_lang$core$Array$get, levelId, $author$project$Game$levels)), { E: args.au, x: levelId, a: 0 });
+	return { i: game.i, s: game.s, aH: false, n: game.n, o: args.N, d: game.d, N: args.N, au: args.au, aa: game.aa, b5: isRunningInTerminal, ad: '', g: game.g, j: game.j, m: game.m, k: game.k, y: game.y, q: false, a: game.a };
 };
-var $author$project$Game$init = { a8: $gren_lang$core$Platform$Cmd$none, bn: $author$project$Game$initModel({ y: 0 }) };
+var $author$project$Game$initModel = F3($author$project$Game$initModel$);
+var $author$project$Game$init = function(isRunningInTerminal) {
+	return { ba: $gren_lang$core$Platform$Cmd$none, bp: $author$project$Game$initModel$({ x: 0 }, { N: 30, au: 20 }, isRunningInTerminal) };
+};
 var $author$project$Main$init = function(env) {
 	return function(game) {
-		return $gren_lang$node$Node$startProgram({ a8: $gren_lang$core$Platform$Cmd$batch([ $gren_lang$core$Task$execute($blaix$gren_tui$Tui$hideCursor(env.ay)), A2($gren_lang$core$Platform$Cmd$map, $author$project$Main$Game, game.a8) ]), bn: { u: game.bn, ay: env.ay } });
-	}($author$project$Game$init);
+		return $gren_lang$node$Node$startProgram({ ba: $gren_lang$core$Platform$Cmd$batch([ $gren_lang$core$Task$execute($blaix$gren_tui$Tui$hideCursor(env.aA)), A2($gren_lang$core$Platform$Cmd$map, $author$project$Main$Game, game.ba) ]), bp: { w: game.bp, aA: env.aA } });
+	}($author$project$Game$init({ b5: true }));
 };
 var $author$project$Game$Every = function (a) {
 	return { $: 0, a: a };
@@ -4823,10 +4825,10 @@ var $gren_lang$core$Math$round = _Math_round;
 var $author$project$Helpers$round = $gren_lang$core$Math$round;
 var $gren_lang$core$Basics$toFloat = _Basics_toFloat;
 var $author$project$Game$subscriptions = function(model) {
-	return (model.j || ((model.a === 2) || ((model.a === 3) || (model.a === 4)))) ? $gren_lang$core$Platform$Sub$none : $gren_lang$core$Time$every$($author$project$Helpers$round(1000 / model.p), $author$project$Game$Every);
+	return (model.j || ((model.a === 2) || ((model.a === 3) || (model.a === 4)))) ? $gren_lang$core$Platform$Sub$none : $gren_lang$core$Time$every$($author$project$Helpers$round(1000 / model.o), $author$project$Game$Every);
 };
 var $author$project$Main$subscriptions = function(model) {
-	return A2($gren_lang$core$Platform$Sub$map, $author$project$Main$Game, $author$project$Game$subscriptions(model.u));
+	return A2($gren_lang$core$Platform$Sub$map, $author$project$Main$Game, $author$project$Game$subscriptions(model.w));
 };
 var $gren_lang$core$Json$Decode$succeed = _Json_succeed;
 var $author$project$Game$OnKeyDown = function (a) {
@@ -4864,25 +4866,25 @@ var $author$project$Game$boardSetDoubleWidth = $author$project$Game$boardSetHelp
 	});
 var $author$project$Game$playerChar$ = function(counter, character) {
 	if (A2($author$project$Helpers$modBy, 4, counter) > 1) {
-		return $author$project$Game$playerShapes.aJ;
+		return $author$project$Game$playerShapes.aL;
 	} else {
 		var _v0 = character.h;
 		switch (_v0) {
 			case 0:
-				return $author$project$Game$playerShapes.a1;
+				return $author$project$Game$playerShapes.a3;
 			case 1:
-				return $author$project$Game$playerShapes.aG;
+				return $author$project$Game$playerShapes.aI;
 			case 2:
-				return $author$project$Game$playerShapes.aM;
+				return $author$project$Game$playerShapes.aO;
 			default:
-				return $author$project$Game$playerShapes.aw;
+				return $author$project$Game$playerShapes.ay;
 		}
 	}
 };
 var $author$project$Game$playerChar = F2($author$project$Game$playerChar$);
 var $author$project$Game$setCharacters$ = function(counter, board, characters) {
 	return A3($gren_lang$core$Array$foldl, F2(function(character, level_) {
-				return (!character.aI) ? A3($author$project$Game$boardSetDoubleWidth, $author$project$Game$playerChar$(counter, character), { b: character.b, c: character.c }, level_) : A3($author$project$Game$boardSetDoubleWidth, character.aD, { b: character.b, c: character.c }, level_);
+				return (!character.aK) ? A3($author$project$Game$boardSetDoubleWidth, $author$project$Game$playerChar$(counter, character), { b: character.b, c: character.c }, level_) : A3($author$project$Game$boardSetDoubleWidth, character.aF, { b: character.b, c: character.c }, level_);
 			}), board, characters);
 };
 var $author$project$Game$setCharacters = F3($author$project$Game$setCharacters$);
@@ -4898,13 +4900,13 @@ var $gren_lang$core$Array$range$ = function(from, to) {
 };
 var $gren_lang$core$Array$range = F2($gren_lang$core$Array$range$);
 var $author$project$Helpers$arrayRange = $gren_lang$core$Array$range;
-var $author$project$Game$charsPlayer = $author$project$Helpers$arrayFromList([ $author$project$Game$playerShapes.aJ, $author$project$Game$playerShapes.a1, $author$project$Game$playerShapes.aG, $author$project$Game$playerShapes.aM, $author$project$Game$playerShapes.aw ]);
-var $author$project$Game$tilesWhereGhostCanGoWithShield = $author$project$Helpers$arrayFromList([ $author$project$Game$tiles.Y, $author$project$Game$tiles.K, $author$project$Game$tiles.aP, $author$project$Game$tiles.G ]);
+var $author$project$Game$charsPlayer = $author$project$Helpers$arrayFromList([ $author$project$Game$playerShapes.aL, $author$project$Game$playerShapes.a3, $author$project$Game$playerShapes.aI, $author$project$Game$playerShapes.aO, $author$project$Game$playerShapes.ay ]);
+var $author$project$Game$tilesWhereGhostCanGoWithShield = $author$project$Helpers$arrayFromList([ $author$project$Game$tiles.Z, $author$project$Game$tiles.L, $author$project$Game$tiles.aR, $author$project$Game$tiles.H ]);
 var $gren_lang$core$Array$prepend = _Array_append;
 var $author$project$Helpers$arrayPrepend = $gren_lang$core$Array$prepend;
 var $author$project$Game$tilesWhereGhostCanGoWithoutShield = A2($author$project$Helpers$arrayPrepend, $author$project$Game$tilesWhereGhostCanGoWithShield, $author$project$Game$charsPlayer);
 var $author$project$Game$canGoGhost$ = function(_v0, _char) {
-	var isShield = _v0.bj;
+	var isShield = _v0.bl;
 	return isShield ? A2($author$project$Helpers$arrayMember, _char, $author$project$Game$tilesWhereGhostCanGoWithShield) : A2($author$project$Helpers$arrayMember, _char, $author$project$Game$tilesWhereGhostCanGoWithoutShield);
 };
 var $author$project$Game$canGoGhost = F2($author$project$Game$canGoGhost$);
@@ -4949,7 +4951,7 @@ var $author$project$Game$oppositeDirection = function(direction) {
 };
 var $author$project$Game$ghostAvailableDirections$ = function(isShield, character, board) {
 	return A3($gren_lang$core$Array$foldl, F2(function(direction, acc) {
-				return _Utils_eq(direction, $author$project$Game$oppositeDirection(character.h)) ? acc : ($author$project$Game$canGoGhost$({ bj: isShield }, $author$project$Game$levelGet$($author$project$Game$move$(direction, character), board)) ? A2($author$project$Helpers$arrayPushLast, direction, acc) : acc);
+				return _Utils_eq(direction, $author$project$Game$oppositeDirection(character.h)) ? acc : ($author$project$Game$canGoGhost$({ bl: isShield }, $author$project$Game$levelGet$($author$project$Game$move$(direction, character), board)) ? A2($author$project$Helpers$arrayPushLast, direction, acc) : acc);
 			}), $gren_lang$core$Array$empty, $author$project$Game$directions);
 };
 var $author$project$Game$ghostAvailableDirections = F3($author$project$Game$ghostAvailableDirections$);
@@ -4972,7 +4974,7 @@ var $author$project$Game$ghostsMoveLogic$ = function(isShield, posix, board, cha
 		var direction = $gren_lang$core$Maybe$withDefault$(2, A2($gren_lang$core$Array$get, index, avDirections));
 		return $author$project$Game$moveCharacter(_Utils_update(character, { h: direction }));
 	} else {
-		return $author$project$Game$moveIfPossibleGhost$({ bj: isShield }, board, _Utils_update(character, { h: $author$project$Game$oppositeDirection(character.h) }));
+		return $author$project$Game$moveIfPossibleGhost$({ bl: isShield }, board, _Utils_update(character, { h: $author$project$Game$oppositeDirection(character.h) }));
 	}
 };
 var $author$project$Game$ghostsMoveLogic = F4($author$project$Game$ghostsMoveLogic$);
@@ -4983,18 +4985,18 @@ var $author$project$Game$calculateNewGhostsPositions$ = function(model, newPlaye
 				if (!_v0.$) {
 					var ghost = _v0.a;
 					var tempLevelWithPlayerAndGhosts = $author$project$Game$addPlayerAndGhostsToLevel$(model.a, model.i, acc.d, newPlayer, model.g.C);
-					var ghostInNewPosition = $author$project$Game$ghostsMoveLogic$(model.w, posix, tempLevelWithPlayerAndGhosts, ghost);
+					var ghostInNewPosition = $author$project$Game$ghostsMoveLogic$(model.q, posix, tempLevelWithPlayerAndGhosts, ghost);
 					var isHit = function(_char) {
 						return A2($author$project$Helpers$arrayMember, _char, $author$project$Game$charsPlayer);
 					}($author$project$Game$levelGet$(ghostInNewPosition, tempLevelWithPlayerAndGhosts));
-					return { d: A3($gren_lang$core$Array$set, index, ((!_Utils_eq(model.k, $author$project$Game$Escaping)) && isHit) ? _Utils_update(ghostInNewPosition, { b: model.g.ah.b, c: model.g.ah.c }) : ghostInNewPosition, acc.d), aa: isHit ? true : acc.aa };
+					return { d: A3($gren_lang$core$Array$set, index, ((!_Utils_eq(model.k, $author$project$Game$Escaping)) && isHit) ? _Utils_update(ghostInNewPosition, { b: model.g.ai.b, c: model.g.ai.c }) : ghostInNewPosition, acc.d), ab: isHit ? true : acc.ab };
 				} else {
 					return acc;
 				}
-			}), { d: model.d, aa: false }, A2($author$project$Helpers$arrayRange, 0, $gren_lang$core$Array$length(model.d)));
+			}), { d: model.d, ab: false }, A2($author$project$Helpers$arrayRange, 0, $gren_lang$core$Array$length(model.d)));
 };
 var $author$project$Game$calculateNewGhostsPositions = F3($author$project$Game$calculateNewGhostsPositions$);
-var $author$project$Game$tilesWherePlayerCanGo = $author$project$Helpers$arrayFromList([ $author$project$Game$tiles.Y, $author$project$Game$tiles.K, $author$project$Game$tiles.G, $author$project$Game$tiles.aQ ]);
+var $author$project$Game$tilesWherePlayerCanGo = $author$project$Helpers$arrayFromList([ $author$project$Game$tiles.Z, $author$project$Game$tiles.L, $author$project$Game$tiles.H, $author$project$Game$tiles.aS ]);
 var $author$project$Game$canGoPlayer = function(_char) {
 	return A2($author$project$Helpers$arrayMember, _char, $author$project$Game$tilesWherePlayerCanGo);
 };
@@ -5012,17 +5014,17 @@ var $author$project$Game$handleChangeDirectionOfPlayer$ = function(key, player, 
 };
 var $author$project$Game$handleChangeDirectionOfPlayer = F3($author$project$Game$handleChangeDirectionOfPlayer$);
 var $author$project$Game$initGame$ = function(args, model) {
-	var _v0 = A2($gren_lang$core$Array$get, args.y, $author$project$Game$levels);
+	var _v0 = A2($gren_lang$core$Array$get, args.x, $author$project$Game$levels);
 	if (!_v0.$) {
 		var level = _v0.a;
 		var game = $author$project$Game$initGame_$(level, args);
-		return _Utils_update(model, { i: game.i, x: game.x, n: game.n, d: game.d, _: game._, g: game.g, j: game.j, m: game.m, k: game.k, v: game.v, a: game.a });
+		return _Utils_update(model, { i: game.i, s: game.s, n: game.n, d: game.d, aa: game.aa, g: game.g, j: game.j, m: game.m, k: game.k, y: game.y, a: game.a });
 	} else {
 		return model;
 	}
 };
 var $author$project$Game$initGame = F2($author$project$Game$initGame$);
-var $author$project$Game$charsInDots = $author$project$Helpers$arrayFromList([ $author$project$Game$tiles.K, $author$project$Game$tiles.Y ]);
+var $author$project$Game$charsInDots = $author$project$Helpers$arrayFromList([ $author$project$Game$tiles.L, $author$project$Game$tiles.Z ]);
 var $author$project$Game$isDot = function(_char) {
 	return A2($author$project$Helpers$arrayMember, _char, $author$project$Game$charsInDots);
 };
@@ -5034,7 +5036,7 @@ var $author$project$Game$moveIfPossiblePlayer = F2($author$project$Game$moveIfPo
 var $gren_lang$core$Basics$not = _Basics_not;
 var $author$project$Game$teleportPlayer$ = function(teleports, character) {
 	return A3($gren_lang$core$Array$foldl, F2(function(teleport, acc) {
-				return (_Utils_eq(acc.b, teleport.S.b) && _Utils_eq(acc.c, teleport.S.c)) ? _Utils_update(acc, { b: teleport.W.b, c: teleport.W.c }) : ((_Utils_eq(acc.b, teleport.W.b) && _Utils_eq(acc.c, teleport.W.c)) ? _Utils_update(acc, { b: teleport.S.b, c: teleport.S.c }) : acc);
+				return (_Utils_eq(acc.b, teleport.T.b) && _Utils_eq(acc.c, teleport.T.c)) ? _Utils_update(acc, { b: teleport.X.b, c: teleport.X.c }) : ((_Utils_eq(acc.b, teleport.X.b) && _Utils_eq(acc.c, teleport.X.c)) ? _Utils_update(acc, { b: teleport.T.b, c: teleport.T.c }) : acc);
 			}), character, teleports);
 };
 var $author$project$Game$teleportPlayer = F2($author$project$Game$teleportPlayer$);
@@ -5042,13 +5044,13 @@ var $author$project$Game$update_$ = function(msg, model) {
 	if (msg.$ === 1) {
 		var key = msg.a;
 		return function(m) {
-			return ((!m.a) || ((m.a === 3) || ((m.a === 4) || (m.a === 5)))) ? ((key === 'Enter') ? ((_Utils_eq(model.p, $author$project$Game$initFps) && _Utils_eq($gren_lang$core$Array$length(model.d), $author$project$Game$initGhostsQuantity)) ? $author$project$Game$initGame$({ M: 4, y: m.x, a: 1 }, _Utils_update(m, { p: 8 })) : $author$project$Game$initGame$({ M: $gren_lang$core$Array$length(m.d), y: m.x, a: 1 }, m)) : ((key === 'm') ? ((m.a === 5) ? _Utils_update(m, { a: 0 }) : _Utils_update(m, { a: 5 })) : m)) : m;
+			return ((!m.a) || ((m.a === 3) || ((m.a === 4) || (m.a === 5)))) ? ((key === 'Enter') ? (_Utils_eq(model.o, model.N) ? $author$project$Game$initGame$({ E: 4, x: m.s, a: 1 }, _Utils_update(m, { o: 8, q: false })) : $author$project$Game$initGame$({ E: $gren_lang$core$Array$length(m.d), x: m.s, a: 1 }, m)) : ((key === 'f') ? $author$project$Game$initGame$({ E: $gren_lang$core$Array$length(m.d), x: m.s, a: 1 }, _Utils_update(m, { o: model.N, q: true })) : ((key === 'm') ? ((m.a === 5) ? _Utils_update(m, { a: 0 }) : _Utils_update(m, { a: 5 })) : m))) : m;
 		}(function(m) {
 				if (m.j && (key !== 'Meta')) {
 					return _Utils_update(m, { j: false });
 				} else {
 					if (key === 'b') {
-						return _Utils_update(m, { aF: !m.aF });
+						return _Utils_update(m, { aH: !m.aH });
 					} else {
 						if (m.a === 2) {
 							return _Utils_update(m, { a: (key === 'y') ? 0 : ((key === 'n') ? 1 : m.a) });
@@ -5057,71 +5059,83 @@ var $author$project$Game$update_$ = function(msg, model) {
 								var levelId = function(lid) {
 									return lid - 1;
 								}($gren_lang$core$Maybe$withDefault$(0, $gren_lang$core$String$toInt(key)));
-								return $author$project$Game$initGame$({ M: $gren_lang$core$Array$length(m.d), y: levelId, a: m.a }, m);
+								return $author$project$Game$initGame$({ E: $gren_lang$core$Array$length(m.d), x: levelId, a: m.a }, m);
 							} else {
-								return _Utils_update(m, { p: ((key === 'y') && (m.p >= 2)) ? (m.p - 1) : (((key === 'u') && (m.p <= 59)) ? (m.p + 1) : m.p), d: (key === 'i') ? A3($gren_lang$core$Array$slice, 0, $gren_lang$core$Array$length(m.d) - 1, m.d) : ((key === 'o') ? A2($author$project$Helpers$arrayPushLast, $author$project$Game$initGhost$(m.g.ah, $gren_lang$core$Array$length(m.d)), m.d) : m.d), j: (key === ' ') ? (!m.j) : m.j, w: (key === 'l') ? (!m.w) : m.w, a: ((m.a === 1) && (key === 'q')) ? 2 : m.a });
+								return _Utils_update(m, { o: ((key === 'y') && (m.o >= 2)) ? (m.o - 1) : (((key === 'u') && (m.o <= 59)) ? (m.o + 1) : m.o), d: (key === 'i') ? A3($gren_lang$core$Array$slice, 0, $gren_lang$core$Array$length(m.d) - 1, m.d) : ((key === 'o') ? A2($author$project$Helpers$arrayPushLast, $author$project$Game$initGhost$(m.g.ai, $gren_lang$core$Array$length(m.d)), m.d) : m.d), j: (key === ' ') ? (!m.j) : m.j, q: (key === 'l') ? (!m.q) : m.q, a: ((m.a === 1) && (key === 'q')) ? 2 : m.a });
 							}
 						}
 					}
 				}
 			}(function(m) {
-					return _Utils_update(m, { ac: key });
+					return _Utils_update(m, { ad: key });
 				}(model)));
 	} else {
 		var posix = msg.a;
-		if ((!model.a) && (A2($author$project$Helpers$modBy, 100, model.i + 1) === 0)) {
-			return $author$project$Game$initGame$({ M: $gren_lang$core$Array$length(model.d), y: A2($author$project$Helpers$modBy, $gren_lang$core$Array$length($author$project$Game$levels), model.x + 1), a: model.a }, model);
+		if ((!model.a) && (A2($author$project$Helpers$modBy, 150, model.i + 1) === 0)) {
+			return $author$project$Game$initGame$({ E: $gren_lang$core$Array$length(model.d), x: A2($author$project$Helpers$modBy, $gren_lang$core$Array$length($author$project$Game$levels), model.s + 1), a: model.a }, model);
 		} else {
-			var levelWithPlayerAndGhosts = $author$project$Game$addPlayerAndGhostsToLevel$(model.a, model.i, model.d, model.m, model.g.C);
-			var requestToChangeDirectionOfPlayer = $author$project$Game$handleChangeDirectionOfPlayer$(model.ac, model.m, levelWithPlayerAndGhosts);
-			var newPlayer = $author$project$Game$teleportPlayer$(model.g.bD, (model.a === 1) ? $author$project$Game$moveIfPossiblePlayer$(levelWithPlayerAndGhosts, function(p) {
-						return _Utils_update(p, { h: requestToChangeDirectionOfPlayer });
-					}(model.m)) : model.m);
-			var newGhosts = $author$project$Game$calculateNewGhostsPositions$({ i: model.i, d: model.d, g: model.g, k: model.k, w: model.w, a: model.a }, newPlayer, posix);
+			var newPlayer = $author$project$Game$teleportPlayer$(model.g.bF, function () {
+					if (model.a === 1) {
+						var levelWithPlayerAndGhosts = $author$project$Game$addPlayerAndGhostsToLevel$(model.a, model.i, model.d, model.m, model.g.C);
+						var requestToChangeDirectionOfPlayer = $author$project$Game$handleChangeDirectionOfPlayer$(model.ad, model.m, levelWithPlayerAndGhosts);
+						return $author$project$Game$moveIfPossiblePlayer$(levelWithPlayerAndGhosts, function(p) {
+								return _Utils_update(p, { h: requestToChangeDirectionOfPlayer });
+							}(model.m));
+					} else {
+						return model.m;
+					}
+				}());
 			var squareUnderPlayer = $author$project$Game$levelGet$(newPlayer, model.g.C);
+			var newGhosts = $author$project$Game$calculateNewGhostsPositions$({ i: model.i, d: model.d, g: model.g, k: model.k, q: model.q, a: model.a }, newPlayer, posix);
 			var newDots = $author$project$Game$isDot(squareUnderPlayer) ? (model.n - 1) : model.n;
 			var isWon = (model.a === 1) && (newDots === 0);
-			var isLost = newGhosts.aa && ((model.a === 1) && _Utils_eq(model.k, $author$project$Game$Escaping));
 			return _Utils_update(model, { i: model.i + 1, n: newDots, d: newGhosts.d, g: $author$project$Game$isDot(squareUnderPlayer) ? function(l) {
-					return _Utils_update(l, { C: A3($author$project$Game$boardSetDoubleWidth, $author$project$Game$tiles.G, newPlayer, l.C) });
+					return _Utils_update(l, { C: A3($author$project$Game$boardSetDoubleWidth, $author$project$Game$tiles.H, newPlayer, l.C) });
 				}(model.g) : model.g, m: newPlayer, k: function () {
-					if (_Utils_eq(squareUnderPlayer, $author$project$Game$tiles.K)) {
-						return $author$project$Game$HuntingGhosts({ cl: model.i });
+					if (_Utils_eq(squareUnderPlayer, $author$project$Game$tiles.L)) {
+						return $author$project$Game$HuntingGhosts({ cq: model.i });
 					} else {
 						var _v1 = model.k;
 						if (_v1.$ === 1) {
 							return $author$project$Game$Escaping;
 						} else {
-							var since = _v1.a.cl;
+							var since = _v1.a.cq;
 							return ((model.i - since) > 100) ? $author$project$Game$Escaping : model.k;
 						}
 					}
-				}(), v: (newGhosts.aa && ((model.a === 1) && (!_Utils_eq(model.k, $author$project$Game$Escaping)))) ? (model.v + 1) : model.v, a: isWon ? 3 : (isLost ? 4 : model.a) });
+				}(), y: (newGhosts.ab && ((model.a === 1) && (!_Utils_eq(model.k, $author$project$Game$Escaping)))) ? (model.y + 1) : model.y, a: function () {
+					if (isWon) {
+						return 3;
+					} else {
+						var isLost = newGhosts.ab && ((model.a === 1) && _Utils_eq(model.k, $author$project$Game$Escaping));
+						return isLost ? 4 : model.a;
+					}
+				}() });
 		}
 	}
 };
 var $author$project$Game$update_ = F2($author$project$Game$update_$);
 var $author$project$Game$update$ = function(msg, model) {
-	return { a8: $gren_lang$core$Platform$Cmd$none, bn: $author$project$Game$update_$(msg, model) };
+	return { ba: $gren_lang$core$Platform$Cmd$none, bp: $author$project$Game$update_$(msg, model) };
 };
 var $author$project$Game$update = F2($author$project$Game$update$);
 var $author$project$Main$sendKey$ = function(model, key) {
 	return function(game) {
-		return { a8: A2($gren_lang$core$Platform$Cmd$map, $author$project$Main$Game, game.a8), bn: _Utils_update(model, { u: game.bn }) };
-	}($author$project$Game$update$($author$project$Game$OnKeyDown(key), model.u));
+		return { ba: A2($gren_lang$core$Platform$Cmd$map, $author$project$Main$Game, game.ba), bp: _Utils_update(model, { w: game.bp }) };
+	}($author$project$Game$update$($author$project$Game$OnKeyDown(key), model.w));
 };
 var $author$project$Main$sendKey = F2($author$project$Main$sendKey$);
 var $author$project$Main$update$ = function(msg, model) {
 	if (msg.$ === 1) {
 		var gameMsg = msg.a;
 		return function(game) {
-			return { a8: A2($gren_lang$core$Platform$Cmd$map, $author$project$Main$Game, game.a8), bn: _Utils_update(model, { u: game.bn }) };
-		}($author$project$Game$update$(gameMsg, model.u));
+			return { ba: A2($gren_lang$core$Platform$Cmd$map, $author$project$Main$Game, game.ba), bp: _Utils_update(model, { w: game.bp }) };
+		}($author$project$Game$update$(gameMsg, model.w));
 	} else {
 		var input = msg.a;
 		switch (input.$) {
 			case 4:
-				return { a8: $gren_lang$core$Task$execute($blaix$gren_tui$Tui$exit(model.ay)), bn: model };
+				return { ba: $gren_lang$core$Task$execute($blaix$gren_tui$Tui$exit(model.aA)), bp: model };
 			case 0:
 				var key = input.a;
 				return $author$project$Main$sendKey$(model, key);
@@ -5138,65 +5152,89 @@ var $author$project$Main$update$ = function(msg, model) {
 			case 3:
 				return $author$project$Main$sendKey$(model, 'Enter');
 			default:
-				return { a8: $gren_lang$core$Platform$Cmd$none, bn: model };
+				return { ba: $gren_lang$core$Platform$Cmd$none, bp: model };
 		}
 	}
 };
 var $author$project$Main$update = F2($author$project$Main$update$);
 var $blaix$gren_ansi$Ansi$Green = 3;
 var $blaix$gren_ansi$Ansi$Blue = 5;
-var $blaix$gren_ansi$Ansi$Bold = 1;
 var $blaix$gren_ansi$Ansi$Cyan = 7;
-var $blaix$gren_ansi$Ansi$Faint = 2;
 var $blaix$gren_ansi$Ansi$Magenta = 6;
 var $blaix$gren_ansi$Ansi$Red = 2;
+var $author$project$Game$TileEndOfLine = { $: 4 };
 var $blaix$gren_ansi$Ansi$White = 8;
 var $blaix$gren_ansi$Ansi$Yellow = 4;
-var $author$project$Main$charToTile$ = function(index, _char, charType) {
-	if (index === 0) {
-		return $blaix$gren_ansi$Ansi$wrapFontWeight$(1, $blaix$gren_ansi$Ansi$wrapColor$(5, _char));
+var $blaix$gren_ansi$Ansi$Black = 1;
+var $blaix$gren_ansi$Ansi$Faint = 2;
+var $author$project$Main$styleWithFontWeight$ = function(color, bgColor, fontWeight) {
+	return _Utils_ap($blaix$gren_ansi$Ansi$setColor(color), _Utils_ap($blaix$gren_ansi$Ansi$setBgColor(bgColor), $blaix$gren_ansi$Ansi$setFontWeight(fontWeight)));
+};
+var $author$project$Main$styleWithFontWeight = F3($author$project$Main$styleWithFontWeight$);
+var $author$project$Main$colorDot = $author$project$Main$styleWithFontWeight$(4, 1, 2);
+var $author$project$Main$styleWithBgColor$ = function(color, bgColor) {
+	return $author$project$Main$styleWithFontWeight$(color, bgColor, 0);
+};
+var $author$project$Main$styleWithBgColor = F2($author$project$Main$styleWithBgColor$);
+var $author$project$Main$style = function(color) {
+	return $author$project$Main$styleWithBgColor$(color, 1);
+};
+var $author$project$Main$colorNotVisible = $author$project$Main$style(1);
+var $author$project$Main$tileTypeToClass$ = function(index, charType) {
+	if ((index === 0) && (!_Utils_eq(charType, $author$project$Game$TileEndOfLine))) {
+		return $author$project$Main$style(5);
 	} else {
 		switch (charType.$) {
 			case 0:
-				return $blaix$gren_ansi$Ansi$wrapFontWeight$(1, $blaix$gren_ansi$Ansi$wrapColor$(5, _char));
+				return $author$project$Main$style(5);
 			case 1:
-				return $blaix$gren_ansi$Ansi$wrapFontWeight$(2, $blaix$gren_ansi$Ansi$wrapColor$(4, _char));
+				return $author$project$Main$colorDot;
 			case 2:
-				return $blaix$gren_ansi$Ansi$wrapFontWeight$(2, $blaix$gren_ansi$Ansi$wrapColor$(2, _char));
+				return $author$project$Main$style(2);
 			case 3:
-				return $blaix$gren_ansi$Ansi$wrapFontWeight$(2, $blaix$gren_ansi$Ansi$wrapColor$(4, _char));
-			case 4:
-				return $blaix$gren_ansi$Ansi$wrapFontWeight$(1, $blaix$gren_ansi$Ansi$wrapColor$(4, _char));
+				return $author$project$Main$colorDot;
 			case 5:
-				return ' ';
-			case 7:
-				return $blaix$gren_ansi$Ansi$wrapBgColor$(5, $blaix$gren_ansi$Ansi$wrapColor$(8, _char));
+				return $author$project$Main$style(4);
 			case 6:
-				return $blaix$gren_ansi$Ansi$wrapBgColor$(5, ' ');
-			case 9:
-				return $blaix$gren_ansi$Ansi$wrapFontWeight$(1, $blaix$gren_ansi$Ansi$wrapColor$(5, _char));
+				return $author$project$Main$colorNotVisible;
+			case 4:
+				return $author$project$Main$colorNotVisible;
 			case 8:
+				return $author$project$Main$styleWithBgColor$(8, 5);
+			case 7:
+				return $author$project$Main$styleWithBgColor$(5, 5);
+			case 10:
+				return $author$project$Main$style(5);
+			case 9:
 				var id = charType.a;
 				switch (id) {
 					case 0:
-						return $blaix$gren_ansi$Ansi$wrapFontWeight$(1, $blaix$gren_ansi$Ansi$wrapColor$(7, _char));
+						return $author$project$Main$style(7);
 					case 1:
-						return $blaix$gren_ansi$Ansi$wrapFontWeight$(1, $blaix$gren_ansi$Ansi$wrapColor$(4, _char));
+						return $author$project$Main$style(4);
 					case 2:
-						return $blaix$gren_ansi$Ansi$wrapFontWeight$(1, $blaix$gren_ansi$Ansi$wrapColor$(2, _char));
+						return $author$project$Main$style(2);
 					default:
-						return $blaix$gren_ansi$Ansi$wrapFontWeight$(1, $blaix$gren_ansi$Ansi$wrapColor$(6, _char));
+						return $author$project$Main$style(6);
 				}
 			default:
-				return _char;
+				return $author$project$Main$colorDot;
 		}
 	}
 };
-var $author$project$Main$charToTile = F3($author$project$Main$charToTile$);
+var $author$project$Main$tileTypeToClass = F2($author$project$Main$tileTypeToClass$);
+var $author$project$Main$charToTile$ = function(index, tileType, _char, acc) {
+	var _class = $author$project$Main$tileTypeToClass$(index, tileType);
+	return _Utils_eq(acc.cg, _class) ? _Utils_update(acc, { cu: _Utils_ap(acc.cu, _char) }) : ((acc.cg === '') ? _Utils_update(acc, { cg: _class, cu: _char }) : _Utils_update(acc, { cg: _class, cu: _char, bG: $gren_lang$core$Array$pushLast$(_Utils_ap(acc.cg, acc.cu), acc.bG) }));
+};
+var $author$project$Main$charToTile = F4($author$project$Main$charToTile$);
 var $author$project$Game$boolToOnOff = function(bool) {
 	return bool ? 'ON' : 'OFF';
 };
-var $author$project$Game$keysMenu = $author$project$Helpers$arrayFromList([ '  PLAY [ENTER]  ', '  MOVE [W A S D]', '       [↑ ← ↓ →]', ' PAUSE [SPACE]  ', '  MENU [M]      ', '  QUIT [Q]      ', '  EXIT [ESC]    ', '   FPS [Y]↘ [U]↗', 'GHOSTS [I]↘ [O]↗', ' DEBUG [B]      ', 'SHIELD [L]      ', 'LEVELS [1]~[' + ($gren_lang$core$String$fromInt($gren_lang$core$Array$length($author$project$Game$levels)) + ']  ') ]);
+var $author$project$Game$keysMenu = function(_v0) {
+	var isRunningInTerminal = _v0.b5;
+	return $author$project$Helpers$arrayFromList(_Utils_ap([ '     PLAY [ENTER]  ', 'FAST PLAY [F]      ', '     MOVE [W A S D]', '          [↑ ← ↓ →]', '    PAUSE [SPACE]  ', '     MENU [M]      ', '     QUIT [Q]      ', '      FPS [Y]↘ [U]↗', '   GHOSTS [I]↘ [O]↗', '    DEBUG [B]      ', '   SHIELD [L]      ', '   LEVELS [1]~[' + ($gren_lang$core$String$fromInt($gren_lang$core$Array$length($author$project$Game$levels)) + ']  ') ], isRunningInTerminal ? [ '     EXIT [ESC]    ' ] : [  ]));
+};
 var $gren_lang$core$String$toUpper = _String_toUpper;
 var $author$project$Game$debugText = function(model) {
 	var status = function () {
@@ -5218,19 +5256,21 @@ var $author$project$Game$debugText = function(model) {
 	}();
 	var modeToString = function(mode) {
 		if (!mode.$) {
-			var since = mode.a.cl;
+			var since = mode.a.cq;
 			return 'Hunting ' + $gren_lang$core$String$fromInt(since);
 		} else {
 			return 'Escaping';
 		}
 	};
-	var key = (model.ac === ' ') ? 'Space' : model.ac;
+	var key = (model.ad === ' ') ? 'Space' : model.ad;
 	return A2($gren_lang$core$Array$map, function(s) {
 			return ' ' + $gren_lang$core$String$toUpper(s);
-		}, A2($author$project$Helpers$arrayPrepend, $author$project$Game$keysMenu, A2($author$project$Helpers$arrayPrepend, $author$project$Helpers$arrayFromList([ '' ]), $author$project$Helpers$arrayFromList([ 'Frames ' + $gren_lang$core$String$fromInt(model.i), 'Points ' + $gren_lang$core$String$fromInt(model.v), '  Dots ' + $gren_lang$core$String$fromInt(model.n), '   Key ' + key, 'Ghosts ' + $gren_lang$core$String$fromInt($gren_lang$core$Array$length(model.d)), '   FPS ' + $gren_lang$core$String$fromInt(model.p), ' Pause ' + $author$project$Game$boolToOnOff(model.j), 'Status ' + status, 'Shield ' + $author$project$Game$boolToOnOff(model.w), '  Mode ' + modeToString(model.k), 'Player ' + ($gren_lang$core$String$fromInt(model.m.b) + (',' + $gren_lang$core$String$fromInt(model.m.c))) ]))));
+		}, A2($author$project$Helpers$arrayPrepend, $author$project$Helpers$arrayFromList([ '', '', '' ]), A2($author$project$Helpers$arrayPrepend, $author$project$Game$keysMenu(model), A2($author$project$Helpers$arrayPrepend, $author$project$Helpers$arrayFromList([ '' ]), A2($gren_lang$core$Array$map, function(s) {
+							return '   ' + $gren_lang$core$String$toUpper(s);
+						}, $author$project$Helpers$arrayFromList([ 'Frames ' + $gren_lang$core$String$fromInt(model.i), 'Points ' + $gren_lang$core$String$fromInt(model.y), '  Dots ' + $gren_lang$core$String$fromInt(model.n), '   Key ' + key, 'Ghosts ' + $gren_lang$core$String$fromInt($gren_lang$core$Array$length(model.d)), '   FPS ' + $gren_lang$core$String$fromInt(model.o), ' Pause ' + $author$project$Game$boolToOnOff(model.j), 'Status ' + status, 'Shield ' + $author$project$Game$boolToOnOff(model.q), '  Mode ' + modeToString(model.k), 'Player ' + ($gren_lang$core$String$fromInt(model.m.b) + (',' + $gren_lang$core$String$fromInt(model.m.c))) ]))))));
 };
 var $blaix$gren_tui$UI$row$ = function(attrs, children) {
-	return $blaix$gren_tui$UI$Row({ o: attrs, ap: children });
+	return $blaix$gren_tui$UI$Row({ p: attrs, aq: children });
 };
 var $blaix$gren_tui$UI$row = F2($blaix$gren_tui$UI$row$);
 var $gren_lang$core$Basics$max$ = function(x, y) {
@@ -5255,7 +5295,7 @@ var $author$project$Game$addOverlay$ = function(isPause, status, msg, level_, bo
 					return $gren_lang$core$Basics$max$($gren_lang$core$String$length(row), acc);
 				}), 0, msg) + (margin * 4);
 		var height = $gren_lang$core$Array$length(msg) + margin;
-		var position = { b: ((level_.a2 - width) / 2) | 0, c: ((level_.be - height) / 2) | 0 };
+		var position = { b: ((level_.a4 - width) / 2) | 0, c: ((level_.bg - height) / 2) | 0 };
 		var headerFooter = $gren_lang$core$String$repeat$(width, '`');
 		var addHederFooter = function(array) {
 			return (margin === 1) ? A2($author$project$Helpers$arrayPrepend, $author$project$Helpers$arrayFromList([ headerFooter ]), A2($author$project$Helpers$arrayPushLast, headerFooter, array)) : array;
@@ -5273,17 +5313,17 @@ var $author$project$Game$addOverlay$ = function(isPause, status, msg, level_, bo
 var $author$project$Game$addOverlay = F5($author$project$Game$addOverlay$);
 var $author$project$Game$TileDot = { $: 3 };
 var $author$project$Game$TileGhostEscaping = function (a) {
-	return { $: 8, a: a };
+	return { $: 9, a: a };
 };
-var $author$project$Game$TileGhostHunting = { $: 9 };
+var $author$project$Game$TileGhostHunting = { $: 10 };
 var $author$project$Game$TileLevelWhileIdle = { $: 1 };
 var $author$project$Game$TileLevelWhilePlaying = { $: 0 };
 var $author$project$Game$TileLevelWhileShield = { $: 2 };
-var $author$project$Game$TileModalNotVisible = { $: 6 };
-var $author$project$Game$TileModalVisible = { $: 7 };
-var $author$project$Game$TileNoOp = { $: 10 };
-var $author$project$Game$TileNotVisible = { $: 5 };
-var $author$project$Game$TilePlayer = { $: 4 };
+var $author$project$Game$TileModalNotVisible = { $: 7 };
+var $author$project$Game$TileModalVisible = { $: 8 };
+var $author$project$Game$TileNoOp = { $: 11 };
+var $author$project$Game$TileNotVisible = { $: 6 };
+var $author$project$Game$TilePlayer = { $: 5 };
 var $author$project$Game$arrayFind$ = function(predicate, array) {
 	var findIndex = function(index) {
 		findIndex:
@@ -5311,7 +5351,7 @@ var $author$project$Game$arrayFind$ = function(predicate, array) {
 };
 var $author$project$Game$arrayFind = F2($author$project$Game$arrayFind$);
 var $author$project$Game$charsInLevel = $author$project$Helpers$arrayFromList([ '╰', '╮', '╭', '╯', '─', '│' ]);
-var $author$project$Game$charsNotVisible = $author$project$Helpers$arrayFromList([ $author$project$Game$tiles.G, $author$project$Game$tiles.aP, $author$project$Game$tiles.aQ ]);
+var $author$project$Game$charsNotVisible = $author$project$Helpers$arrayFromList([ $author$project$Game$tiles.H, $author$project$Game$tiles.aR, $author$project$Game$tiles.aS ]);
 var $author$project$Game$charToTileType$ = function(playingMode, isPlaying, isShielded, _char) {
 	if (A2($author$project$Helpers$arrayMember, _char, $author$project$Game$charsInLevel)) {
 		return isPlaying ? (isShielded ? $author$project$Game$TileLevelWhileShield : $author$project$Game$TileLevelWhilePlaying) : $author$project$Game$TileLevelWhileIdle;
@@ -5328,15 +5368,19 @@ var $author$project$Game$charToTileType$ = function(playingMode, isPlaying, isSh
 					if (_char === '`') {
 						return $author$project$Game$TileModalNotVisible;
 					} else {
-						if (A2($gren_lang$core$String$contains, _char, '-~⍫!?0123456789ABCDEFGHIJKLMNOPQRSTUVWZXY[]↘↗↑←↓→.:')) {
-							return $author$project$Game$TileModalVisible;
+						if (_char === '\n') {
+							return $author$project$Game$TileEndOfLine;
 						} else {
-							var _v0 = $author$project$Game$arrayFind$(_char, $author$project$Game$charGhosts);
-							if (!_v0.$) {
-								var index = _v0.a;
-								return _Utils_eq(playingMode, $author$project$Game$Escaping) ? $author$project$Game$TileGhostEscaping(index) : $author$project$Game$TileGhostHunting;
+							if (A2($gren_lang$core$String$contains, _char, '-~⍫!?0123456789ABCDEFGHIJKLMNOPQRSTUVWZXY[]↘↗↑←↓→.:')) {
+								return $author$project$Game$TileModalVisible;
 							} else {
-								return $author$project$Game$TileNoOp;
+								var _v0 = $author$project$Game$arrayFind$(_char, $author$project$Game$charGhosts);
+								if (!_v0.$) {
+									var index = _v0.a;
+									return _Utils_eq(playingMode, $author$project$Game$Escaping) ? $author$project$Game$TileGhostEscaping(index) : $author$project$Game$TileGhostHunting;
+								} else {
+									return $author$project$Game$TileNoOp;
+								}
 							}
 						}
 					}
@@ -5347,9 +5391,9 @@ var $author$project$Game$charToTileType$ = function(playingMode, isPlaying, isSh
 };
 var $author$project$Game$charToTileType = F4($author$project$Game$charToTileType$);
 var $author$project$Game$scoreCalculator = function(_v0) {
-	var initialDots = _v0._;
+	var initialDots = _v0.aa;
 	var counter = _v0.i;
-	var points = _v0.v;
+	var points = _v0.y;
 	var dots = _v0.n;
 	return ((initialDots - dots) + (points * 10)) - ((counter / 10) | 0);
 };
@@ -5358,7 +5402,7 @@ var $author$project$Game$scoreText = function(model) {
 	return (score <= 0) ? '' : (' SCORE ' + ($gren_lang$core$String$fromInt($author$project$Game$scoreCalculator(model)) + ' '));
 };
 var $author$project$Game$overlayMain = function(model) {
-	var msgEnterToPlay = $author$project$Helpers$arrayFromList([ '[ENTER] TO PLAY', '', '[M] FOR MENU' ]);
+	var msgEnterToPlay = $author$project$Helpers$arrayFromList([ '     PLAY [ENTER]', 'FAST PLAY [F]    ', '     QUIT [Q]    ', '     MENU [M]    ' ]);
 	var _v0 = model.a;
 	switch (_v0) {
 		case 0:
@@ -5372,7 +5416,7 @@ var $author$project$Game$overlayMain = function(model) {
 		case 4:
 			return A2($author$project$Helpers$arrayPrepend, $author$project$Helpers$arrayFromList([ 'YOU LOST!', '', $gren_lang$core$String$replace$(' ', '`', $author$project$Game$scoreText(model)), '' ]), msgEnterToPlay);
 		default:
-			return $author$project$Game$keysMenu;
+			return $author$project$Game$keysMenu(model);
 	}
 };
 var $author$project$Game$overlayPause = function(model) {
@@ -5386,20 +5430,25 @@ var $author$project$Game$viewHeader$ = function(score, width) {
 var $author$project$Game$viewHeader = F2($author$project$Game$viewHeader$);
 var $author$project$Game$view$ = function(funcs, model) {
 	return A2($gren_lang$core$Array$indexedMap, F2(function(index, row) {
-				return A2(funcs.cp, index, A2($gren_lang$core$Array$map, function(_char) {
-							return A3(funcs.bR, index, _char, $author$project$Game$charToTileType$(model.k, (model.a === 1) && (!model.j), model.w, _char));
-						}, $author$project$Helpers$arrayFromList(A2($gren_lang$core$String$split, '', row))));
-			}), A2($author$project$Helpers$arrayPrepend, $author$project$Helpers$arrayFromList([ $author$project$Game$viewHeader$($author$project$Game$scoreText(model), model.g.a2) ]), $author$project$Game$addOverlay$(model.j, model.a, $author$project$Game$overlayPause(model), model.g, $author$project$Game$addOverlay$(model.j, model.a, $author$project$Game$overlayMain(model), model.g, $author$project$Game$addPlayerAndGhostsToLevel$(model.a, model.i, model.d, model.m, model.g.C)))));
+				return function(resultFromFoldl) {
+					return A2(funcs.cv, index, resultFromFoldl.bG);
+				}(A3($gren_lang$core$Array$foldl, F2(function(_char, acc) {
+								var tileType = $author$project$Game$charToTileType$(model.k, (model.a === 1) && (!model.j), model.q, _char);
+								return A4(funcs.bU, index, tileType, _char, acc);
+							}), { cg: '', cu: '', bG: $gren_lang$core$Array$empty }, $author$project$Helpers$arrayFromList(A2($gren_lang$core$String$split, '', row))));
+			}), A2($gren_lang$core$Array$map, function(row) {
+				return row + '\n';
+			}, A2($author$project$Helpers$arrayPrepend, $author$project$Helpers$arrayFromList([ $author$project$Game$viewHeader$($author$project$Game$scoreText(model), model.g.a4) ]), $author$project$Game$addOverlay$(model.j, model.a, $author$project$Game$overlayPause(model), model.g, $author$project$Game$addOverlay$(model.j, model.a, $author$project$Game$overlayMain(model), model.g, $author$project$Game$addPlayerAndGhostsToLevel$(model.a, model.i, model.d, model.m, model.g.C))))));
 };
 var $author$project$Game$view = F2($author$project$Game$view$);
 var $author$project$Main$view = function(model) {
-	return $blaix$gren_tui$UI$row$([  ], _Utils_ap([ $blaix$gren_tui$UI$column$([  ], _Utils_ap([ $blaix$gren_tui$UI$text$([  ], '') ], _Utils_ap($author$project$Game$view$({ bR: $author$project$Main$charToTile, cp: F2(function(index, arrayChar) {
+	return $blaix$gren_tui$UI$row$([  ], _Utils_ap([ $blaix$gren_tui$UI$column$([  ], _Utils_ap([ $blaix$gren_tui$UI$text$([  ], '') ], _Utils_ap($author$project$Game$view$({ bU: $author$project$Main$charToTile, cv: F2(function(index, arrayChar) {
 									return $blaix$gren_tui$UI$text$([  ], '  ' + A2($gren_lang$core$String$join, '', arrayChar));
-								}) }, model.u), [ $blaix$gren_tui$UI$text$([  ], '') ]))) ], model.u.aF ? [ $blaix$gren_tui$UI$column$([  ], A2($gren_lang$core$Array$map, function(row) {
+								}) }, model.w), [ $blaix$gren_tui$UI$text$([  ], '') ]))) ], model.w.aH ? [ $blaix$gren_tui$UI$column$([  ], A2($gren_lang$core$Array$map, function(row) {
 						return $blaix$gren_tui$UI$text$([  ], $blaix$gren_ansi$Ansi$wrapColor$(3, row));
-					}, $author$project$Game$debugText(model.u))) ] : [  ]));
+					}, $author$project$Game$debugText(model.w))) ] : [  ]));
 };
-var $author$project$Main$main = $blaix$gren_tui$Tui$defineProgram({ b1: $author$project$Main$init, b8: $author$project$Main$GotInput, co: $author$project$Main$subscriptions, ct: $author$project$Main$update, cA: $author$project$Main$view });
+var $author$project$Main$main = $blaix$gren_tui$Tui$defineProgram({ b4: $author$project$Main$init, cc: $author$project$Main$GotInput, ct: $author$project$Main$subscriptions, cz: $author$project$Main$update, cG: $author$project$Main$view });
 _Platform_export({'Main':{'init':$author$project$Main$main($gren_lang$core$Json$Decode$succeed({  }))(0)}});}(this.module ? this.module.exports : this));
 this.Gren.Main.init({});
 }
