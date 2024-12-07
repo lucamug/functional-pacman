@@ -9,7 +9,7 @@ function transformCode(args) {
     let banner = `/***
  *
  *  
- *   https://github.com/lucamug/pacman/
+ *   https://github.com/lucamug/functional-pacman/
  *  
  *
  ***/`;

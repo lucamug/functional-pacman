@@ -2,7 +2,7 @@
 
 ![Animation](/docs/pacman.gif?raw=true "Animation")
 
-An interpretation of the [Pac-Man](https://en.wikipedia.org/wiki/Pac-Man) game, written in approximately [1,000 lines](https://github.com/lucamug/pacman/blob/master/src/Game.elm) of purely functional code. It runs both in the browser and in the terminal.
+An interpretation of the [Pac-Man](https://en.wikipedia.org/wiki/Pac-Man) game, written in approximately [1,000 lines](https://github.com/lucamug/functional-pacman/blob/master/src/Game.elm) of purely functional code. It runs both in the browser and in the terminal.
 
 The game is written in the [Elm language](https://elm-lang.org/) and the [Gren language](https://gren-lang.org/), using the [TUI library](https://packages.gren-lang.org/package/blaix/gren-tui/version/3.0.2/overview) for the version that runs in the terminal.
 
@@ -15,7 +15,7 @@ Go to: [https://lucamug.github.io/pacman/](https://lucamug.github.io/pacman/)
 Execute:
 
 ```shell
-git clone https://github.com/lucamug/pacman/
+git clone https://github.com/lucamug/functional-pacman/
 cd pacman
 node docs/gren-pacman
 ```
@@ -27,7 +27,7 @@ The program requires Node v20 or later.
 ## Development
 
 ```shell
-git clone https://github.com/lucamug/pacman/
+git clone https://github.com/lucamug/functional-pacman/
 cd pacman
 npm install
 ```

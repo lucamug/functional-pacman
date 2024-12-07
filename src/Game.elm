@@ -1409,7 +1409,7 @@ overlayPause model =
 
 title : String
 title =
-    "github.com/lucamug/pacman "
+    "github.com/lucamug/functional-pacman "
 
 
 keysMenu : { a | isRunningInTerminal : Bool } -> Array.Array String

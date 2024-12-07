@@ -5422,7 +5422,7 @@ var $author$project$Game$overlayMain = function(model) {
 var $author$project$Game$overlayPause = function(model) {
 	return model.j ? $author$project$Helpers$arrayFromList([ 'PAUSED', '', '  ANY KEY TO RESUME  ' ]) : $author$project$Helpers$arrayFromList([  ]);
 };
-var $author$project$Game$title = 'github.com/lucamug/pacman ';
+var $author$project$Game$title = 'github.com/lucamug/functional-pacman ';
 var $author$project$Game$titleLength = $gren_lang$core$String$length($author$project$Game$title);
 var $author$project$Game$viewHeader$ = function(score, width) {
 	return _Utils_ap(score, _Utils_ap($gren_lang$core$String$repeat$((width - $gren_lang$core$String$length(score)) - $author$project$Game$titleLength, ' '), $author$project$Game$title));
