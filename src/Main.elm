@@ -136,7 +136,7 @@ tilesToRow index tiles =
     if index == 0 then
         Html.div []
             [ Html.a
-                [ Html.Attributes.href "https://github.com/lucamug/functional-pacman/"
+                [ Html.Attributes.href <| "https://" ++ Game.githubUrl
                 , Html.Attributes.target "_blank"
                 , Html.Attributes.style "text-decoration" "none"
                 ]

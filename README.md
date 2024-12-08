@@ -2,7 +2,7 @@
 
 ![Animation](/docs/pacman.gif?raw=true "Animation")
 
-An interpretation of the [Pac-Man](https://en.wikipedia.org/wiki/Pac-Man) game, written in approximately [1,000 lines](https://github.com/lucamug/functional-pacman/blob/master/src/Game.elm) of purely functional code. It runs both in the browser and in the terminal.
+An interpretation of the [Pac-Man](https://en.wikipedia.org/wiki/Pac-Man) game, written in approximately [1K lines](https://github.com/lucamug/functional-pacman/blob/main/src/Game.elm) of purely functional code. It runs both in the browser and in the terminal.
 
 The game is written in the [Elm language](https://elm-lang.org/) and the [Gren language](https://gren-lang.org/), using the [TUI library](https://packages.gren-lang.org/package/blaix/gren-tui/version/3.0.2/overview) for the version that runs in the terminal.
 
@@ -20,11 +20,17 @@ cd pacman
 node docs/gren-pacman
 ```
 
-The program requires Node v20 or later.
+The program requires Node.js v20 or later.
+
+## Debug modality
+
+By pressing [B], you can display additional internal information on the side of the playing area.
 
 ![Screen 2](/docs/screen02.png?raw=true "Screen 2")
 
 ## Development
+
+Clone the repository:
 
 ```shell
 git clone https://github.com/lucamug/functional-pacman/
@@ -32,9 +38,9 @@ cd pacman
 npm install
 ```
 
-Commands are available under the `cmd` folder.
+Several commands are available in the `cmd` folder.
 
-### To develop the Elm code
+### To work on the Elm code
 
 ```shell
 cmd/start-elm
@@ -42,7 +48,7 @@ cmd/start-elm
 
 Then point your browser to [http://localhost:8003/](http://localhost:8003/).
 
-### To develop the Gren code
+### To work on the Gren code
 
 ```shell
 cmd/start-gren

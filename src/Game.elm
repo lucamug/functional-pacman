@@ -13,6 +13,7 @@ module Game exposing
     , Position
     , Tile(..)
     , debugText
+    , githubUrl
     , init
     , subscriptions
     , update
@@ -175,7 +176,7 @@ initModel { levelId } args { isRunningInTerminal } =
     let
         game : Game {}
         game =
-            initGame_
+            initGame
                 (Maybe.withDefault level0 <| Array.get levelId levels)
                 { levelId = levelId
                 , ghostsQuantity = args.initGhostsQuantity
@@ -203,14 +204,14 @@ initModel { levelId } args { isRunningInTerminal } =
     }
 
 
-initGame : { levelId : Int, ghostsQuantity : Int, status : GameStatus } -> Model -> Model
-initGame args model =
+initGameInModel : { levelId : Int, ghostsQuantity : Int, status : GameStatus } -> Model -> Model
+initGameInModel args model =
     case Array.get args.levelId levels of
         Just level ->
             let
                 game : Game {}
                 game =
-                    initGame_ level args
+                    initGame level args
             in
             { model
                 | player = game.player
@@ -230,8 +231,8 @@ initGame args model =
             model
 
 
-initGame_ : Level -> { levelId : Int, ghostsQuantity : Int, status : GameStatus } -> Game {}
-initGame_ level args =
+initGame : Level -> { levelId : Int, ghostsQuantity : Int, status : GameStatus } -> Game {}
+initGame level args =
     let
         ghosts : Array.Array Character
         ghosts =
@@ -334,13 +335,13 @@ boardToLevel board =
                 getTeleport : String -> Maybe { a : Position {}, b : Position {} }
                 getTeleport char =
                     let
-                        teleports_ : Array.Array (Position {})
-                        teleports_ =
+                        teleportsInBoard : Array.Array (Position {})
+                        teleportsInBoard =
                             findCharInBoard char board
                     in
-                    case Array.get 0 teleports_ of
+                    case Array.get 0 teleportsInBoard of
                         Just a ->
-                            case Array.get 1 teleports_ of
+                            case Array.get 1 teleportsInBoard of
                                 Just b ->
                                     Just { a = a, b = b }
 
@@ -421,223 +422,229 @@ handleChangeDirectionOfPlayer key player board =
 
 update : Msg -> Model -> { model : Model, command : Cmd Msg }
 update msg model =
-    { model = update_ msg model
+    { model =
+        case msg of
+            OnKeyDown key ->
+                updateOnKeyDown key model
+
+            Every posix ->
+                updateEvery posix model
     , command = Cmd.none
     }
 
 
-update_ : Msg -> Model -> Model
-update_ msg model =
-    case msg of
-        OnKeyDown key ->
-            model
-                |> (\m -> { m | keyDown = key })
-                |> (\m ->
-                        if m.pause && key /= "Meta" then
-                            { m | pause = False }
+updateOnKeyDown : String -> Model -> Model
+updateOnKeyDown key modelToBeUsedOnlyOnce =
+    modelToBeUsedOnlyOnce
+        |> (\m -> { m | keyDown = key })
+        |> (\m ->
+                if m.pause && key /= "Meta" then
+                    { m | pause = False }
 
-                        else if key == "b" then
-                            { m | debug = not m.debug }
+                else if key == "b" then
+                    { m | debug = not m.debug }
 
-                        else if m.status == Quitting then
-                            { m
-                                | status =
-                                    if key == "y" then
-                                        Idle
+                else if m.status == Quitting then
+                    { m
+                        | status =
+                            if key == "y" then
+                                Idle
 
-                                    else if key == "n" then
-                                        Playing
-
-                                    else
-                                        m.status
-                            }
-
-                        else if "1" <= key && key <= "9" then
-                            let
-                                levelId : Int
-                                levelId =
-                                    key
-                                        |> String.toInt
-                                        |> Maybe.withDefault 0
-                                        |> (\lid -> lid - 1)
-                            in
-                            initGame { levelId = levelId, ghostsQuantity = Array.length m.ghosts, status = m.status } m
-
-                        else
-                            { m
-                                | status =
-                                    if m.status == Playing && key == "q" then
-                                        Quitting
-
-                                    else
-                                        m.status
-                                , pause =
-                                    if key == " " then
-                                        not m.pause
-
-                                    else
-                                        m.pause
-                                , fps =
-                                    if key == "y" && m.fps >= 2 then
-                                        m.fps - 1
-
-                                    else if key == "u" && m.fps <= 59 then
-                                        m.fps + 1
-
-                                    else
-                                        m.fps
-                                , ghosts =
-                                    if key == "i" then
-                                        Array.slice 0 (Array.length m.ghosts - 1) m.ghosts
-
-                                    else if key == "o" then
-                                        Helpers.arrayPushLast (initGhost m.level.positionSpawnGhosts (Array.length m.ghosts)) m.ghosts
-
-                                    else
-                                        m.ghosts
-                                , shield =
-                                    if key == "l" then
-                                        not m.shield
-
-                                    else
-                                        m.shield
-                            }
-                   )
-                |> (\m ->
-                        if m.status == Idle || m.status == Won || m.status == Lost || m.status == Menu then
-                            if key == "Enter" then
-                                if model.fps == model.initFps then
-                                    -- The game is still in the initial configuration (DEMO MODE)
-                                    initGame { levelId = m.currentLevelId, ghostsQuantity = 4, status = Playing } { m | fps = 8, shield = False }
-
-                                else
-                                    initGame { levelId = m.currentLevelId, ghostsQuantity = Array.length m.ghosts, status = Playing } m
-
-                            else if key == "f" then
-                                initGame { levelId = m.currentLevelId, ghostsQuantity = Array.length m.ghosts, status = Playing } { m | fps = model.initFps, shield = True }
-
-                            else if key == "m" then
-                                if m.status == Menu then
-                                    { m | status = Idle }
-
-                                else
-                                    { m | status = Menu }
+                            else if key == "n" then
+                                Playing
 
                             else
-                                m
-
-                        else
-                            m
-                   )
-
-        Every posix ->
-            if model.status == Idle && Helpers.modBy 150 (model.counter + 1) == 0 then
-                initGame
-                    { levelId = Helpers.modBy (Array.length levels) (model.currentLevelId + 1)
-                    , ghostsQuantity = Array.length model.ghosts
-                    , status = model.status
+                                m.status
                     }
-                    model
 
-            else
-                let
-                    newPlayer : Character
-                    newPlayer =
-                        (if model.status == Playing then
-                            let
-                                levelWithPlayerAndGhosts : Board
-                                levelWithPlayerAndGhosts =
-                                    addPlayerAndGhostsToLevel model.status model.ghosts model.player model.level.board
+                else if "1" <= key && key <= "9" then
+                    let
+                        levelId : Int
+                        levelId =
+                            key
+                                |> String.toInt
+                                |> Maybe.withDefault 0
+                                |> (\lid -> lid - 1)
+                    in
+                    initGameInModel { levelId = levelId, ghostsQuantity = Array.length m.ghosts, status = m.status } m
 
-                                requestToChangeDirectionOfPlayer : Direction
-                                requestToChangeDirectionOfPlayer =
-                                    handleChangeDirectionOfPlayer model.keyDown model.player levelWithPlayerAndGhosts
-                            in
-                            moveIfPossiblePlayer
-                                levelWithPlayerAndGhosts
-                                ((\p -> { p | direction = requestToChangeDirectionOfPlayer }) model.player)
-
-                         else
-                            model.player
-                        )
-                            |> teleportPlayer model.level.teleports
-
-                    newGhosts : { ghosts : Array.Array Character, isHit : Bool }
-                    newGhosts =
-                        calculateNewGhostsPositions
-                            { ghosts = model.ghosts
-                            , playingMode = model.playingMode
-                            , shield = model.shield
-                            , status = model.status
-                            , level = model.level
-                            }
-                            newPlayer
-                            posix
-
-                    squareUnderPlayer : String
-                    squareUnderPlayer =
-                        levelGet newPlayer model.level.board
-
-                    newDots : Int
-                    newDots =
-                        if isDot squareUnderPlayer then
-                            model.dots - 1
-
-                        else
-                            model.dots
-
-                    isWon : Bool
-                    isWon =
-                        model.status == Playing && newDots == 0
-                in
-                { model
-                    | player = newPlayer
-                    , points =
-                        if newGhosts.isHit && model.status == Playing && model.playingMode /= Escaping then
-                            model.points + 1
-
-                        else
-                            model.points
-                    , playingMode =
-                        if squareUnderPlayer == tiles.dotLarge then
-                            HuntingGhosts { since = model.counter }
-
-                        else
-                            case model.playingMode of
-                                Escaping ->
-                                    Escaping
-
-                                HuntingGhosts { since } ->
-                                    if model.counter - since > 100 then
-                                        Escaping
-
-                                    else
-                                        model.playingMode
-                    , ghosts = newGhosts.ghosts
-                    , counter = model.counter + 1
-                    , dots = newDots
-                    , level =
-                        if isDot squareUnderPlayer then
-                            (\l -> { l | board = boardSetDoubleWidth tiles.canGoButNoDot newPlayer l.board }) model.level
-
-                        else
-                            model.level
-                    , status =
-                        if isWon then
-                            Won
-
-                        else
-                            let
-                                isLost : Bool
-                                isLost =
-                                    newGhosts.isHit && model.status == Playing && model.playingMode == Escaping
-                            in
-                            if isLost then
-                                Lost
+                else
+                    { m
+                        | status =
+                            if m.status == Playing && key == "q" then
+                                Quitting
 
                             else
-                                model.status
-                }
+                                m.status
+                        , pause =
+                            if key == " " then
+                                not m.pause
+
+                            else
+                                m.pause
+                        , fps =
+                            if key == "y" && m.fps >= 2 then
+                                m.fps - 1
+
+                            else if key == "u" && m.fps <= 59 then
+                                m.fps + 1
+
+                            else
+                                m.fps
+                        , ghosts =
+                            if key == "i" then
+                                Array.slice 0 (Array.length m.ghosts - 1) m.ghosts
+
+                            else if key == "o" then
+                                Helpers.arrayPushLast (initGhost m.level.positionSpawnGhosts (Array.length m.ghosts)) m.ghosts
+
+                            else
+                                m.ghosts
+                        , shield =
+                            if key == "l" then
+                                not m.shield
+
+                            else
+                                m.shield
+                    }
+           )
+        |> (\m ->
+                if m.status == Idle || m.status == Won || m.status == Lost || m.status == Menu then
+                    if key == "Enter" then
+                        if m.fps == m.initFps then
+                            -- The game is still in the initial configuration (DEMO MODE)
+                            initGameInModel { levelId = m.currentLevelId, ghostsQuantity = 4, status = Playing } { m | fps = 8, shield = False }
+
+                        else
+                            initGameInModel { levelId = m.currentLevelId, ghostsQuantity = Array.length m.ghosts, status = Playing } m
+
+                    else if key == "f" then
+                        initGameInModel { levelId = m.currentLevelId, ghostsQuantity = Array.length m.ghosts, status = Playing } { m | fps = m.initFps, shield = True }
+
+                    else if key == "m" then
+                        if m.status == Menu then
+                            { m | status = Idle }
+
+                        else
+                            { m | status = Menu }
+
+                    else
+                        m
+
+                else
+                    m
+           )
+
+
+updateEvery : Time.Posix -> Model -> Model
+updateEvery posix model =
+    if model.status == Idle && Helpers.modBy 150 (model.counter + 1) == 0 then
+        initGameInModel
+            { levelId = Helpers.modBy (Array.length levels) (model.currentLevelId + 1)
+            , ghostsQuantity = Array.length model.ghosts
+            , status = model.status
+            }
+            model
+
+    else
+        let
+            newPlayer : Character
+            newPlayer =
+                (if model.status == Playing then
+                    let
+                        levelWithPlayerAndGhosts : Board
+                        levelWithPlayerAndGhosts =
+                            addPlayerAndGhostsToLevel model.status model.ghosts model.player model.level.board
+
+                        requestToChangeDirectionOfPlayer : Direction
+                        requestToChangeDirectionOfPlayer =
+                            handleChangeDirectionOfPlayer model.keyDown model.player levelWithPlayerAndGhosts
+                    in
+                    moveIfPossiblePlayer
+                        levelWithPlayerAndGhosts
+                        ((\p -> { p | direction = requestToChangeDirectionOfPlayer }) model.player)
+
+                 else
+                    model.player
+                )
+                    |> teleportPlayer model.level.teleports
+
+            newGhosts : { ghosts : Array.Array Character, isHit : Bool }
+            newGhosts =
+                calculateNewGhostsPositions
+                    { ghosts = model.ghosts
+                    , playingMode = model.playingMode
+                    , shield = model.shield
+                    , status = model.status
+                    , level = model.level
+                    }
+                    newPlayer
+                    posix
+
+            squareUnderPlayer : String
+            squareUnderPlayer =
+                levelGet newPlayer model.level.board
+
+            newDots : Int
+            newDots =
+                if isDot squareUnderPlayer then
+                    model.dots - 1
+
+                else
+                    model.dots
+
+            isWon : Bool
+            isWon =
+                model.status == Playing && newDots == 0
+        in
+        { model
+            | player = newPlayer
+            , points =
+                if newGhosts.isHit && model.status == Playing && model.playingMode /= Escaping then
+                    model.points + 1
+
+                else
+                    model.points
+            , playingMode =
+                if squareUnderPlayer == tiles.dotLarge then
+                    HuntingGhosts { since = model.counter }
+
+                else
+                    case model.playingMode of
+                        Escaping ->
+                            Escaping
+
+                        HuntingGhosts { since } ->
+                            if model.counter - since > 100 then
+                                Escaping
+
+                            else
+                                model.playingMode
+            , ghosts = newGhosts.ghosts
+            , counter = model.counter + 1
+            , dots = newDots
+            , level =
+                if isDot squareUnderPlayer then
+                    (\l -> { l | board = boardSetDoubleWidth tiles.canGoButNoDot newPlayer l.board }) model.level
+
+                else
+                    model.level
+            , status =
+                if isWon then
+                    Won
+
+                else
+                    let
+                        isLost : Bool
+                        isLost =
+                            newGhosts.isHit && model.status == Playing && model.playingMode == Escaping
+                    in
+                    if isLost then
+                        Lost
+
+                    else
+                        model.status
+        }
 
 
 teleportPlayer : Array.Array { a : Position {}, b : Position {} } -> Character -> Character
@@ -681,7 +688,7 @@ calculateNewGhostsPositions model newPlayer posix =
 
                         ghostInNewPosition : Character
                         ghostInNewPosition =
-                            ghostsMoveLogic model.shield posix tempLevelWithPlayerAndGhosts ghost
+                            ghostsMoveLogic { isShield = model.shield } posix tempLevelWithPlayerAndGhosts ghost
 
                         isHit : Bool
                         isHit =
@@ -767,7 +774,7 @@ oppositeDirection direction =
             Left
 
 
-ghostsMoveLogic : Bool -> Time.Posix -> Board -> Character -> Character
+ghostsMoveLogic : { isShield : Bool } -> Time.Posix -> Board -> Character -> Character
 ghostsMoveLogic isShield posix board character =
     -- We chack 3 direction, left, ahead, right to see wich is available.
     -- If only ahead is available. We move ahead.
@@ -799,10 +806,10 @@ ghostsMoveLogic isShield posix board character =
 
     else
         -- No places to go, let's go back
-        moveIfPossibleGhost { isShield = isShield } board { character | direction = oppositeDirection character.direction }
+        moveIfPossibleGhost isShield board { character | direction = oppositeDirection character.direction }
 
 
-ghostAvailableDirections : Bool -> Character -> Board -> Array.Array Direction
+ghostAvailableDirections : { isShield : Bool } -> Character -> Board -> Array.Array Direction
 ghostAvailableDirections isShield character board =
     Array.foldl
         (\direction acc ->
@@ -811,7 +818,7 @@ ghostAvailableDirections isShield character board =
                 -- go back (do they?)
                 acc
 
-            else if canGoGhost { isShield = isShield } (levelGet (move direction character) board) then
+            else if canGoGhost isShield (levelGet (move direction character) board) then
                 Helpers.arrayPushLast direction acc
 
             else
@@ -955,14 +962,14 @@ playerChar character =
 setCharacters : Board -> Array.Array Character -> Board
 setCharacters board characters =
     Array.foldl
-        (\character level_ ->
+        (\character level ->
             if character.flavor == Player then
                 boardSetDoubleWidth
                     (playerChar character)
                     { x = character.x
                     , y = character.y
                     }
-                    level_
+                    level
 
             else
                 boardSetDoubleWidth
@@ -970,7 +977,7 @@ setCharacters board characters =
                     { x = character.x
                     , y = character.y
                     }
-                    level_
+                    level
         )
         board
         characters
@@ -1038,8 +1045,8 @@ superimposeText strings position board =
             board
 
 
-addOverlay : Bool -> GameStatus -> Array.Array String -> Level -> Board -> Board
-addOverlay isPause status msg level_ board =
+addOverlay : { isPause : Bool } -> GameStatus -> Array.Array String -> Level -> Board -> Board
+addOverlay { isPause } status msg level board =
     if Array.length msg == 0 then
         board
 
@@ -1055,8 +1062,8 @@ addOverlay isPause status msg level_ board =
 
             position : Position {}
             position =
-                { x = (level_.width - width) // 2
-                , y = (level_.height - height) // 2
+                { x = (level.width - width) // 2
+                , y = (level.height - height) // 2
                 }
 
             width : Int
@@ -1112,14 +1119,14 @@ scoreCalculator { initialDots, counter, points, dots } =
     (initialDots - dots) + (points * 10) - (counter // 10)
 
 
-titleLength : Int
-titleLength =
-    String.length title
+githubUrlLength : Int
+githubUrlLength =
+    String.length githubUrl
 
 
 viewHeader : String -> Int -> String
 viewHeader score width =
-    score ++ String.repeat (width - String.length score - titleLength) " " ++ title
+    score ++ String.repeat (width - String.length score - githubUrlLength - 1) " " ++ githubUrl
 
 
 type alias Acc tile =
@@ -1138,8 +1145,8 @@ view :
 view funcs model =
     model.level.board
         |> addPlayerAndGhostsToLevel model.status model.ghosts model.player
-        |> addOverlay model.pause model.status (overlayMain model) model.level
-        |> addOverlay model.pause model.status (overlayPause model) model.level
+        |> addOverlay { isPause = model.pause } model.status (overlayMain model) model.level
+        |> addOverlay { isPause = model.pause } model.status (overlayPause model) model.level
         |> Helpers.arrayPrepend (Helpers.arrayFromList [ viewHeader (scoreText model) model.level.width ])
         |> Array.map (\row -> row ++ "\n")
         |> Array.indexedMap
@@ -1154,8 +1161,8 @@ view funcs model =
                                 tileType =
                                     charToTileType
                                         model.playingMode
-                                        (model.status == Playing && not model.pause)
-                                        model.shield
+                                        { isPlaying = model.status == Playing && not model.pause }
+                                        { isShield = model.shield }
                                         char
                             in
                             funcs.charToTile
@@ -1172,11 +1179,11 @@ view funcs model =
             )
 
 
-charToTileType : PlayingMode -> Bool -> Bool -> String -> Tile
-charToTileType playingMode isPlaying isShielded char =
+charToTileType : PlayingMode -> { isPlaying : Bool } -> { isShield : Bool } -> String -> Tile
+charToTileType playingMode { isPlaying } { isShield } char =
     if Helpers.arrayMember char charsInLevel then
         if isPlaying then
-            if isShielded then
+            if isShield then
                 TileLevelWhileShield
 
             else
@@ -1405,9 +1412,9 @@ overlayPause model =
         Helpers.arrayFromList []
 
 
-title : String
-title =
-    "github.com/lucamug/functional-pacman "
+githubUrl : String
+githubUrl =
+    "github.com/lucamug/functional-pacman"
 
 
 keysMenu : { a | isRunningInTerminal : Bool } -> Array.Array String
