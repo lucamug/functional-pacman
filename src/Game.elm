@@ -118,7 +118,6 @@ type Tile
     | TileDot
     | TileEndOfLine
     | TilePlayer
-    | TileNotVisible
     | TileModalNotVisible
     | TileModalVisible
     | TileGhostEscaping Int
@@ -1149,6 +1148,7 @@ view funcs model =
         |> addOverlay { isPause = model.pause } model.status (overlayPause model) model.level
         |> Helpers.arrayPrepend (Helpers.arrayFromList [ viewHeader (scoreText model) model.level.width ])
         |> Array.map (\row -> row ++ "\n")
+        |> Array.map (String.replace tiles.canGoButNoDot " " >> String.replace tiles.onlyGhosts " " >> String.replace tiles.onlyPlayer " ")
         |> Array.indexedMap
             (\index row ->
                 row
@@ -1197,9 +1197,6 @@ charToTileType playingMode { isPlaying } { isShield } char =
 
     else if Helpers.arrayMember char charsPlayer then
         TilePlayer
-
-    else if Helpers.arrayMember char charsNotVisible then
-        TileNotVisible
 
     else if char == "`" then
         TileModalNotVisible
@@ -1259,11 +1256,6 @@ findCharInBoard char board =
 charsInDots : Array.Array String
 charsInDots =
     Helpers.arrayFromList [ tiles.dotLarge, tiles.dotSmall ]
-
-
-charsNotVisible : Array.Array String
-charsNotVisible =
-    Helpers.arrayFromList [ tiles.canGoButNoDot, tiles.onlyGhosts, tiles.onlyPlayer ]
 
 
 charsPlayer : Array.Array String

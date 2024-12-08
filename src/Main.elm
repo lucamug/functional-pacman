@@ -102,7 +102,6 @@ view model =
                     , ".hunt   {color: #35c}" -- Blue
                     , ".modal  {color: white; background-color: #24b}" -- Pink
                     , ".modal-not-visible {color: #24b; background-color: #24b}" -- Pink
-                    , ".invisible {color: rgba(0,0,0,0)}"
                     ]
             ]
          , Html.pre []
@@ -198,9 +197,6 @@ tileTypeToClass index charType =
 
             Game.TilePlayer ->
                 "player"
-
-            Game.TileNotVisible ->
-                "invisible"
 
             Game.TileModalNotVisible ->
                 "modal-not-visible"

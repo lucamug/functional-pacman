@@ -172,11 +172,6 @@ colorDot =
     styleWithFontWeight Ansi.Yellow Ansi.Black Ansi.Faint
 
 
-colorNotVisible : String
-colorNotVisible =
-    style Ansi.Black
-
-
 colorEndOfLine : String
 colorEndOfLine =
     style Ansi.White
@@ -203,11 +198,8 @@ tileTypeToClass index charType =
             Game.TilePlayer ->
                 style Ansi.Yellow
 
-            Game.TileNotVisible ->
-                colorNotVisible
-
             Game.TileEndOfLine ->
-                colorNotVisible
+                style Ansi.Black
 
             Game.TileModalVisible ->
                 styleWithBgColor Ansi.White Ansi.Blue
