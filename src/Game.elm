@@ -5,11 +5,11 @@ module Game exposing
     , Direction(..)
     , Flavor(..)
     , Game
-    , GameStatus(..)
+    , Game_status(..)
     , Level
     , Model
     , Msg(..)
-    , PlayingMode(..)
+    , Playing_mode(..)
     , Position
     , Tile(..)
     , debugText
@@ -19,6 +19,11 @@ module Game exposing
     , update
     , view
     )
+
+-- Trying snake_case becase is more readable
+--
+-- https://dev.to/jethrolarson/a-case-for-snakecase-3hd2
+-- https://pedrocattori.dev/blog/snake-case-is-the-best-case
 
 import Array
 import Helpers
@@ -31,9 +36,9 @@ type alias Model =
         , keyDown : String
         , debug : Bool
         , shield : Bool
-        , initGhostsQuantity : Int
-        , initFps : Int
-        , isRunningInTerminal : Bool
+        , initial_ghosts_quantity : Int
+        , initial_fps : Int
+        , is_running_in_terminal : Bool
         }
 
 
@@ -45,18 +50,18 @@ type alias Game a =
         , counter : Int
         , points : Int
         , pause : Bool
-        , status : GameStatus
-        , initialDots : Int
+        , status : Game_status
+        , initial_dots : Int
         , dots : Int
-        , playingMode : PlayingMode
-        , currentLevelId : Int
+        , playing_mode : Playing_mode
+        , current_level_id : Int
     }
 
 
 type alias Level =
     { teleports : Array.Array { a : Position {}, b : Position {} }
-    , positionSpawnGhosts : Position {}
-    , positionAndDirectionSpawnPlayer : Position { direction : Direction }
+    , position_spawn_ghosts : Position {}
+    , position_and_direction_spawn_player : Position { direction : Direction }
     , board : Board
     , width : Int
     , height : Int
@@ -80,12 +85,12 @@ type alias Character =
         }
 
 
-type PlayingMode
-    = HuntingGhosts { since : Int }
+type Playing_mode
+    = Hunting_ghosts { since : Int }
     | Escaping
 
 
-type GameStatus
+type Game_status
     = Idle
     | Playing
     | Quitting
@@ -112,18 +117,18 @@ type Direction
 
 
 type Tile
-    = TileLevelWhilePlaying
-    | TileLevelWhileIdle
-    | TileLevelWhileShield
-    | TileDot
-    | TileEndOfLine
-    | TilePlayer
-    | TileNotVisible
-    | TileModalNotVisible
-    | TileModalVisible
-    | TileGhostEscaping Int
-    | TileGhostHunting
-    | TileNoOp
+    = Tile_dot
+    | Tile_end_of_line
+    | Tile_ghost_escaping Int
+    | Tile_ghost_hunting
+    | Tile_level_while_idle
+    | Tile_level_while_playing
+    | Tile_level_while_shield
+    | Tile_modal_not_visible
+    | Tile_modal_visible
+    | Tile_not_operational
+    | Tile_not_visible
+    | Tile_player
 
 
 directions : Array.Array Direction
@@ -136,50 +141,50 @@ directions =
         ]
 
 
-ghostsTypes : Int
-ghostsTypes =
-    Array.length charGhosts
+ghosts_types : Int
+ghosts_types =
+    Array.length char_ghosts
 
 
-initGhost : Position {} -> Int -> Character
-initGhost positionSpawnGhosts index =
+init_ghost : Position {} -> Int -> Character
+init_ghost position_spawn_ghosts index =
     { char =
-        charGhosts
-            |> Array.get (Helpers.modBy ghostsTypes index)
+        char_ghosts
+            |> Array.get (Helpers.modBy ghosts_types index)
             |> Maybe.withDefault ""
-    , x = positionSpawnGhosts.x
-    , y = positionSpawnGhosts.y
+    , x = position_spawn_ghosts.x
+    , y = position_spawn_ghosts.y
     , flavor = Ghost
     , direction = Left
     }
 
 
-initPlayer : Position { direction : Direction } -> Character
-initPlayer positionAndDirectionSpawnPlayer =
+init_player : Position { direction : Direction } -> Character
+init_player position_and_direction_spawn_player =
     { char = playerShapes.right
-    , x = positionAndDirectionSpawnPlayer.x
-    , y = positionAndDirectionSpawnPlayer.y
+    , x = position_and_direction_spawn_player.x
+    , y = position_and_direction_spawn_player.y
     , flavor = Player
-    , direction = positionAndDirectionSpawnPlayer.direction
+    , direction = position_and_direction_spawn_player.direction
     }
 
 
-init : { isRunningInTerminal : Bool } -> { model : Model, command : Cmd msg }
-init isRunningInTerminal =
-    { model = initModel { levelId = 0 } { initFps = 30, initGhostsQuantity = 20 } isRunningInTerminal
+init : { is_running_in_terminal : Bool } -> { model : Model, command : Cmd msg }
+init is_running_in_terminal =
+    { model = init_model { levelId = 0 } { initial_fps = 30, initial_ghosts_quantity = 20 } is_running_in_terminal
     , command = Cmd.none
     }
 
 
-initModel : { levelId : Int } -> { initFps : Int, initGhostsQuantity : Int } -> { isRunningInTerminal : Bool } -> Model
-initModel { levelId } args { isRunningInTerminal } =
+init_model : { levelId : Int } -> { initial_fps : Int, initial_ghosts_quantity : Int } -> { is_running_in_terminal : Bool } -> Model
+init_model { levelId } args { is_running_in_terminal } =
     let
         game : Game {}
         game =
-            initGame
+            init_game
                 (Maybe.withDefault level0 <| Array.get levelId levels)
                 { levelId = levelId
-                , ghostsQuantity = args.initGhostsQuantity
+                , ghostsQuantity = args.initial_ghosts_quantity
                 , status = Idle
                 }
     in
@@ -190,28 +195,28 @@ initModel { levelId } args { isRunningInTerminal } =
     , points = game.points
     , pause = game.pause
     , status = game.status
-    , initialDots = game.initialDots
+    , initial_dots = game.initial_dots
     , dots = game.dots
-    , playingMode = game.playingMode
-    , currentLevelId = game.currentLevelId
-    , fps = args.initFps
+    , playing_mode = game.playing_mode
+    , current_level_id = game.current_level_id
+    , fps = args.initial_fps
     , keyDown = ""
     , debug = False
     , shield = False
-    , initFps = args.initFps
-    , initGhostsQuantity = args.initGhostsQuantity
-    , isRunningInTerminal = isRunningInTerminal
+    , initial_fps = args.initial_fps
+    , initial_ghosts_quantity = args.initial_ghosts_quantity
+    , is_running_in_terminal = is_running_in_terminal
     }
 
 
-initGameInModel : { levelId : Int, ghostsQuantity : Int, status : GameStatus } -> Model -> Model
+initGameInModel : { levelId : Int, ghostsQuantity : Int, status : Game_status } -> Model -> Model
 initGameInModel args model =
     case Array.get args.levelId levels of
         Just level ->
             let
                 game : Game {}
                 game =
-                    initGame level args
+                    init_game level args
             in
             { model
                 | player = game.player
@@ -221,36 +226,36 @@ initGameInModel args model =
                 , points = game.points
                 , pause = game.pause
                 , status = game.status
-                , initialDots = game.initialDots
+                , initial_dots = game.initial_dots
                 , dots = game.dots
-                , playingMode = game.playingMode
-                , currentLevelId = game.currentLevelId
+                , playing_mode = game.playing_mode
+                , current_level_id = game.current_level_id
             }
 
         Nothing ->
             model
 
 
-initGame : Level -> { levelId : Int, ghostsQuantity : Int, status : GameStatus } -> Game {}
-initGame level args =
+init_game : Level -> { levelId : Int, ghostsQuantity : Int, status : Game_status } -> Game {}
+init_game level args =
     let
         ghosts : Array.Array Character
         ghosts =
             Helpers.arrayIndexedMap
-                (\index _ -> initGhost level.positionSpawnGhosts index)
+                (\index _ -> init_ghost level.position_spawn_ghosts index)
                 (Array.repeat args.ghostsQuantity 0)
     in
-    { player = initPlayer level.positionAndDirectionSpawnPlayer
+    { player = init_player level.position_and_direction_spawn_player
     , ghosts = ghosts
     , level = level
     , counter = 0
     , points = 0
     , pause = False
     , status = args.status
-    , initialDots = level.dots
+    , initial_dots = level.dots
     , dots = level.dots
-    , playingMode = Escaping
-    , currentLevelId = args.levelId
+    , playing_mode = Escaping
+    , current_level_id = args.levelId
     }
 
 
@@ -364,8 +369,8 @@ boardToLevel board =
                 (Helpers.arrayFromList [ tiles.teleportLeftRight, tiles.teleportUpDown ])
     in
     { teleports = teleports
-    , positionSpawnGhosts = getPositionSpawnGhosts board
-    , positionAndDirectionSpawnPlayer = getPositionAndDirectionSpawnPlayer board
+    , position_spawn_ghosts = getPositionSpawnGhosts board
+    , position_and_direction_spawn_player = getPositionAndDirectionSpawnPlayer board
     , board = removeMarkingTiles board
     , width = boardWidth
     , height = Array.length board
@@ -496,7 +501,7 @@ updateOnKeyDown key modelToBeUsedOnlyOnce =
                                 Array.slice 0 (Array.length m.ghosts - 1) m.ghosts
 
                             else if key == "o" then
-                                Helpers.arrayPushLast (initGhost m.level.positionSpawnGhosts (Array.length m.ghosts)) m.ghosts
+                                Helpers.arrayPushLast (init_ghost m.level.position_spawn_ghosts (Array.length m.ghosts)) m.ghosts
 
                             else
                                 m.ghosts
@@ -511,15 +516,15 @@ updateOnKeyDown key modelToBeUsedOnlyOnce =
         |> (\m ->
                 if m.status == Idle || m.status == Won || m.status == Lost || m.status == Menu then
                     if key == "Enter" then
-                        if m.fps == m.initFps then
+                        if m.fps == m.initial_fps then
                             -- The game is still in the initial configuration (DEMO MODE)
-                            initGameInModel { levelId = m.currentLevelId, ghostsQuantity = 4, status = Playing } { m | fps = 8, shield = False }
+                            initGameInModel { levelId = m.current_level_id, ghostsQuantity = 4, status = Playing } { m | fps = 8, shield = False }
 
                         else
-                            initGameInModel { levelId = m.currentLevelId, ghostsQuantity = Array.length m.ghosts, status = Playing } m
+                            initGameInModel { levelId = m.current_level_id, ghostsQuantity = Array.length m.ghosts, status = Playing } m
 
                     else if key == "f" then
-                        initGameInModel { levelId = m.currentLevelId, ghostsQuantity = Array.length m.ghosts, status = Playing } { m | fps = m.initFps, shield = True }
+                        initGameInModel { levelId = m.current_level_id, ghostsQuantity = Array.length m.ghosts, status = Playing } { m | fps = m.initial_fps, shield = True }
 
                     else if key == "m" then
                         if m.status == Menu then
@@ -540,7 +545,7 @@ updateEvery : Time.Posix -> Model -> Model
 updateEvery posix model =
     if model.status == Idle && Helpers.modBy 150 (model.counter + 1) == 0 then
         initGameInModel
-            { levelId = Helpers.modBy (Array.length levels) (model.currentLevelId + 1)
+            { levelId = Helpers.modBy (Array.length levels) (model.current_level_id + 1)
             , ghostsQuantity = Array.length model.ghosts
             , status = model.status
             }
@@ -573,7 +578,7 @@ updateEvery posix model =
             newGhosts =
                 calculateNewGhostsPositions
                     { ghosts = model.ghosts
-                    , playingMode = model.playingMode
+                    , playing_mode = model.playing_mode
                     , shield = model.shield
                     , status = model.status
                     , level = model.level
@@ -600,26 +605,26 @@ updateEvery posix model =
         { model
             | player = newPlayer
             , points =
-                if newGhosts.isHit && model.status == Playing && model.playingMode /= Escaping then
+                if newGhosts.isHit && model.status == Playing && model.playing_mode /= Escaping then
                     model.points + 1
 
                 else
                     model.points
-            , playingMode =
+            , playing_mode =
                 if squareUnderPlayer == tiles.dotLarge then
-                    HuntingGhosts { since = model.counter }
+                    Hunting_ghosts { since = model.counter }
 
                 else
-                    case model.playingMode of
+                    case model.playing_mode of
                         Escaping ->
                             Escaping
 
-                        HuntingGhosts { since } ->
+                        Hunting_ghosts { since } ->
                             if model.counter - since > 100 then
                                 Escaping
 
                             else
-                                model.playingMode
+                                model.playing_mode
             , ghosts = newGhosts.ghosts
             , counter = model.counter + 1
             , dots = newDots
@@ -637,7 +642,7 @@ updateEvery posix model =
                     let
                         isLost : Bool
                         isLost =
-                            newGhosts.isHit && model.status == Playing && model.playingMode == Escaping
+                            newGhosts.isHit && model.status == Playing && model.playing_mode == Escaping
                     in
                     if isLost then
                         Lost
@@ -666,9 +671,9 @@ teleportPlayer teleports character =
 
 calculateNewGhostsPositions :
     { ghosts : Array.Array Character
-    , playingMode : PlayingMode
+    , playing_mode : Playing_mode
     , shield : Bool
-    , status : GameStatus
+    , status : Game_status
     , level : Level
     }
     -> Character
@@ -699,10 +704,10 @@ calculateNewGhostsPositions model newPlayer posix =
                     in
                     { ghosts =
                         Array.set index
-                            (if model.playingMode /= Escaping && isHit then
+                            (if model.playing_mode /= Escaping && isHit then
                                 { ghostInNewPosition
-                                    | x = model.level.positionSpawnGhosts.x
-                                    , y = model.level.positionSpawnGhosts.y
+                                    | x = model.level.position_spawn_ghosts.x
+                                    , y = model.level.position_spawn_ghosts.y
                                 }
 
                              else
@@ -983,7 +988,7 @@ setCharacters board characters =
         characters
 
 
-addPlayerAndGhostsToLevel : GameStatus -> Array.Array Character -> Character -> Board -> Board
+addPlayerAndGhostsToLevel : Game_status -> Array.Array Character -> Character -> Board -> Board
 addPlayerAndGhostsToLevel status ghosts player board =
     ghosts
         |> (\array ->
@@ -1045,7 +1050,7 @@ superimposeText strings position board =
             board
 
 
-addOverlay : { isPause : Bool } -> GameStatus -> Array.Array String -> Level -> Board -> Board
+addOverlay : { isPause : Bool } -> Game_status -> Array.Array String -> Level -> Board -> Board
 addOverlay { isPause } status msg level board =
     if Array.length msg == 0 then
         board
@@ -1114,9 +1119,9 @@ addOverlay { isPause } status msg level board =
         superimposeText msgFull position board
 
 
-scoreCalculator : { a | initialDots : Int, counter : Int, points : Int, dots : Int } -> Int
-scoreCalculator { initialDots, counter, points, dots } =
-    (initialDots - dots) + (points * 10) - (counter // 10)
+scoreCalculator : { a | initial_dots : Int, counter : Int, points : Int, dots : Int } -> Int
+scoreCalculator { initial_dots, counter, points, dots } =
+    (initial_dots - dots) + (points * 10) - (counter // 10)
 
 
 githubUrlLength : Int
@@ -1160,7 +1165,7 @@ view funcs model =
                                 tileType : Tile
                                 tileType =
                                     charToTileType
-                                        model.playingMode
+                                        model.playing_mode
                                         { isPlaying = model.status == Playing && not model.pause }
                                         { isShield = model.shield }
                                         char
@@ -1179,48 +1184,48 @@ view funcs model =
             )
 
 
-charToTileType : PlayingMode -> { isPlaying : Bool } -> { isShield : Bool } -> String -> Tile
-charToTileType playingMode { isPlaying } { isShield } char =
+charToTileType : Playing_mode -> { isPlaying : Bool } -> { isShield : Bool } -> String -> Tile
+charToTileType playing_mode { isPlaying } { isShield } char =
     if Helpers.arrayMember char charsInLevel then
         if isPlaying then
             if isShield then
-                TileLevelWhileShield
+                Tile_level_while_shield
 
             else
-                TileLevelWhilePlaying
+                Tile_level_while_playing
 
         else
-            TileLevelWhileIdle
+            Tile_level_while_idle
 
     else if Helpers.arrayMember char charsInDots then
-        TileDot
+        Tile_dot
 
     else if Helpers.arrayMember char charsPlayer then
-        TilePlayer
+        Tile_player
 
     else if Helpers.arrayMember char charsNotVisible then
-        TileNotVisible
+        Tile_not_visible
 
     else if char == "`" then
-        TileModalNotVisible
+        Tile_modal_not_visible
 
     else if char == "\n" then
-        TileEndOfLine
+        Tile_end_of_line
 
     else if String.contains char "-~⍫!?0123456789ABCDEFGHIJKLMNOPQRSTUVWZXY[]↘↗↑←↓→.:" then
-        TileModalVisible
+        Tile_modal_visible
 
     else
-        case arrayFind char charGhosts of
+        case arrayFind char char_ghosts of
             Just index ->
-                if playingMode == Escaping then
-                    TileGhostEscaping index
+                if playing_mode == Escaping then
+                    Tile_ghost_escaping index
 
                 else
-                    TileGhostHunting
+                    Tile_ghost_hunting
 
             Nothing ->
-                TileNoOp
+                Tile_not_operational
 
 
 findCharInString : String -> String -> Array.Array Int
@@ -1328,10 +1333,10 @@ debugText model =
                 Menu ->
                     "Menu"
 
-        modeToString : PlayingMode -> String
+        modeToString : Playing_mode -> String
         modeToString mode =
             case mode of
-                HuntingGhosts { since } ->
+                Hunting_ghosts { since } ->
                     "Hunting " ++ String.fromInt since
 
                 Escaping ->
@@ -1346,7 +1351,7 @@ debugText model =
     , " Pause " ++ boolToOnOff model.pause
     , "Status " ++ status
     , "Shield " ++ boolToOnOff model.shield
-    , "  Mode " ++ modeToString model.playingMode
+    , "  Mode " ++ modeToString model.playing_mode
     , "Player " ++ String.fromInt model.player.x ++ "," ++ String.fromInt model.player.y
     ]
         |> Helpers.arrayFromList
@@ -1357,7 +1362,7 @@ debugText model =
         |> Array.map (\s -> " " ++ String.toUpper s)
 
 
-scoreText : { a | counter : Int, dots : Int, initialDots : Int, points : Int } -> String
+scoreText : { a | counter : Int, dots : Int, initial_dots : Int, points : Int } -> String
 scoreText model =
     let
         score : Int
@@ -1417,8 +1422,8 @@ githubUrl =
     "github.com/lucamug/functional-pacman"
 
 
-keysMenu : { a | isRunningInTerminal : Bool } -> Array.Array String
-keysMenu { isRunningInTerminal } =
+keysMenu : { a | is_running_in_terminal : Bool } -> Array.Array String
+keysMenu { is_running_in_terminal } =
     Helpers.arrayFromList
         ([ "     PLAY [ENTER]  "
          , "FAST PLAY [F]      "
@@ -1433,7 +1438,7 @@ keysMenu { isRunningInTerminal } =
          , "   SHIELD [L]      "
          , "   LEVELS [1]~[" ++ String.fromInt (Array.length levels) ++ "]  "
          ]
-            ++ (if isRunningInTerminal then
+            ++ (if is_running_in_terminal then
                     [ "     EXIT [ESC]    " ]
 
                 else
@@ -1464,8 +1469,8 @@ flipBoxCorners string =
         |> String.replace "‡" "╰"
 
 
-charGhosts : Array.Array String
-charGhosts =
+char_ghosts : Array.Array String
+char_ghosts =
     Helpers.arrayFromList [ "█", "▉", "▓", "▒" ]
 
 

@@ -44,7 +44,7 @@ type alias Flags =
 
 init : Flags -> ( Model, Cmd Msg )
 init flags =
-    { isRunningInTerminal = False }
+    { is_running_in_terminal = False }
         |> Game.init
         |> (\game ->
                 ( { gameModel =
@@ -176,43 +176,43 @@ charToTile index tileType char acc =
 
 tileTypeToClass : Int -> Game.Tile -> String
 tileTypeToClass index charType =
-    if index == 0 && charType /= Game.TileEndOfLine then
+    if index == 0 && charType /= Game.Tile_end_of_line then
         "level"
 
     else
         case charType of
-            Game.TileLevelWhilePlaying ->
+            Game.Tile_level_while_playing ->
                 "level"
 
-            Game.TileLevelWhileShield ->
+            Game.Tile_level_while_shield ->
                 "shield"
 
-            Game.TileLevelWhileIdle ->
+            Game.Tile_level_while_idle ->
                 "dot"
 
-            Game.TileDot ->
+            Game.Tile_dot ->
                 "dot"
 
-            Game.TileEndOfLine ->
+            Game.Tile_end_of_line ->
                 "invisible"
 
-            Game.TilePlayer ->
+            Game.Tile_player ->
                 "player"
 
-            Game.TileNotVisible ->
+            Game.Tile_not_visible ->
                 "invisible"
 
-            Game.TileModalNotVisible ->
+            Game.Tile_modal_not_visible ->
                 "modal-not-visible"
 
-            Game.TileModalVisible ->
+            Game.Tile_modal_visible ->
                 "modal"
 
-            Game.TileGhostEscaping id ->
+            Game.Tile_ghost_escaping id ->
                 "ghost" ++ String.fromInt id
 
-            Game.TileGhostHunting ->
+            Game.Tile_ghost_hunting ->
                 "hunt"
 
-            Game.TileNoOp ->
+            Game.Tile_not_operational ->
                 "dot"
