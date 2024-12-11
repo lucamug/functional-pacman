@@ -8,7 +8,7 @@ The game is written in the [Elm language](https://elm-lang.org/) and the [Gren l
 
 ## To run the game in the browser
 
-Go to: [https://lucamug.github.io/pacman/](https://lucamug.github.io/pacman/)
+Go to: [https://lucamug.github.io/functional-pacman/](https://lucamug.github.io/functional-pacman/)
 
 ## To run the game in the terminal
 
@@ -16,7 +16,7 @@ Execute:
 
 ```shell
 git clone https://github.com/lucamug/functional-pacman/
-cd pacman
+cd functional-pacman
 node docs/gren-pacman
 ```
 
@@ -34,7 +34,7 @@ Clone the repository:
 
 ```shell
 git clone https://github.com/lucamug/functional-pacman/
-cd pacman
+cd functional-pacman
 npm install
 ```
 
@@ -47,6 +47,8 @@ cmd/start-elm
 ```
 
 Then point your browser to [http://localhost:8003/](http://localhost:8003/).
+
+The main file is [Game.elm](https://github.com/lucamug/functional-pacman/blob/main/src/Game.elm). This code is the same as Game.gren. They are kept in sync via a symlink. After editing any Elm file, the game in the browser will automatically hot-reload.
 
 ### To work on the Gren code
 
@@ -70,4 +72,4 @@ Run
 cmd/build
 ```
 
-This will update the file in `/docs/`. These files can be published via Github, for example, via "Settings > Pages > Deploy from a branch > main /docs".
+This will update the file in `/docs/`. These files can be published via Github from "Settings > Pages > Deploy from a branch > main /docs".
