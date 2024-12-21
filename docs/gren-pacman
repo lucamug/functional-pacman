@@ -5389,6 +5389,15 @@ var $author$project$Game$charToTileType$ = function(playingMode, _v0, _v1, _char
 	}
 };
 var $author$project$Game$charToTileType = F4($author$project$Game$charToTileType$);
+var $author$project$Game$applyFuncsToView$ = function(funcs, model, index, row) {
+	return function(resultFromFoldl) {
+		return A2(funcs.cx, index, resultFromFoldl.bH);
+	}(A3($gren_lang$core$Array$foldl, F2(function(_char, acc) {
+					var tileType = $author$project$Game$charToTileType$(model.j, { b6: (model.a === 1) && (!model.i) }, { bm: model.q }, _char);
+					return A4(funcs.bV, index, tileType, _char, acc);
+				}), { ci: '', cw: '', bH: $gren_lang$core$Array$empty }, $author$project$Helpers$arrayFromList(A2($gren_lang$core$String$split, '', row))));
+};
+var $author$project$Game$applyFuncsToView = F4($author$project$Game$applyFuncsToView$);
 var $gren_lang$core$Basics$composeR$ = function(f, g) {
 	return function(x) {
 		return g(f(x));
@@ -5434,14 +5443,7 @@ var $author$project$Game$viewHeader$ = function(score, width) {
 };
 var $author$project$Game$viewHeader = F2($author$project$Game$viewHeader$);
 var $author$project$Game$view$ = function(funcs, model) {
-	return A2($gren_lang$core$Array$indexedMap, F2(function(index, row) {
-				return function(resultFromFoldl) {
-					return A2(funcs.cx, index, resultFromFoldl.bH);
-				}(A3($gren_lang$core$Array$foldl, F2(function(_char, acc) {
-								var tileType = $author$project$Game$charToTileType$(model.j, { b6: (model.a === 1) && (!model.i) }, { bm: model.q }, _char);
-								return A4(funcs.bV, index, tileType, _char, acc);
-							}), { ci: '', cw: '', bH: $gren_lang$core$Array$empty }, $author$project$Helpers$arrayFromList(A2($gren_lang$core$String$split, '', row))));
-			}), A2($gren_lang$core$Array$map, $gren_lang$core$Basics$composeR$(A2($gren_lang$core$String$replace, $author$project$Game$tiles.H, ' '), $gren_lang$core$Basics$composeR$(A2($gren_lang$core$String$replace, $author$project$Game$tiles.aR, ' '), A2($gren_lang$core$String$replace, $author$project$Game$tiles.aS, ' '))), A2($gren_lang$core$Array$map, function(row) {
+	return A2($gren_lang$core$Array$indexedMap, A2($author$project$Game$applyFuncsToView, funcs, model), A2($gren_lang$core$Array$map, $gren_lang$core$Basics$composeR$(A2($gren_lang$core$String$replace, $author$project$Game$tiles.H, ' '), $gren_lang$core$Basics$composeR$(A2($gren_lang$core$String$replace, $author$project$Game$tiles.aR, ' '), A2($gren_lang$core$String$replace, $author$project$Game$tiles.aS, ' '))), A2($gren_lang$core$Array$map, function(row) {
 					return row + '\n';
 				}, A2($author$project$Helpers$arrayPrepend, $author$project$Helpers$arrayFromList([ $author$project$Game$viewHeader$($author$project$Game$scoreText(model), model.g.a4) ]), $author$project$Game$addOverlay$({ bl: model.i }, model.a, $author$project$Game$overlayPause(model), model.g, $author$project$Game$addOverlay$({ bl: model.i }, model.a, $author$project$Game$overlayMain(model), model.g, $author$project$Game$addPlayerAndGhostsToLevel$(model.a, model.d, model.l, model.g.C)))))));
 };

@@ -1135,6 +1135,38 @@ type alias Acc tile =
     }
 
 
+applyFuncsToView :
+    { charToTile : Int -> Tile -> String -> Acc tile -> Acc tile
+    , tilesToRow : Int -> Array.Array tile -> row
+    }
+    -> Model
+    -> Int
+    -> String
+    -> row
+applyFuncsToView funcs model index row =
+    row
+        |> String.split ""
+        |> Helpers.arrayFromList
+        |> Array.foldl
+            (\char acc ->
+                let
+                    tileType : Tile
+                    tileType =
+                        charToTileType
+                            model.playingMode
+                            { isPlaying = model.status == Playing && not model.pause }
+                            { isShield = model.shield }
+                            char
+                in
+                funcs.charToTile index tileType char acc
+            )
+            { textTemp = ""
+            , previousTileType = ""
+            , tiles = Array.empty
+            }
+        |> (\resultFromFoldl -> funcs.tilesToRow index resultFromFoldl.tiles)
+
+
 view :
     { charToTile : Int -> Tile -> String -> Acc tile -> Acc tile
     , tilesToRow : Int -> Array.Array tile -> row
@@ -1149,34 +1181,7 @@ view funcs model =
         |> Helpers.arrayPrepend (Helpers.arrayFromList [ viewHeader (scoreText model) model.level.width ])
         |> Array.map (\row -> row ++ "\n")
         |> Array.map (String.replace tiles.canGoButNoDot " " >> String.replace tiles.onlyGhosts " " >> String.replace tiles.onlyPlayer " ")
-        |> Array.indexedMap
-            (\index row ->
-                row
-                    |> String.split ""
-                    |> Helpers.arrayFromList
-                    |> Array.foldl
-                        (\char acc ->
-                            let
-                                tileType : Tile
-                                tileType =
-                                    charToTileType
-                                        model.playingMode
-                                        { isPlaying = model.status == Playing && not model.pause }
-                                        { isShield = model.shield }
-                                        char
-                            in
-                            funcs.charToTile
-                                index
-                                tileType
-                                char
-                                acc
-                        )
-                        { textTemp = ""
-                        , previousTileType = ""
-                        , tiles = Array.empty
-                        }
-                    |> (\resultFromFoldl -> funcs.tilesToRow index resultFromFoldl.tiles)
-            )
+        |> Array.indexedMap (applyFuncsToView funcs model)
 
 
 charToTileType : PlayingMode -> { isPlaying : Bool } -> { isShield : Bool } -> String -> Tile
