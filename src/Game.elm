@@ -1441,7 +1441,7 @@ keysMenu { isRunningInTerminal } =
 
 playerShapes : { down : String, full : String, left : String, right : String, up : String }
 playerShapes =
-    { full = "☻", down = "∩", up = "u", left = "⊃", right = "c" }
+    { full = "◉", down = "∩", up = "u", left = "⊃", right = "c" }
 
 
 charsInLevel : Array.Array String

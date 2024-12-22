@@ -4645,7 +4645,7 @@ var $author$project$Game$initGhost$ = function(positionSpawnGhosts, index) {
 };
 var $author$project$Game$initGhost = F2($author$project$Game$initGhost$);
 var $author$project$Game$Player = 0;
-var $author$project$Game$playerShapes = { aI: '∩', aL: '☻', aO: '⊃', ay: 'c', a3: 'u' };
+var $author$project$Game$playerShapes = { aI: '∩', aL: '◉', aO: '⊃', ay: 'c', a3: 'u' };
 var $author$project$Game$initPlayer = function(positionAndDirectionSpawnPlayer) {
 	return { aF: $author$project$Game$playerShapes.ay, h: positionAndDirectionSpawnPlayer.h, aK: 0, b: positionAndDirectionSpawnPlayer.b, c: positionAndDirectionSpawnPlayer.c };
 };
